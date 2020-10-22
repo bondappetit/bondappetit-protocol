@@ -1,10 +1,15 @@
+const networks = require("../networks");
 const Bond = artifacts.require("Bond");
 const dayjs = require("dayjs");
 
-module.exports = async (deployer) => {
+module.exports = async (deployer, network) => {
+  const {
+    accounts: {Governor},
+  } = networks[network];
+
   await deployer.deploy(
     Bond,
-    "0x87aa18a47EeE34F47187159Ba3431aF143a5ceA8", // First account
+    Governor.address,
     dayjs().add(18, "month").unix() // Unlocking after 18 months
   );
 };

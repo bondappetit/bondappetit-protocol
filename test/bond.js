@@ -77,14 +77,14 @@ contract("Bond:lock", (accounts) => {
 
   it("should transfer after locking date", async () => {
     const amount = 10;
-    const instance = await Bond.new(acc, dayjs().add(1, "second").unix());
+    const instance = await Bond.new(acc, dayjs().add(2, "second").unix());
 
     await instance.transferLock(freeAcc, amount, {from: acc});
     await assertions.reverts(
       instance.transfer(acc, amount, {from: freeAcc}),
       "Bond::unlockingTransfer: amount are locked"
     );
-    await new Promise(resolve => setTimeout(resolve, 1000));
+    await new Promise(resolve => setTimeout(resolve, 2000));
     await instance.transfer(acc, amount, {from: freeAcc});
   });
 });

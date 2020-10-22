@@ -1,0 +1,9 @@
+{
+  "contracts": [
+    {"path": "build/contracts/GovernorAlpha.json"},
+    {"path": "build/contracts/Investment.json"}
+  ],
+  "assets": [
+    {"path": "build/contracts/Bond.json", "symbol": "BOND", "decimals": 18}
+  ]
+}
