@@ -1,14 +1,20 @@
 module.exports = {
   DAI: {
-    address: "0xad6d458402f60fd3bd25163575031acdce07538d",
+    address: "0xc2118d4d90b274016cB7a54c03EF52E6c537D957",
     name: "Dai Stablecoin",
     symbol: "DAI",
     decimals: 18,
   },
   USDT: {
-    address: "0x6ee856ae55b6e1a249f04cd3b947141bc146273c",
+    address: "0x516de3a7a567d81737e3a46ec4ff9cfd1fcb0136",
     name: "Tether USD",
     symbol: "USDT",
+    decimals: 6,
+  },
+  USDC: {
+    address: "0x0D9C8723B343A8368BebE0B5E89273fF8D712e3C",
+    name: "USD Coin",
+    symbol: "USDC",
     decimals: 6,
   },
 };

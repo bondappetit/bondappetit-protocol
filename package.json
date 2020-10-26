@@ -1,6 +1,6 @@
 {
   "name": "protocol",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "",
   "main": "",
   "scripts": {
@@ -8,7 +8,9 @@
     "build": "truffle compile --all",
     "dev:deploy": "truffle migrate --network development",
     "ropsten:deploy": "truffle migrate --network ropsten --reset",
-    "node": "ganache-cli -f http://10.49.69.27:8545 -m 'fashion crop leaf family bargain nature summer antenna drift student century often' -i 999",
+    "dev:config-gen": "node gen.js --network development --config gen.config.json --out networks/development/gen",
+    "ropsten:config-gen": "node gen.js --network ropsten --config gen.config.json --out networks/ropsten/gen",
+    "node": "ganache-cli -f http://10.49.69.27:8545 -m 'fashion crop leaf family bargain nature summer antenna drift student century often' -i 999 --chainId 999",
     "test": "truffle test --network development",
     "dev:console": "truffle console --network development",
     "ropsten:console": "truffle console --network ropsten"

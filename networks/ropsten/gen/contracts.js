@@ -733,17 +733,12 @@ module.exports = {
                 "inputs": [
                     {
                         "internalType": "address",
-                        "name": "_targetToken",
+                        "name": "_cumulative",
                         "type": "address"
                     },
                     {
                         "internalType": "address",
                         "name": "_bond",
-                        "type": "address"
-                    },
-                    {
-                        "internalType": "address",
-                        "name": "_priceOracle",
                         "type": "address"
                     },
                     {
@@ -902,6 +897,21 @@ module.exports = {
             },
             {
                 "constant": true,
+                "inputs": [],
+                "name": "cumulative",
+                "outputs": [
+                    {
+                        "internalType": "address",
+                        "name": "",
+                        "type": "address"
+                    }
+                ],
+                "payable": false,
+                "stateMutability": "view",
+                "type": "function"
+            },
+            {
+                "constant": true,
                 "inputs": [
                     {
                         "internalType": "address",
@@ -925,21 +935,6 @@ module.exports = {
                 "constant": true,
                 "inputs": [],
                 "name": "owner",
-                "outputs": [
-                    {
-                        "internalType": "address",
-                        "name": "",
-                        "type": "address"
-                    }
-                ],
-                "payable": false,
-                "stateMutability": "view",
-                "type": "function"
-            },
-            {
-                "constant": true,
-                "inputs": [],
-                "name": "targetToken",
                 "outputs": [
                     {
                         "internalType": "address",
@@ -1018,27 +1013,11 @@ module.exports = {
                         "internalType": "address",
                         "name": "token",
                         "type": "address"
-                    }
-                ],
-                "name": "priceUSD",
-                "outputs": [
+                    },
                     {
                         "internalType": "uint256",
-                        "name": "",
+                        "name": "amount",
                         "type": "uint256"
-                    }
-                ],
-                "payable": false,
-                "stateMutability": "view",
-                "type": "function"
-            },
-            {
-                "constant": true,
-                "inputs": [
-                    {
-                        "internalType": "address",
-                        "name": "token",
-                        "type": "address"
                     }
                 ],
                 "name": "price",
@@ -1068,7 +1047,13 @@ module.exports = {
                     }
                 ],
                 "name": "invest",
-                "outputs": [],
+                "outputs": [
+                    {
+                        "internalType": "bool",
+                        "name": "",
+                        "type": "bool"
+                    }
+                ],
                 "payable": false,
                 "stateMutability": "nonpayable",
                 "type": "function"

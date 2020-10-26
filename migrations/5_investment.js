@@ -1,22 +1,34 @@
+const bn = require("bn.js");
 const networks = require("../networks");
 const Bond = artifacts.require("Bond");
 const Investment = artifacts.require("Investment");
 
 module.exports = async (deployer, network) => {
   const {
-    assets: {USDT, DAI},
-    contracts: {UniswapAnchoredView, UniswapV2Router02},
+    accounts: {Governor},
+    assets: {USDC, USDT, DAI},
+    contracts: {UniswapV2Router02},
   } = networks[network];
+  const investmentTokens = [USDT.address, USDC.address, DAI.address];
 
   await deployer.deploy(
     Investment,
-    USDT.address,
+    USDC.address,
     Bond.address,
-    UniswapAnchoredView.address,
     UniswapV2Router02.address
   );
 
   const investment = await Investment.deployed();
-  await investment.allowToken(USDT.address);
-  await investment.allowToken(DAI.address);
+  await Promise.all(
+    investmentTokens.map((address) => investment.allowToken(address))
+  );
+
+  const bond = await Bond.deployed();
+  await bond.transfer(
+    investment.address,
+    new bn(1200000).mul(new bn("1000000000000000000")).toString(),
+    {
+      from: Governor.address,
+    }
+  );
 };

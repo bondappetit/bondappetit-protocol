@@ -3,24 +3,22 @@ pragma solidity 0.5.17;
 import "./token/IERC20.sol";
 import "./access/Ownable.sol";
 import "./SafeMath.sol";
-import "./compound/UniswapAnchoredView.sol";
+import "./token/SafeERC20.sol";
 import "./uniswap/IUniswapV2Router02.sol";
 import "./Bond.sol";
 
 contract Investment is Ownable {
     using SafeMath for uint256;
+    using SafeERC20 for IERC20;
+
+    ///@notice Address of cumulative token
+    address public cumulative;
 
     ///@notice Address of Bond token
     Bond public bond;
 
-    ///@notice Price Bond token in USD (6 decimal)
-    uint256 public bondPrice = 10**6; // 1 USD to 1 Bond by default
-
-    ///@notice Address of storage token
-    address public targetToken;
-
-    ///@notice Address of Price oracle
-    UniswapAnchoredView internal priceOracle;
+    ///@notice Price Bond token
+    uint256 public bondPrice = 1000000;
 
     ///@notice Address of UniswapV2Router
     IUniswapV2Router02 internal uniswapRouter;
@@ -39,20 +37,17 @@ contract Investment is Ownable {
     event Withdrawal(address recipient, address token, uint256 amount);
 
     /**
-     * @param _targetToken Address of storage token
+     * @param _cumulative Address of cumulative token
      * @param _bond Address of Bond token
-     * @param _priceOracle Address of Price oracle
      * @param _uniswapRouter Address of UniswapV2Router
      */
     constructor(
-        address _targetToken,
+        address _cumulative,
         address _bond,
-        address _priceOracle,
         address _uniswapRouter
     ) public {
-        targetToken = _targetToken;
+        cumulative = _cumulative;
         bond = Bond(_bond);
-        priceOracle = UniswapAnchoredView(_priceOracle);
         uniswapRouter = IUniswapV2Router02(_uniswapRouter);
     }
 
@@ -86,55 +81,59 @@ contract Investment is Ownable {
     }
 
     /**
-     * @notice Get price invested token by USD
-     * @param token Invested token smart contract
-     * @return Price invested token in USD
+     * @param token Invested token
+     * @return Pools for each consecutive pair of addresses must exist and have liquidity
      */
-    function priceUSD(address token) external view returns (uint256) {
-        require(token != address(0), "Investment::price: cannot use zero address");
-
-        string memory tokenName = IERC20(token).symbol();
-        uint256 tokenPriceUSD = priceOracle.price(tokenName);
-        require(tokenPriceUSD > 0, "Investment::price: invalid investable token price");
-
-        return tokenPriceUSD.mul(10**12);
+    function _path(address token) internal view returns (address[] memory) {
+        address[] memory path = new address[](3);
+        path[0] = token;
+        path[1] = uniswapRouter.WETH();
+        path[2] = cumulative;
+        return path;
     }
 
     /**
-     * @notice Get price invested token by Bond token
-     * @param token Invested token smart contract
-     * @return Price invested token by Bond token
-     */
-    function price(address token) external view returns (uint256) {
-        return this.priceUSD(token).mul(10**6).div(bondPrice);
-    }
-
-    /**
-     * @notice Exchanges invested tokens for bond
-     * @param token Invested token smart contract
+     * @param token Invested token
      * @param amount Invested amount
+     * @return Amount cumulative token after swap
      */
-    function invest(address token, uint256 amount) external {
+    function _amountOut(address token, uint256 amount) internal view returns (uint256) {
+        uint256[] memory amountsOut = uniswapRouter.getAmountsOut(amount, _path(token));
+        require(amountsOut.length == 3, "Investment::_amountOut: invalid amounts out length");
+
+        return amountsOut[2];
+    }
+
+    /**
+     * @param token Invested token
+     * @param amount Invested amount
+     * @return Amount bond token after swap
+     */
+    function price(address token, uint256 amount) external view returns (uint256) {
         require(investmentTokens[token], "Investment::price: invalid investable token");
 
-        uint256 reward = this.price(token);
-        require(bond.balanceOf(address(this)) >= reward, "Investment::invest: too much investment");
+        uint256 amountOut = _amountOut(token, amount);
+        uint256 decimals = IERC20(cumulative).decimals();
 
-        uint256 tokenPriceUSD = this.priceUSD(token);
-        uint256 targetTokenPriceUSD = this.priceUSD(targetToken);
+        return amountOut.mul(10**(18 - decimals)).mul(10**6).div(bondPrice).div(10**6);
+    }
 
-        IERC20 tokenContract = IERC20(token);
+    /**
+     * @notice Invest tokens to protocol
+     * @param token Invested token
+     * @param amount Invested amount
+     */
+    function invest(address token, uint256 amount) external returns (bool) {
+        IERC20(token).safeTransferFrom(msg.sender, address(this), amount);
 
-        tokenContract.transferFrom(msg.sender, address(this), amount);
-        require(tokenContract.approve(address(uniswapRouter), amount), "Investment::invest: swap token to target failed");
-        address[] memory path = new address[](2);
-        path[0] = token;
-        path[1] = targetToken;
-        uniswapRouter.swapExactTokensForTokens(amount, amount.mul(tokenPriceUSD.div(targetTokenPriceUSD)), path, address(this), block.timestamp);
+        IERC20(token).safeApprove(address(uniswapRouter), amount);
+        uniswapRouter.swapExactTokensForTokens(amount, _amountOut(token, amount), _path(token), address(this), block.timestamp);
 
+        uint256 reward = this.price(token, amount);
         bond.transferLock(msg.sender, reward);
 
         emit Invested(msg.sender, token, amount, reward);
+        return true;
     }
 
     /**
@@ -144,10 +143,9 @@ contract Investment is Ownable {
     function withdraw(address recipient) external onlyOwner {
         require(recipient != address(0), "Investment::withdraw: cannot transfer to the zero address");
 
-        IERC20 targetTokenContract = IERC20(targetToken);
+        uint256 balance = IERC20(cumulative).balanceOf(address(this));
+        IERC20(cumulative).safeTransfer(recipient, balance);
 
-        uint256 balance = targetTokenContract.balanceOf(address(this));
-        targetTokenContract.transfer(recipient, balance);
-        emit Withdrawal(recipient, targetToken, balance);
+        emit Withdrawal(recipient, address(cumulative), balance);
     }
 }
