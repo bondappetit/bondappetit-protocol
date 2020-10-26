@@ -5,5 +5,10 @@
   ],
   "assets": [
     {"path": "build/contracts/Bond.json", "symbol": "BOND", "decimals": 18}
+  ],
+  "abi": [
+    {"path": "build/contracts/IERC20.json"},
+    {"path": "build/contracts/GovernorAlpha.json"},
+    {"path": "build/contracts/Investment.json"}
   ]
 }
