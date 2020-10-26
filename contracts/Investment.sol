@@ -17,6 +17,8 @@ contract Investment is Ownable {
     ///@notice Address of Bond token
     Bond public bond;
 
+    uint8 internal constant BOND_PRICE_DECIMALS = 6;
+
     ///@notice Price Bond token
     uint256 public bondPrice = 1000000;
 
@@ -115,7 +117,7 @@ contract Investment is Ownable {
         uint256 amountOut = _amountOut(token, amount);
         uint256 decimals = IERC20(cumulative).decimals();
 
-        return amountOut.mul(10**(18 - decimals)).mul(10**6).div(bondPrice).div(10**6);
+        return amountOut.mul(10**(18 - decimals + BOND_PRICE_DECIMALS)).div(bondPrice);
     }
 
     /**
@@ -124,12 +126,14 @@ contract Investment is Ownable {
      * @param amount Invested amount
      */
     function invest(address token, uint256 amount) external returns (bool) {
+        uint256 reward = this.price(token, amount);
+        require(reward != 0, "Investment::invest: liquidity pool is empty");
+
         IERC20(token).safeTransferFrom(msg.sender, address(this), amount);
 
         IERC20(token).safeApprove(address(uniswapRouter), amount);
         uniswapRouter.swapExactTokensForTokens(amount, _amountOut(token, amount), _path(token), address(this), block.timestamp);
 
-        uint256 reward = this.price(token, amount);
         bond.transferLock(msg.sender, reward);
 
         emit Invested(msg.sender, token, amount, reward);
