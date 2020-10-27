@@ -1060,6 +1060,21 @@ module.exports = {
             },
             {
                 "constant": false,
+                "inputs": [],
+                "name": "investETH",
+                "outputs": [
+                    {
+                        "internalType": "bool",
+                        "name": "",
+                        "type": "bool"
+                    }
+                ],
+                "payable": true,
+                "stateMutability": "payable",
+                "type": "function"
+            },
+            {
+                "constant": false,
                 "inputs": [
                     {
                         "internalType": "address",

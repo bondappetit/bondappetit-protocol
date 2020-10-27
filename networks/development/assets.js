@@ -17,4 +17,10 @@ module.exports = {
     symbol: "USDC",
     decimals: 6,
   },
+  WETH: {
+    address: "0xc778417E063141139Fce010982780140Aa0cD5Ab",
+    name: "Wrapped Ether",
+    symbol: "WETH",
+    decimals: 18,
+  },
 };

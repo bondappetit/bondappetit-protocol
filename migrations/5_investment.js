@@ -6,10 +6,10 @@ const Investment = artifacts.require("Investment");
 module.exports = async (deployer, network) => {
   const {
     accounts: {Governor},
-    assets: {USDC, USDT, DAI},
+    assets: {USDC, USDT, DAI, WETH},
     contracts: {UniswapV2Router02},
   } = networks[network];
-  const investmentTokens = [USDT.address, USDC.address, DAI.address];
+  const investmentTokens = [USDT.address, USDC.address, DAI.address, WETH.address];
 
   await deployer.deploy(
     Investment,

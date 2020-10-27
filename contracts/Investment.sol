@@ -87,9 +87,17 @@ contract Investment is Ownable {
      * @return Pools for each consecutive pair of addresses must exist and have liquidity
      */
     function _path(address token) internal view returns (address[] memory) {
+        address weth = uniswapRouter.WETH();
+        if (weth == token) {
+            address[] memory path = new address[](2);
+            path[0] = token;
+            path[1] = cumulative;
+            return path;
+        }
+
         address[] memory path = new address[](3);
         path[0] = token;
-        path[1] = uniswapRouter.WETH();
+        path[1] = weth;
         path[2] = cumulative;
         return path;
     }
@@ -101,9 +109,9 @@ contract Investment is Ownable {
      */
     function _amountOut(address token, uint256 amount) internal view returns (uint256) {
         uint256[] memory amountsOut = uniswapRouter.getAmountsOut(amount, _path(token));
-        require(amountsOut.length == 3, "Investment::_amountOut: invalid amounts out length");
+        require(amountsOut.length != 0, "Investment::_amountOut: invalid amounts out length");
 
-        return amountsOut[2];
+        return amountsOut[amountsOut.length - 1];
     }
 
     /**
@@ -131,12 +139,33 @@ contract Investment is Ownable {
 
         IERC20(token).safeTransferFrom(msg.sender, address(this), amount);
 
-        IERC20(token).safeApprove(address(uniswapRouter), amount);
-        uniswapRouter.swapExactTokensForTokens(amount, _amountOut(token, amount), _path(token), address(this), block.timestamp);
+        if (token != cumulative) {
+            IERC20(token).safeApprove(address(uniswapRouter), amount);
+            uniswapRouter.swapExactTokensForTokens(amount, _amountOut(token, amount), _path(token), address(this), block.timestamp);
+        }
 
         bond.transferLock(msg.sender, reward);
 
         emit Invested(msg.sender, token, amount, reward);
+        return true;
+    }
+
+    /**
+     * @notice Invest ETH to protocol
+     */
+    function investETH() external payable returns (bool) {
+        address token = uniswapRouter.WETH();
+
+        uint256 reward = this.price(token, msg.value);
+        require(reward != 0, "Investment::investETH: liquidity pool is empty");
+
+        if (token != cumulative) {
+            uniswapRouter.swapExactETHForTokens.value(msg.value)(_amountOut(token, msg.value), _path(token), address(this), block.timestamp);
+        }
+
+        bond.transferLock(msg.sender, reward);
+
+        emit Invested(msg.sender, token, msg.value, reward);
         return true;
     }
 
