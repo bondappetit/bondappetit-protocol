@@ -1,7 +1,7 @@
 const Bond = artifacts.require("Bond");
 const {utils} = require("web3");
 
-contract("Bond.transfer", (accounts) => {
+contract("Bond", (accounts) => {
   const [accA, accB] = accounts;
 
   it("transfer: should transfer token", async () => {

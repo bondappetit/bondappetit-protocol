@@ -18,7 +18,6 @@
                     "type": "address"
                 }
             ],
-            "payable": false,
             "stateMutability": "nonpayable",
             "type": "constructor"
         },
@@ -160,7 +159,6 @@
             "type": "event"
         },
         {
-            "constant": true,
             "inputs": [],
             "name": "BALLOT_TYPEHASH",
             "outputs": [
@@ -170,12 +168,11 @@
                     "type": "bytes32"
                 }
             ],
-            "payable": false,
             "stateMutability": "view",
-            "type": "function"
+            "type": "function",
+            "constant": true
         },
         {
-            "constant": true,
             "inputs": [],
             "name": "DOMAIN_TYPEHASH",
             "outputs": [
@@ -185,12 +182,11 @@
                     "type": "bytes32"
                 }
             ],
-            "payable": false,
             "stateMutability": "view",
-            "type": "function"
+            "type": "function",
+            "constant": true
         },
         {
-            "constant": true,
             "inputs": [],
             "name": "bond",
             "outputs": [
@@ -200,12 +196,11 @@
                     "type": "address"
                 }
             ],
-            "payable": false,
             "stateMutability": "view",
-            "type": "function"
+            "type": "function",
+            "constant": true
         },
         {
-            "constant": true,
             "inputs": [],
             "name": "guardian",
             "outputs": [
@@ -215,12 +210,11 @@
                     "type": "address"
                 }
             ],
-            "payable": false,
             "stateMutability": "view",
-            "type": "function"
+            "type": "function",
+            "constant": true
         },
         {
-            "constant": true,
             "inputs": [
                 {
                     "internalType": "address",
@@ -236,12 +230,11 @@
                     "type": "uint256"
                 }
             ],
-            "payable": false,
             "stateMutability": "view",
-            "type": "function"
+            "type": "function",
+            "constant": true
         },
         {
-            "constant": true,
             "inputs": [],
             "name": "name",
             "outputs": [
@@ -251,12 +244,11 @@
                     "type": "string"
                 }
             ],
-            "payable": false,
             "stateMutability": "view",
-            "type": "function"
+            "type": "function",
+            "constant": true
         },
         {
-            "constant": true,
             "inputs": [],
             "name": "proposalCount",
             "outputs": [
@@ -266,12 +258,11 @@
                     "type": "uint256"
                 }
             ],
-            "payable": false,
             "stateMutability": "view",
-            "type": "function"
+            "type": "function",
+            "constant": true
         },
         {
-            "constant": true,
             "inputs": [
                 {
                     "internalType": "uint256",
@@ -327,12 +318,11 @@
                     "type": "bool"
                 }
             ],
-            "payable": false,
             "stateMutability": "view",
-            "type": "function"
+            "type": "function",
+            "constant": true
         },
         {
-            "constant": true,
             "inputs": [],
             "name": "timelock",
             "outputs": [
@@ -342,12 +332,11 @@
                     "type": "address"
                 }
             ],
-            "payable": false,
             "stateMutability": "view",
-            "type": "function"
+            "type": "function",
+            "constant": true
         },
         {
-            "constant": true,
             "inputs": [],
             "name": "quorumVotes",
             "outputs": [
@@ -357,12 +346,11 @@
                     "type": "uint256"
                 }
             ],
-            "payable": false,
             "stateMutability": "pure",
-            "type": "function"
+            "type": "function",
+            "constant": true
         },
         {
-            "constant": true,
             "inputs": [],
             "name": "proposalThreshold",
             "outputs": [
@@ -372,12 +360,11 @@
                     "type": "uint256"
                 }
             ],
-            "payable": false,
             "stateMutability": "pure",
-            "type": "function"
+            "type": "function",
+            "constant": true
         },
         {
-            "constant": true,
             "inputs": [],
             "name": "proposalMaxOperations",
             "outputs": [
@@ -387,12 +374,11 @@
                     "type": "uint256"
                 }
             ],
-            "payable": false,
             "stateMutability": "pure",
-            "type": "function"
+            "type": "function",
+            "constant": true
         },
         {
-            "constant": true,
             "inputs": [],
             "name": "votingDelay",
             "outputs": [
@@ -402,12 +388,11 @@
                     "type": "uint256"
                 }
             ],
-            "payable": false,
             "stateMutability": "pure",
-            "type": "function"
+            "type": "function",
+            "constant": true
         },
         {
-            "constant": true,
             "inputs": [],
             "name": "votingPeriod",
             "outputs": [
@@ -417,12 +402,11 @@
                     "type": "uint256"
                 }
             ],
-            "payable": false,
             "stateMutability": "pure",
-            "type": "function"
+            "type": "function",
+            "constant": true
         },
         {
-            "constant": false,
             "inputs": [
                 {
                     "internalType": "address[]",
@@ -458,12 +442,10 @@
                     "type": "uint256"
                 }
             ],
-            "payable": false,
             "stateMutability": "nonpayable",
             "type": "function"
         },
         {
-            "constant": false,
             "inputs": [
                 {
                     "internalType": "uint256",
@@ -473,12 +455,10 @@
             ],
             "name": "queue",
             "outputs": [],
-            "payable": false,
             "stateMutability": "nonpayable",
             "type": "function"
         },
         {
-            "constant": false,
             "inputs": [
                 {
                     "internalType": "uint256",
@@ -488,12 +468,11 @@
             ],
             "name": "execute",
             "outputs": [],
-            "payable": true,
             "stateMutability": "payable",
-            "type": "function"
+            "type": "function",
+            "payable": true
         },
         {
-            "constant": false,
             "inputs": [
                 {
                     "internalType": "uint256",
@@ -503,12 +482,10 @@
             ],
             "name": "cancel",
             "outputs": [],
-            "payable": false,
             "stateMutability": "nonpayable",
             "type": "function"
         },
         {
-            "constant": true,
             "inputs": [
                 {
                     "internalType": "uint256",
@@ -539,12 +516,11 @@
                     "type": "bytes[]"
                 }
             ],
-            "payable": false,
             "stateMutability": "view",
-            "type": "function"
+            "type": "function",
+            "constant": true
         },
         {
-            "constant": true,
             "inputs": [
                 {
                     "internalType": "uint256",
@@ -582,12 +558,11 @@
                     "type": "tuple"
                 }
             ],
-            "payable": false,
             "stateMutability": "view",
-            "type": "function"
+            "type": "function",
+            "constant": true
         },
         {
-            "constant": true,
             "inputs": [
                 {
                     "internalType": "uint256",
@@ -603,12 +578,11 @@
                     "type": "uint8"
                 }
             ],
-            "payable": false,
             "stateMutability": "view",
-            "type": "function"
+            "type": "function",
+            "constant": true
         },
         {
-            "constant": false,
             "inputs": [
                 {
                     "internalType": "uint256",
@@ -623,12 +597,10 @@
             ],
             "name": "castVote",
             "outputs": [],
-            "payable": false,
             "stateMutability": "nonpayable",
             "type": "function"
         },
         {
-            "constant": false,
             "inputs": [
                 {
                     "internalType": "uint256",
@@ -658,30 +630,24 @@
             ],
             "name": "castVoteBySig",
             "outputs": [],
-            "payable": false,
             "stateMutability": "nonpayable",
             "type": "function"
         },
         {
-            "constant": false,
             "inputs": [],
             "name": "__acceptAdmin",
             "outputs": [],
-            "payable": false,
             "stateMutability": "nonpayable",
             "type": "function"
         },
         {
-            "constant": false,
             "inputs": [],
             "name": "__abdicate",
             "outputs": [],
-            "payable": false,
             "stateMutability": "nonpayable",
             "type": "function"
         },
         {
-            "constant": false,
             "inputs": [
                 {
                     "internalType": "address",
@@ -696,12 +662,10 @@
             ],
             "name": "__queueSetTimelockPendingAdmin",
             "outputs": [],
-            "payable": false,
             "stateMutability": "nonpayable",
             "type": "function"
         },
         {
-            "constant": false,
             "inputs": [
                 {
                     "internalType": "address",
@@ -716,7 +680,6 @@
             ],
             "name": "__executeSetTimelockPendingAdmin",
             "outputs": [],
-            "payable": false,
             "stateMutability": "nonpayable",
             "type": "function"
         }

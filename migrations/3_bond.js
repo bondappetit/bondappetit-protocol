@@ -1,6 +1,6 @@
 const networks = require("../networks");
 const Bond = artifacts.require("Bond");
-const dayjs = require("dayjs");
+const Timelock = artifacts.require("Timelock");
 
 module.exports = async (deployer, network) => {
   const {
@@ -9,7 +9,11 @@ module.exports = async (deployer, network) => {
 
   await deployer.deploy(
     Bond,
-    Governor.address,
-    dayjs().add(18, "month").unix() // Unlocking after 18 months
+    Governor.address
   );
+
+  const bond = await Bond.deployed();
+  if (network !== "development") {
+    await bond.transferOwnership(Timelock.address);
+  }
 };

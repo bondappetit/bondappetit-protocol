@@ -14,4 +14,7 @@ module.exports = async (deployer, network) => {
     Bond.address,
     Governor.address
   );
+
+  const timelock = await Timelock.deployed();
+  await timelock.__transferAdmin(GovernorAlpha.address, {from: Governor.address});
 };

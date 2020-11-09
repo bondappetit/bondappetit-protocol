@@ -1,4 +1,5 @@
 module.exports = {
+  networkId: 3,
   accounts: {
     ...require("./accounts"),
   },

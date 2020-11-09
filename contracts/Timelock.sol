@@ -1,6 +1,7 @@
-pragma solidity 0.5.17;
+// SPDX-License-Identifier: MIT
+pragma solidity ^0.6.0;
 
-import "./SafeMath.sol";
+import "@openzeppelin/contracts/math/SafeMath.sol";
 
 contract Timelock {
     using SafeMath for uint256;
@@ -30,7 +31,7 @@ contract Timelock {
         delay = delay_;
     }
 
-    function() external payable {}
+    receive() external payable {}
 
     function setDelay(uint256 delay_) public {
         require(msg.sender == address(this), "Timelock::setDelay: Call must come from Timelock.");
@@ -54,6 +55,13 @@ contract Timelock {
         pendingAdmin = pendingAdmin_;
 
         emit NewPendingAdmin(pendingAdmin);
+    }
+
+    function __transferAdmin(address _newAdmin) public {
+        require(msg.sender == admin, "Timelock::__transferAdmin: caller is not the admin");
+        admin = _newAdmin;
+
+        emit NewAdmin(admin);
     }
 
     function queueTransaction(
@@ -112,7 +120,7 @@ contract Timelock {
             callData = abi.encodePacked(bytes4(keccak256(bytes(signature))), data);
         }
 
-        (bool success, bytes memory returnData) = target.call.value(value)(callData);
+        (bool success, bytes memory returnData) = target.call{value: value}(callData);
         require(success, "Timelock::executeTransaction: Transaction execution reverted.");
 
         emit ExecuteTransaction(txHash, target, value, signature, data, eta);

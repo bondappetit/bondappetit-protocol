@@ -1,13 +1,28 @@
 {
   "contracts": [
+    {"path": "build/contracts/Bond.json"},
+    {"path": "build/contracts/Timelock.json"},
     {"path": "build/contracts/GovernorAlpha.json"},
     {"path": "build/contracts/Investment.json"}
   ],
   "assets": [
-    {"path": "build/contracts/Bond.json", "symbol": "BOND", "decimals": 18}
+    {
+      "path": "build/contracts/Bond.json",
+      "symbol": "BOND",
+      "decimals": 18,
+      "investing": false
+    },
+    {
+      "path": "build/contracts/ABT.json",
+      "symbol": "ABT",
+      "decimals": 18,
+      "investing": false
+    }
   ],
   "abi": [
     {"path": "build/contracts/IERC20.json"},
+    {"path": "build/contracts/Bond.json"},
+    {"path": "build/contracts/ABT.json"},
     {"path": "build/contracts/GovernorAlpha.json"},
     {"path": "build/contracts/Investment.json"}
   ]

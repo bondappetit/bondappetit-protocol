@@ -1,31 +1,44 @@
-pragma solidity 0.5.17;
+// SPDX-License-Identifier: MIT
+pragma solidity ^0.6.0;
 
-import "./token/IERC20.sol";
+import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
+import "@openzeppelin/contracts/math/SafeMath.sol";
+import "@openzeppelin/contracts/access/Ownable.sol";
+import "@openzeppelin/contracts/utils/EnumerableSet.sol";
 
-contract Bond is IERC20 {
+contract Bond is IERC20, Ownable {
+    using SafeMath for uint256;
+    using EnumerableSet for EnumerableSet.AddressSet;
+
     /// @notice EIP-20 token name for this token
-    string public constant name = "Bond";
+    string public name = "Bond";
 
     /// @notice EIP-20 token symbol for this token
-    string public constant symbol = "BOND";
+    string public symbol = "BOND";
 
     /// @notice EIP-20 token decimals for this token
-    uint8 public constant decimals = 18;
+    uint8 public decimals = 18;
 
     /// @notice Total number of tokens in circulation
-    uint256 public constant totalSupply = 10000000e18; // 10 million Bond
+    uint256 public override totalSupply = 10000000e18; // 10 million Bond
 
-    /// @notice Allowance amounts on behalf of others
+    /// @dev Allowance amounts on behalf of others
     mapping(address => mapping(address => uint96)) internal allowances;
 
-    /// @notice Official record of token balances for each account
+    /// @dev Official record of token balances for each account
     mapping(address => uint96) internal balances;
 
-    /// @notice Date of locking amounts
-    uint256 public unlockingDate;
+    /// @notice Amount of blocked token
+    struct Lock {
+        uint96 amount;
+        uint256 date;
+    }
 
     /// @notice Locking amounts
-    mapping(address => uint96) internal locking;
+    mapping(address => Lock) public locking;
+
+    /// @dev Locking amounts
+    EnumerableSet.AddressSet internal lockingAllowed;
 
     /// @notice A record of each accounts delegate
     mapping(address => address) public delegates;
@@ -66,11 +79,9 @@ contract Bond is IERC20 {
     /**
      * @notice Construct a new Bond token
      * @param account The initial account to grant all the tokens
-     * @param _unlockingDate Date of locking amounts by seconds
      */
-    constructor(address account, uint256 _unlockingDate) public {
+    constructor(address account) public {
         balances[account] = uint96(totalSupply);
-        unlockingDate = _unlockingDate;
         emit Transfer(address(0), account, totalSupply);
     }
 
@@ -80,7 +91,7 @@ contract Bond is IERC20 {
      * @param spender The address of the account spending the funds
      * @return The number of tokens approved
      */
-    function allowance(address account, address spender) external view returns (uint256) {
+    function allowance(address account, address spender) external override view returns (uint256) {
         return allowances[account][spender];
     }
 
@@ -92,7 +103,7 @@ contract Bond is IERC20 {
      * @param rawAmount The number of tokens that are approved (2^256-1 means infinite)
      * @return Whether or not the approval succeeded
      */
-    function approve(address spender, uint256 rawAmount) external returns (bool) {
+    function approve(address spender, uint256 rawAmount) external override returns (bool) {
         uint96 amount;
         if (rawAmount == uint256(-1)) {
             amount = uint96(-1);
@@ -111,7 +122,7 @@ contract Bond is IERC20 {
      * @param account The address of the account to get the balance of
      * @return The number of tokens held
      */
-    function balanceOf(address account) external view returns (uint256) {
+    function balanceOf(address account) external override view returns (uint256) {
         return balances[account];
     }
 
@@ -121,7 +132,7 @@ contract Bond is IERC20 {
      * @param rawAmount The number of tokens to transfer
      * @return Whether or not the transfer succeeded
      */
-    function transfer(address dst, uint256 rawAmount) external returns (bool) {
+    function transfer(address dst, uint256 rawAmount) external override returns (bool) {
         uint96 amount = safe96(rawAmount, "Bond::transfer: amount exceeds 96 bits");
         _transferTokens(msg.sender, dst, amount);
         return true;
@@ -138,7 +149,7 @@ contract Bond is IERC20 {
         address src,
         address dst,
         uint256 rawAmount
-    ) external returns (bool) {
+    ) external override returns (bool) {
         address spender = msg.sender;
         uint96 spenderAllowance = allowances[src][spender];
         uint96 amount = safe96(rawAmount, "Bond::approve: amount exceeds 96 bits");
@@ -154,13 +165,50 @@ contract Bond is IERC20 {
         return true;
     }
 
-    function transferLock(address dst, uint256 rawAmount) external returns (bool) {
-        require(unlockingDate > block.timestamp, "Bond::transferLock: lock period ended");
+    /**
+     * @notice Add account to transfer lock method allowed list
+     * @param account Allowable account
+     */
+    function allowTransferLock(address account) external onlyOwner returns (bool) {
+        return lockingAllowed.add(account);
+    }
+
+    /**
+     * @notice Remove account from transfer lock method allowed list
+     * @param account Denied account
+     */
+    function denyTransferLock(address account) external onlyOwner returns (bool) {
+        return lockingAllowed.remove(account);
+    }
+
+    function transferLock(address dst, uint256 rawAmount, uint256 date) external returns (bool) {
+        require(lockingAllowed.contains(msg.sender), "Bond::transferLock: access is denied");
+        require(locking[dst].date == 0 || locking[dst].date == date, "Bond::transferLock: lock date cannot be changed");
         uint96 amount = safe96(rawAmount, "Bond::transferLock: amount exceeds 96 bits");
 
-        locking[dst] = add96(locking[dst], amount, "Bond::transferLock: transfer amount overflows");
+        locking[dst].date = date;
+        locking[dst].amount = add96(locking[dst].amount, amount, "Bond::transferLock: transfer amount overflows");
         _transferTokens(msg.sender, dst, amount);
         return true;
+    }
+
+    /**
+     * @notice Creates `amount` tokens and assigns them to `account`, increasing
+     * the total supply.
+     * 
+     * @param account Recipient of created token.
+     * @param amount Amount of token to be created.
+     */
+    function mint(address account, uint256 amount) public onlyOwner {
+        _mint(account, amount);
+    }
+
+    /**
+     * @param account Owner of removed token.
+     * @param amount Amount of token to be removed.
+     */
+    function burn(address account, uint256 amount) public onlyOwner {
+        _burn(account, amount);
     }
 
     /**
@@ -268,8 +316,8 @@ contract Bond is IERC20 {
         require(dst != address(0), "Bond::_transferTokens: cannot transfer to the zero address");
 
         balances[src] = sub96(balances[src], amount, "Bond::_transferTokens: transfer amount exceeds balance");
-        if (unlockingDate > block.timestamp && locking[src] > 0 && balances[src] < locking[src]) {
-            revert("Bond::unlockingTransfer: amount are locked");
+        if (locking[src].date > block.timestamp && locking[src].amount > 0 && balances[src] < locking[src].amount) {
+            revert("Bond::_transferTokens: amount are locked");
         }
         balances[dst] = add96(balances[dst], amount, "Bond::_transferTokens: transfer amount overflows");
         emit Transfer(src, dst, amount);
@@ -317,6 +365,44 @@ contract Bond is IERC20 {
         emit DelegateVotesChanged(delegatee, oldVotes, newVotes);
     }
 
+    /** @dev Creates `amount` tokens and assigns them to `account`, increasing
+     * the total supply.
+     *
+     * Emits a {Transfer} event with `from` set to the zero address.
+
+     * Requirements
+     *
+     * - `to` cannot be the zero address.
+     */
+    function _mint(address account, uint256 rawAmount) internal virtual {
+        require(account != address(0), "Bond::_mint: mint to the zero address");
+        uint96 amount = safe96(rawAmount, "Bond::_mint: amount exceeds 96 bits");
+
+        totalSupply = totalSupply.add(rawAmount);
+        balances[account] = add96(balances[account], amount, "Bond::_mint: mint amount overflows");
+        emit Transfer(address(0), account, amount);
+    }
+
+    /**
+     * @dev Destroys `amount` tokens from `account`, reducing the
+     * total supply.
+     *
+     * Emits a {Transfer} event with `to` set to the zero address.
+     *
+     * Requirements
+     *
+     * - `account` cannot be the zero address.
+     * - `account` must have at least `amount` tokens.
+     */
+    function _burn(address account, uint256 rawAmount) internal virtual {
+        require(account != address(0), "Bond::_burn: burn from the zero address");
+        uint96 amount = safe96(rawAmount, "Bond::_burn: amount exceeds 96 bits");
+
+        balances[account] = sub96(balances[account], amount, "ERC20: burn amount exceeds balance");
+        totalSupply = totalSupply.sub(rawAmount);
+        emit Transfer(account, address(0), amount);
+    }
+
     function safe32(uint256 n, string memory errorMessage) internal pure returns (uint32) {
         require(n < 2**32, errorMessage);
         return uint32(n);
@@ -348,6 +434,7 @@ contract Bond is IERC20 {
 
     function getChainId() internal pure returns (uint256) {
         uint256 chainId;
+
         assembly {
             chainId := chainid()
         }

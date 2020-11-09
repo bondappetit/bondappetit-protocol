@@ -1,36 +1,40 @@
-pragma solidity 0.5.17;
+// SPDX-License-Identifier: MIT
+pragma solidity ^0.6.0;
 
-import "./token/IERC20.sol";
-import "./access/Ownable.sol";
-import "./SafeMath.sol";
-import "./token/SafeERC20.sol";
+import "@openzeppelin/contracts/token/ERC20/ERC20.sol";
+import "@openzeppelin/contracts/token/ERC20/SafeERC20.sol";
+import "@openzeppelin/contracts/math/SafeMath.sol";
+import "@openzeppelin/contracts/access/Ownable.sol";
 import "./uniswap/IUniswapV2Router02.sol";
 import "./Bond.sol";
 
 contract Investment is Ownable {
     using SafeMath for uint256;
-    using SafeERC20 for IERC20;
+    using SafeERC20 for ERC20;
 
     ///@notice Address of cumulative token
-    address public cumulative;
+    ERC20 public cumulative;
 
     ///@notice Address of Bond token
     Bond public bond;
+
+    ///@notice Date of locking bond token
+    uint256 public bondTokenLockDate;
 
     uint8 internal constant BOND_PRICE_DECIMALS = 6;
 
     ///@notice Price Bond token
     uint256 public bondPrice = 1000000;
 
-    ///@notice Address of UniswapV2Router
+    ///@dev Address of UniswapV2Router
     IUniswapV2Router02 internal uniswapRouter;
 
     ///@notice Investment tokens list
     mapping(address => bool) public investmentTokens;
 
-    event Allowed(address token);
+    event InvestTokenAllowed(address token);
 
-    event Denied(address token);
+    event InvestTokenDenied(address token);
 
     event BondPriceChanged(uint256 newPrice);
 
@@ -46,10 +50,12 @@ contract Investment is Ownable {
     constructor(
         address _cumulative,
         address _bond,
+        uint256 _bondTokenLockDate,
         address _uniswapRouter
     ) public {
-        cumulative = _cumulative;
+        cumulative = ERC20(_cumulative);
         bond = Bond(_bond);
+        bondTokenLockDate = _bondTokenLockDate;
         uniswapRouter = IUniswapV2Router02(_uniswapRouter);
     }
 
@@ -59,7 +65,7 @@ contract Investment is Ownable {
      */
     function allowToken(address token) external onlyOwner {
         investmentTokens[token] = true;
-        emit Allowed(token);
+        emit InvestTokenAllowed(token);
     }
 
     /**
@@ -68,7 +74,7 @@ contract Investment is Ownable {
      */
     function denyToken(address token) external onlyOwner {
         investmentTokens[token] = false;
-        emit Denied(token);
+        emit InvestTokenDenied(token);
     }
 
     /**
@@ -91,14 +97,14 @@ contract Investment is Ownable {
         if (weth == token) {
             address[] memory path = new address[](2);
             path[0] = token;
-            path[1] = cumulative;
+            path[1] = address(cumulative);
             return path;
         }
 
         address[] memory path = new address[](3);
         path[0] = token;
         path[1] = weth;
-        path[2] = cumulative;
+        path[2] = address(cumulative);
         return path;
     }
 
@@ -115,6 +121,16 @@ contract Investment is Ownable {
     }
 
     /**
+     * @param amount Cumulative amount invested
+     * @return Amount bond token after swap
+     */
+    function _bondPrice(uint256 amount) internal view returns (uint256) {
+        uint256 decimals = cumulative.decimals();
+
+        return amount.mul(10**(18 - decimals + BOND_PRICE_DECIMALS)).div(bondPrice);
+    }
+
+    /**
      * @param token Invested token
      * @param amount Invested amount
      * @return Amount bond token after swap
@@ -122,10 +138,7 @@ contract Investment is Ownable {
     function price(address token, uint256 amount) external view returns (uint256) {
         require(investmentTokens[token], "Investment::price: invalid investable token");
 
-        uint256 amountOut = _amountOut(token, amount);
-        uint256 decimals = IERC20(cumulative).decimals();
-
-        return amountOut.mul(10**(18 - decimals + BOND_PRICE_DECIMALS)).div(bondPrice);
+        return _bondPrice(_amountOut(token, amount));
     }
 
     /**
@@ -134,17 +147,20 @@ contract Investment is Ownable {
      * @param amount Invested amount
      */
     function invest(address token, uint256 amount) external returns (bool) {
-        uint256 reward = this.price(token, amount);
-        require(reward != 0, "Investment::invest: liquidity pool is empty");
+        uint256 reward = _bondPrice(amount);
 
-        IERC20(token).safeTransferFrom(msg.sender, address(this), amount);
+        ERC20(token).safeTransferFrom(msg.sender, address(this), amount);
 
-        if (token != cumulative) {
-            IERC20(token).safeApprove(address(uniswapRouter), amount);
-            uniswapRouter.swapExactTokensForTokens(amount, _amountOut(token, amount), _path(token), address(this), block.timestamp);
+        if (token != address(cumulative)) {
+            uint256 amountOut = _amountOut(token, amount);
+            require(amountOut != 0, "Investment::invest: liquidity pool is empty");
+            reward = _bondPrice(amountOut);
+
+            ERC20(token).safeApprove(address(uniswapRouter), amount);
+            uniswapRouter.swapExactTokensForTokens(amount, amountOut, _path(token), address(this), block.timestamp);
         }
 
-        bond.transferLock(msg.sender, reward);
+        bond.transferLock(msg.sender, reward, bondTokenLockDate);
 
         emit Invested(msg.sender, token, amount, reward);
         return true;
@@ -155,15 +171,17 @@ contract Investment is Ownable {
      */
     function investETH() external payable returns (bool) {
         address token = uniswapRouter.WETH();
+        uint256 reward = _bondPrice(msg.value);
 
-        uint256 reward = this.price(token, msg.value);
-        require(reward != 0, "Investment::investETH: liquidity pool is empty");
+        if (token != address(cumulative)) {
+            uint256 amountOut = _amountOut(token, msg.value);
+            require(amountOut != 0, "Investment::invest: liquidity pool is empty");
+            reward = _bondPrice(amountOut);
 
-        if (token != cumulative) {
-            uniswapRouter.swapExactETHForTokens.value(msg.value)(_amountOut(token, msg.value), _path(token), address(this), block.timestamp);
+            uniswapRouter.swapExactETHForTokens{value: msg.value}(amountOut, _path(token), address(this), block.timestamp);
         }
 
-        bond.transferLock(msg.sender, reward);
+        bond.transferLock(msg.sender, reward, bondTokenLockDate);
 
         emit Invested(msg.sender, token, msg.value, reward);
         return true;
@@ -176,8 +194,8 @@ contract Investment is Ownable {
     function withdraw(address recipient) external onlyOwner {
         require(recipient != address(0), "Investment::withdraw: cannot transfer to the zero address");
 
-        uint256 balance = IERC20(cumulative).balanceOf(address(this));
-        IERC20(cumulative).safeTransfer(recipient, balance);
+        uint256 balance = cumulative.balanceOf(address(this));
+        cumulative.safeTransfer(recipient, balance);
 
         emit Withdrawal(recipient, address(cumulative), balance);
     }

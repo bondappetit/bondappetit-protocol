@@ -11,6 +11,7 @@ interface Account extends Named, Wallet {}
 interface Asset extends Named, Wallet {
   symbol: string;
   decimals: number;
+  investing: boolean;
 }
 
 interface Contract extends Named, Wallet {
@@ -22,6 +23,7 @@ interface Config<T> {
 }
 
 interface Network {
+  networkId: number;
   accounts: Config<Account>;
   assets: Config<Asset>;
   contracts: Config<Contract>;
