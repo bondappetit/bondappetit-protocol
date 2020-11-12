@@ -2,6 +2,7 @@ module.exports = {
     "Bond": {
         "address": "0x302b9dee61cd01F7A21D65c4C9c8fA76D675E3F0",
         "name": "Bond",
+        "voting": true,
         "abi": [
             {
                 "inputs": [
@@ -582,6 +583,7 @@ module.exports = {
     "GovernorAlpha": {
         "address": "0x5088416Bd301846CBEAb5453eFddb0d09fD04f21",
         "name": "GovernorAlpha",
+        "voting": true,
         "abi": [
             {
                 "inputs": [
@@ -1308,6 +1310,7 @@ module.exports = {
     "Investment": {
         "address": "0x9bb2Be2428FEFea73FEe0cB65424Efd5c4e9BC00",
         "name": "Investment",
+        "voting": true,
         "abi": [
             {
                 "inputs": [

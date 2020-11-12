@@ -34,7 +34,10 @@ async function writeJson(path, data) {
         investing,
       }))
     ),
-    Promise.all((config.contracts || []).map(({path}) => loadJson(path))),
+    Promise.all((config.contracts || []).map(async ({path, voting}) => ({
+      ...(await loadJson(path)),
+      voting,
+    }))),
     Promise.all((config.abi || []).map(({path}) => loadJson(path))),
   ]);
 
@@ -42,11 +45,12 @@ async function writeJson(path, data) {
     writeJs(
       `${out}/contracts.js`,
       contracts.reduce(
-        (result, {contractName: name, abi, networks}) => ({
+        (result, {contractName: name, abi, networks, voting}) => ({
           ...result,
           [name]: {
             address: networks[networkId].address,
             name,
+            voting,
             abi,
           },
         }),

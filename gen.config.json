@@ -1,9 +1,11 @@
 {
   "contracts": [
-    {"path": "build/contracts/Bond.json"},
-    {"path": "build/contracts/Timelock.json"},
+    {"path": "build/contracts/Bond.json", "voting": true},
+    {"path": "build/contracts/Timelock.json", "voting": true},
     {"path": "build/contracts/GovernorAlpha.json"},
-    {"path": "build/contracts/Investment.json"}
+    {"path": "build/contracts/Investment.json", "voting": true},
+    {"path": "build/contracts/Vesting.json", "voting": true},
+    {"path": "build/contracts/ABT.json", "voting": true}
   ],
   "assets": [
     {
