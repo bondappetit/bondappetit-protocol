@@ -1,0 +1,40 @@
+name: release
+
+on:
+  release:
+    types: [created]
+
+jobs:
+  npm-release:
+    strategy:
+      matrix:
+        platform: [ ubuntu-latest ]
+        node-version: [ 12.x ]
+    runs-on: ${{ matrix.platform }}
+
+    steps:
+      - name: Use Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v1
+        with:
+          node-version: ${{ matrix.node-version }}
+          registry-url: https://registry.npmjs.org/
+
+      - name: Download artifacts
+        uses: actions/download-artifact@v2
+        with:
+          name: networks-$GITHUB_REF-$GITHUB_SHA
+
+      - name: Publish npm
+        run: |
+          git config --global user.name 'Bondappetit CI'
+          git config --global user.email 'hello@bondappetit.io'
+          git clone https://github.com/bondappetit/networks.git ~/networks-npm
+          cp -r networks/* ~/networks-npm/
+          cd ~/networks-npm/
+          npm version ${{ github.event.release.tag_name }}
+          npm publish --access public
+          git add .
+          git commit -m "${{ github.event.release.tag_name }}"
+          git push https://${{ secrets.ACCESS_TOKEN }}@github.com/bondappetit/networks.git master
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
