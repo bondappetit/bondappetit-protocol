@@ -55,7 +55,5 @@ jobs:
     - name: Archive artifacts
       uses: actions/upload-artifact@v2
       with:
-        name: networks
-        path: |
-          networks
-          build
+        name: networks-$GITHUB_REF-$GITHUB_SHA
+        path: networks
