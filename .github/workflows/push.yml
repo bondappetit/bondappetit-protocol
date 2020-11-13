@@ -1,0 +1,51 @@
+name: build
+
+on:
+  push:
+    branches:
+      # long-lived branches
+      - master
+      - release
+
+  pull_request:
+    branches:
+      - "*"
+
+jobs:
+  build:
+    strategy:
+      matrix:
+        platform: [ubuntu-latest]
+        node-version: [10.x, 12.x, 14.x]
+        env: [MNENOMIC= ${{ secrets.MNENOMIC }}, INFURA_API_KEY= ${{ secrets.INFURA_API_KEY }} ]
+    runs-on: ${{ matrix.platform }}
+
+    steps:
+    - uses: actions/checkout@v2
+    - name: Use Node.js ${{ matrix.node-version }}
+      uses: actions/setup-node@v1
+      with:
+        node-version: ${{ matrix.node-version }}
+
+    - name: Install dependencies
+      run: npm ci
+
+    - name: npm build
+      run: npm run build
+
+    - name: npm ropsten:deploy
+      run: npm run ropsten:deploy
+
+    - name: npm ropsten:config-gen
+      run: npm run ropsten:config-gen
+
+    - name: npm test
+      run: npm run test
+
+    - name: Archive artifacts
+      uses: actions/upload-artifact@v2
+      with:
+        name: networks
+        path: |
+          networks
+          build
