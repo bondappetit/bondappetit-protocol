@@ -81,6 +81,7 @@ jobs:
           git config --global user.email 'hello@bondappetit.io'
           mkdir ~/networks-npm
           cp -r networks/* ~/networks-npm/
+          cd ~/networks-npm/
           npm version ${{ github.event.release.tag_name }}
           npm publish
         env:
