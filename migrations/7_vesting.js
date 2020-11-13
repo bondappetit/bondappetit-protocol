@@ -1,7 +1,7 @@
+const {delay} = require('./utils');
 const networks = require("../networks");
 const Bond = artifacts.require("Bond");
 const Vesting = artifacts.require("Vesting");
-const Timelock = artifacts.require("Timelock");
 const dayjs = require("dayjs");
 
 module.exports = async (deployer, network) => {
@@ -36,4 +36,6 @@ module.exports = async (deployer, network) => {
       })
     )
   );
+
+  if (network !== 'development') await delay(30000);
 };

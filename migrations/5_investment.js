@@ -1,7 +1,7 @@
+const {delay} = require('./utils');
 const bn = require("bn.js");
 const networks = require("../networks");
 const Bond = artifacts.require("Bond");
-const Timelock = artifacts.require("Timelock");
 const Investment = artifacts.require("Investment");
 const dayjs = require("dayjs");
 
@@ -38,4 +38,6 @@ module.exports = async (deployer, network) => {
     new bn(1200000).mul(new bn("1000000000000000000")).toString(),
     {from: Governor.address}
   );
+
+  if (network !== 'development') await delay(30000);
 };

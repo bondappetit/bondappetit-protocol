@@ -1,3 +1,4 @@
+const {delay} = require('./utils');
 const networks = require("../networks");
 const SafeMath = artifacts.require("SafeMath");
 const Timelock = artifacts.require("Timelock");
@@ -14,4 +15,6 @@ module.exports = async (deployer, network) => {
     Governor.address,
     2 * 24 * 60 * 60 // 2 days delay
   );
+
+  if (network !== 'development') await delay(30000);
 };

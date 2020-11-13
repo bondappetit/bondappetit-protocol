@@ -1,3 +1,4 @@
+const {delay} = require('./utils');
 const networks = require("../networks");
 const DepositaryOracle = artifacts.require("oracle/DepositaryOracle");
 const SecurityOracle = artifacts.require("oracle/SecurityOracle");
@@ -18,4 +19,6 @@ module.exports = async (deployer, network) => {
       from: Governor.address,
     }
   );
+
+  if (network !== 'development') await delay(30000);
 };

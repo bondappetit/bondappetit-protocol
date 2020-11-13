@@ -1,6 +1,6 @@
+const {delay} = require('./utils');
 const networks = require("../networks");
 const Bond = artifacts.require("Bond");
-const Timelock = artifacts.require("Timelock");
 
 module.exports = async (deployer, network) => {
   const {
@@ -11,4 +11,6 @@ module.exports = async (deployer, network) => {
     Bond,
     Governor.address
   );
+
+  if (network !== 'development') await delay(30000);
 };
