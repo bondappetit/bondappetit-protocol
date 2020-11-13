@@ -5,57 +5,7 @@ on:
     types: [created]
 
 jobs:
-#  build:
-#    strategy:
-#      matrix:
-#        platform: [ ubuntu-latest ]
-#        node-version: [ 12.x ]
-#    runs-on: ${{ matrix.platform }}
-#
-#    steps:
-#      - uses: actions/checkout@v2
-#      - name: Use Node.js ${{ matrix.node-version }}
-#        uses: actions/setup-node@v1
-#        with:
-#          node-version: ${{ matrix.node-version }}
-#
-#      - name: Install dependencies
-#        run: npm ci
-#
-#      - name: npm build
-#        run: npm run build
-#        env:
-#          MNENOMIC: ${{secrets.MNENOMIC}}
-#          INFURA_API_KEY: ${{secrets.INFURA_API_KEY}}
-#
-#      - name: npm ropsten:deploy
-#        run: npm run ropsten:deploy
-#        env:
-#          MNENOMIC: ${{secrets.MNENOMIC}}
-#          INFURA_API_KEY: ${{secrets.INFURA_API_KEY}}
-#
-#      - name: npm ropsten:config-gen
-#        run: npm run ropsten:config-gen
-#        env:
-#          MNENOMIC: ${{secrets.MNENOMIC}}
-#          INFURA_API_KEY: ${{secrets.INFURA_API_KEY}}
-#
-#      - name: npm test
-#        run: npm run test
-#        env:
-#          MNENOMIC: ${{secrets.MNENOMIC}}
-#          INFURA_API_KEY: ${{secrets.INFURA_API_KEY}}
-#
-#      - name: Archive artifacts
-#        uses: actions/upload-artifact@v2
-#        with:
-#          name: networks
-#          path: |
-#            networks
-#            build
-
-  publish:
-#    needs: build
+  build:
     strategy:
       matrix:
         platform: [ ubuntu-latest ]
@@ -68,14 +18,63 @@ jobs:
         uses: actions/setup-node@v1
         with:
           node-version: ${{ matrix.node-version }}
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: npm build
+        run: npm run build
+        env:
+          MNENOMIC: ${{secrets.MNENOMIC}}
+          INFURA_API_KEY: ${{secrets.INFURA_API_KEY}}
+
+      - name: npm ropsten:deploy
+        run: npm run ropsten:deploy
+        env:
+          MNENOMIC: ${{secrets.MNENOMIC}}
+          INFURA_API_KEY: ${{secrets.INFURA_API_KEY}}
+
+      - name: npm ropsten:config-gen
+        run: npm run ropsten:config-gen
+        env:
+          MNENOMIC: ${{secrets.MNENOMIC}}
+          INFURA_API_KEY: ${{secrets.INFURA_API_KEY}}
+
+      - name: npm test
+        run: npm run test
+        env:
+          MNENOMIC: ${{secrets.MNENOMIC}}
+          INFURA_API_KEY: ${{secrets.INFURA_API_KEY}}
+
+      - name: Archive artifacts
+        uses: actions/upload-artifact@v2
+        with:
+          name: networks
+          path: |
+            networks
+            build
+
+  publish:
+    needs: build
+    strategy:
+      matrix:
+        platform: [ ubuntu-latest ]
+        node-version: [ 12.x ]
+    runs-on: ${{ matrix.platform }}
+
+    steps:
+      - name: Use Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v1
+        with:
+          node-version: ${{ matrix.node-version }}
           registry-url: https://registry.npmjs.org/
 
-#      - name: Download networks
-#        uses: actions/download-artifact@v2
-#        with:
-#          name: networks
+      - name: Download networks
+        uses: actions/download-artifact@v2
+        with:
+          name: networks
 
-      - name: Publish beta # Публикуем бету
+      - name: Publish beta
         run: |
           git config --global user.name 'Bondappetit CI'
           git config --global user.email 'hello@bondappetit.io'
