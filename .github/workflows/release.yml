@@ -76,10 +76,10 @@ jobs:
 #          name: networks
 
       - name: Publish beta # Публикуем бету
-      run: |
-        mkdir ~/networks-npm
-        cp -r networks/* ~/networks-npm/
-        npm version ${{ github.event.release.tag_name }
-        npm publish --tag ${{ github.event.release.tag_name }
-      env:
-        NODE_AUTH_TOKEN: ${{secrets.NPM_TOKEN}}
+        run: |
+          mkdir ~/networks-npm
+          cp -r networks/* ~/networks-npm/
+          npm version ${{ github.event.release.tag_name }
+          npm publish --tag ${{ github.event.release.tag_name }
+        env:
+          NODE_AUTH_TOKEN: ${{secrets.NPM_TOKEN}}
