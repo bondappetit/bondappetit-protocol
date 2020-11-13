@@ -83,6 +83,6 @@ jobs:
           cp -r networks/* ~/networks-npm/
           cd ~/networks-npm/
           npm version ${{ github.event.release.tag_name }}
-          npm publish
+          npm publish --access public
         env:
           NODE_AUTH_TOKEN: ${{secrets.NPM_TOKEN}}
