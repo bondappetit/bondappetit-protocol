@@ -7,7 +7,7 @@
     "lint": "lint-staged",
     "build": "truffle compile --all",
     "dev:deploy": "truffle migrate --network development",
-    "ropsten:deploy": "truffle migrate --network ropsten --reset",
+    "ropsten:deploy": "truffle migrate --network ropsten --reset --skip-dry-run",
     "dev:config-gen": "node gen.js --network development --config gen.config.json --out networks/development/gen --abi networks/abi",
     "ropsten:config-gen": "node gen.js --network ropsten --config gen.config.json --out networks/ropsten/gen --abi networks/abi",
     "node": "ganache-cli -f http://10.35.89.27:8545 -m 'fashion crop leaf family bargain nature summer antenna drift student century often' -i 999 --chainId 999",
