@@ -60,7 +60,7 @@ jobs:
       matrix:
         platform: [ ubuntu-latest ]
         node-version: [ 12.x ]
-      runs-on: ${{ matrix.platform }}
+    runs-on: ${{ matrix.platform }}
 
     steps:
       - uses: actions/checkout@v2
