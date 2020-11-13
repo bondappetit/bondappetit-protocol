@@ -77,6 +77,8 @@ jobs:
 
       - name: Publish beta # Публикуем бету
         run: |
+          git config --global user.name 'Bondappetit CI'
+          git config --global user.email 'hello@bondappetit.io'
           mkdir ~/networks-npm
           cp -r networks/* ~/networks-npm/
           npm version ${{ github.event.release.tag_name }}
