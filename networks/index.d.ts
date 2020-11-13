@@ -16,6 +16,7 @@ interface Asset extends Named, Wallet {
 
 interface Contract extends Named, Wallet {
   abi: any;
+  voting: boolean;
 }
 
 interface Config<T> {

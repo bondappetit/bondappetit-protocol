@@ -9,6 +9,7 @@ module.exports = async (deployer, network) => {
     accounts: {Governor},
   } = networks[network];
   const recipients = [
+    /*
     {
       wallet: "0x876A207aD9f6f0fA2C58A7902B2E7568a41c299f",
       periods: [
@@ -18,6 +19,7 @@ module.exports = async (deployer, network) => {
         },
       ],
     },
+    */
   ];
 
   await deployer.deploy(Vesting, Bond.address, {
@@ -34,7 +36,4 @@ module.exports = async (deployer, network) => {
       })
     )
   );
-  if (network !== "development") {
-    await vesting.transferOwnership(Timelock.address);
-  }
 };

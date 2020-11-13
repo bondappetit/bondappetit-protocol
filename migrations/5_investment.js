@@ -30,9 +30,6 @@ module.exports = async (deployer, network) => {
   await Promise.all(
     investmentTokens.map((address) => investment.allowToken(address))
   );
-  if (network !== "development") {
-    await investment.transferOwnership(Timelock.address);
-  }
 
   const bond = await Bond.deployed();
   await bond.allowTransferLock(investment.address, {from: Governor.address});
