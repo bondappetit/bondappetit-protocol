@@ -79,7 +79,7 @@ jobs:
         run: |
           mkdir ~/networks-npm
           cp -r networks/* ~/networks-npm/
-          npm version ${{ github.event.release.tag_name }
-          npm publish --tag ${{ github.event.release.tag_name }
+          npm version ${{ github.event.release.tag_name }}
+          npm publish --tag ${{ github.event.release.tag_name }}
         env:
           NODE_AUTH_TOKEN: ${{secrets.NPM_TOKEN}}
