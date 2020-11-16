@@ -55,3 +55,9 @@ jobs:
           git push https://${{ secrets.ACCESS_TOKEN }}@github.com/bondappetit/networks.git master
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+
+      - name: Archive artifacts
+        uses: actions/upload-artifact@v2
+        with:
+          name: networks-$GITHUB_REF-$GITHUB_SHA
+          path: networks
