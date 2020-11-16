@@ -34,14 +34,14 @@ jobs:
         MNENOMIC: ${{secrets.MNENOMIC}}
         INFURA_API_KEY: ${{secrets.INFURA_API_KEY}}
 
-    - name: npm ropsten:deploy
-      run: npm run ropsten:deploy
+    - name: npm deploy
+      run: npm run deploy -- --network ropsten --reset --dry-run
       env:
         MNENOMIC: ${{secrets.MNENOMIC}}
         INFURA_API_KEY: ${{secrets.INFURA_API_KEY}}
 
-    - name: npm ropsten:config-gen
-      run: npm run ropsten:config-gen
+    - name: npm config-gen -- --network ropsten
+      run: npm run config-gen
       env:
         MNENOMIC: ${{secrets.MNENOMIC}}
         INFURA_API_KEY: ${{secrets.INFURA_API_KEY}}

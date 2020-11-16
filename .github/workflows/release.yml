@@ -19,10 +19,26 @@ jobs:
           node-version: ${{ matrix.node-version }}
           registry-url: https://registry.npmjs.org/
 
-      - name: Download artifacts
-        uses: actions/download-artifact@v2
-        with:
-          name: networks-$GITHUB_REF-$GITHUB_SHA
+      - name: Install dependencies
+        run: npm ci
+
+      - name: npm build
+        run: npm run build
+        env:
+          MNENOMIC: ${{secrets.MNENOMIC}}
+          INFURA_API_KEY: ${{secrets.INFURA_API_KEY}}
+
+      - name: npm deploy
+        run: npm run deploy -- --network ropsten --reset
+        env:
+          MNENOMIC: ${{secrets.MNENOMIC}}
+          INFURA_API_KEY: ${{secrets.INFURA_API_KEY}}
+
+      - name: npm config-gen -- --network ropsten
+        run: npm run config-gen
+        env:
+          MNENOMIC: ${{secrets.MNENOMIC}}
+          INFURA_API_KEY: ${{secrets.INFURA_API_KEY}}
 
       - name: Publish npm
         run: |
