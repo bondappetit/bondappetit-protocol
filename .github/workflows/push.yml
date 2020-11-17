@@ -46,14 +46,16 @@ jobs:
         MNENOMIC: ${{secrets.MNENOMIC}}
         INFURA_API_KEY: ${{secrets.INFURA_API_KEY}}
 
-#    - name: npm test
-#      run: npm run test
-#      env:
-#        MNENOMIC: ${{secrets.MNENOMIC}}
-#        INFURA_API_KEY: ${{secrets.INFURA_API_KEY}}
+    - name: npm test
+      run: npm run test -- --network ropsten
+      env:
+        MNENOMIC: ${{secrets.MNENOMIC}}
+        INFURA_API_KEY: ${{secrets.INFURA_API_KEY}}
 
     - name: Archive artifacts
       uses: actions/upload-artifact@v2
       with:
         name: networks-$GITHUB_REF-$GITHUB_SHA
-        path: networks
+        path: |
+          networks
+          build
