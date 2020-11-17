@@ -16,6 +16,9 @@ contract BondDepositaryBalanceView is IDepositaryBalanceView {
     /// @notice Price oracles.
     ISecurityOracle public securityOracle;
 
+    /// @notice Decimals balance.
+    uint256 override public decimals = 6;
+
     /**
      * @param _depositary Depositary address.
      * @param _securityOracle Security oracle addresses.

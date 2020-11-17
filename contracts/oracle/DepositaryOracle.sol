@@ -12,10 +12,17 @@ contract DepositaryOracle is IDepositaryOracle, Ownable {
     /// @dev ISIN in depositary.
     string[] private keys;
 
+    /// @notice The maximum number of security in this depositary.
+    function maxSize() public pure returns (uint256) {
+        return 50;
+    }
+
     function put(
         string memory isin,
         uint256 amount
     ) external override onlyOwner {
+        require(keys.length < maxSize(), "DepositaryOracle::put: too many securities");
+
         bonds[isin] = Security(isin, amount);
         keys.push(isin);
         emit Update(isin, amount);

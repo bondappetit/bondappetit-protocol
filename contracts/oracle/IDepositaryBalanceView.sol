@@ -6,6 +6,12 @@ pragma solidity ^0.6.0;
  */
 interface IDepositaryBalanceView {
     /**
+     * @notice Get decimals balance.
+     * @return Decimals balance.
+     */
+    function decimals() external view returns(uint256);
+
+    /**
      * @notice Get balance of depositary.
      * @return Balance of depositary.
      */
