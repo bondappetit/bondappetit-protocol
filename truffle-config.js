@@ -29,21 +29,21 @@ module.exports = {
     ropsten: {
       from: networks.ropsten.accounts.Governor.address,
       provider: () => new HDWalletProvider(process.env.MNENOMIC, "https://ropsten.infura.io/v3/" + process.env.INFURA_API_KEY),
-      network_id: 3,
+      network_id: '3',
       gas: 5000000,
       gasPrice: 100000000000
     },
     // kovan: {
     //   from: networks.kovan.accounts.Governor.address,
     //   provider: () => new HDWalletProvider(process.env.MNENOMIC, "https://kovan.infura.io/v3/" + process.env.INFURA_API_KEY),
-    //   network_id: 42,
+    //   network_id: '42',
     //   gas: 8000000,
     //   gasPrice: 10000000000
     // },
     // rinkeby: {
     //   from: networks.rinkeby.accounts.Governor.address,
     //   provider: () => new HDWalletProvider(process.env.MNENOMIC, "https://rinkeby.infura.io/v3/" + process.env.INFURA_API_KEY),
-    //   network_id: 4,
+    //   network_id: '4',
     //   gas: 8000000,
     //   gasPrice: 10000000000
     // },
@@ -51,7 +51,7 @@ module.exports = {
     // mainnet: {
     //   from: networks.mainnet.accounts.Governor.address,
     //   provider: () => new HDWalletProvider(process.env.MNENOMIC, "https://mainnet.infura.io/v3/" + process.env.INFURA_API_KEY),
-    //   network_id: 1,
+    //   network_id: '1',
     //   gas: 8000000,
     //   gasPrice: 10000000000
     // }
