@@ -30,7 +30,7 @@ module.exports = {
       from: networks.ropsten.accounts.Governor.address,
       provider: () => new HDWalletProvider(process.env.MNENOMIC, "https://ropsten.infura.io/v3/" + process.env.INFURA_API_KEY),
       network_id: '3',
-      gas: 5000000,
+      gas: 5500000,
       gasPrice: 100000000000
     },
     // kovan: {
