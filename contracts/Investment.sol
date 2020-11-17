@@ -138,7 +138,12 @@ contract Investment is Ownable {
     function price(address token, uint256 amount) external view returns (uint256) {
         require(investmentTokens[token], "Investment::price: invalid investable token");
 
-        return _bondPrice(_amountOut(token, amount));
+        uint256 amountOut = amount;
+        if (token != address(cumulative)) {
+            amountOut = _amountOut(token, amount);
+        }
+
+        return _bondPrice(amountOut);
     }
 
     /**
@@ -147,6 +152,7 @@ contract Investment is Ownable {
      * @param amount Invested amount
      */
     function invest(address token, uint256 amount) external returns (bool) {
+        require(investmentTokens[token], "Investment::invest: invalid investable token");
         uint256 reward = _bondPrice(amount);
 
         ERC20(token).safeTransferFrom(msg.sender, address(this), amount);
@@ -171,6 +177,7 @@ contract Investment is Ownable {
      */
     function investETH() external payable returns (bool) {
         address token = uniswapRouter.WETH();
+        require(investmentTokens[token], "Investment::investETH: invalid investable token");
         uint256 reward = _bondPrice(msg.value);
 
         if (token != address(cumulative)) {

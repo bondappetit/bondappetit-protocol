@@ -32,7 +32,7 @@ module.exports = async (deployer, network) => {
   );
 
   const bond = await Bond.deployed();
-  await bond.allowTransferLock(investment.address, {from: Governor.address});
+  await bond.allowTransferLock(Investment.address, {from: Governor.address});
   await bond.transfer(
     investment.address,
     new bn(1200000).mul(new bn("1000000000000000000")).toString(),

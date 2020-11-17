@@ -1,4 +1,6 @@
 module.exports = {
+  networkName: 'mainnet',
+  networkUrl: '',
   networkId: 1,
   accounts: {
     ...require("./accounts"),

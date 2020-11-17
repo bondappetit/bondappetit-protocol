@@ -24,6 +24,8 @@ interface Config<T> {
 }
 
 interface Network {
+  networkName: string;
+  networkUrl: string;
   networkId: number;
   accounts: Config<Account>;
   assets: Config<Asset>;
