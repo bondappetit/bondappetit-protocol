@@ -1,6 +1,7 @@
 module.exports = {
   networkName: 'development',
   networkUrl: 'http://localhost:8545',
+  networkEtherscan: '',
   networkId: 999,
   accounts: {
     ...require("./accounts"),

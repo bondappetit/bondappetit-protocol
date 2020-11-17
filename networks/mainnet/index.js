@@ -1,6 +1,7 @@
 module.exports = {
   networkName: 'mainnet',
   networkUrl: '',
+  networkEtherscan: 'https://etherscan.io',
   networkId: 1,
   accounts: {
     ...require("./accounts"),
