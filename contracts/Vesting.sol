@@ -65,7 +65,7 @@ contract Vesting is Ownable {
         uint256 amount,
         uint256 date
     ) external onlyOwner returns (uint256) {
-        require(periodsIndex[recipient].length + 1 <= maxPeriodsPerRecipient(), "Vesting::lock: too many periods");
+        require(periodsIndex[recipient].length < maxPeriodsPerRecipient(), "Vesting::lock: too many periods");
 
         bond.transferFrom(_msgSender(), address(this), amount);
 

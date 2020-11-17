@@ -5,7 +5,7 @@ const IERC20 = artifacts.require("IERC20");
 const Uniswap2Router = artifacts.require("IUniswapV2Router02");
 
 contract("Investment.withdraw", () => {
-  const {USDT, USDC, WETH, Bond} = networks.development.assets;
+  const {USDT, USDC, WETH} = networks.development.assets;
   const investor = "0x876A207aD9f6f0fA2C58A7902B2E7568a41c299f";
   const recipient = networks.development.accounts.Governor.address;
   const uniswap = new web3.eth.Contract(
@@ -14,7 +14,6 @@ contract("Investment.withdraw", () => {
   );
   const usdtContract = new web3.eth.Contract(IERC20.abi, USDT.address);
   const usdcContract = new web3.eth.Contract(IERC20.abi, USDC.address);
-  const bondContract = new web3.eth.Contract(IERC20.abi, Bond.address);
 
   it("withdraw: should withdraw cumulative tokens to recipient", async () => {
     const amountIn = "1000000";

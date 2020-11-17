@@ -24,6 +24,9 @@ interface Config<T> {
 }
 
 interface Network {
+  networkName: string;
+  networkUrl: string;
+  networkEtherscan: string;
   networkId: number;
   accounts: Config<Account>;
   assets: Config<Asset>;
