@@ -35,8 +35,8 @@ jobs:
           MNENOMIC: ${{secrets.MNENOMIC}}
           INFURA_API_KEY: ${{secrets.INFURA_API_KEY}}
 
-      - name: npm config-gen -- --network ropsten
-        run: npm run config-gen
+      - name: npm config-gen
+        run: npm run config-gen -- --network ropsten
         env:
           MNENOMIC: ${{secrets.MNENOMIC}}
           INFURA_API_KEY: ${{secrets.INFURA_API_KEY}}
