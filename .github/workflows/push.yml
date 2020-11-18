@@ -17,6 +17,8 @@ jobs:
         platform: [ubuntu-latest]
         node-version: [12.x]
     runs-on: ${{ matrix.platform }}
+    container:
+      image: trufflesuite/ganache-cli:latest
 
     steps:
     - uses: actions/checkout@v2
@@ -35,19 +37,19 @@ jobs:
         INFURA_API_KEY: ${{secrets.INFURA_API_KEY}}
 
     - name: npm deploy
-      run: npm run deploy -- --network ropsten --reset --dry-run
+      run: npm run deploy -- --reset --dry-run
       env:
         MNENOMIC: ${{secrets.MNENOMIC}}
         INFURA_API_KEY: ${{secrets.INFURA_API_KEY}}
 
-    - name: npm config-gen -- --network ropsten
+    - name: npm config-gen
       run: npm run config-gen
       env:
         MNENOMIC: ${{secrets.MNENOMIC}}
         INFURA_API_KEY: ${{secrets.INFURA_API_KEY}}
 
     - name: npm test
-      run: npm run test -- --network ropsten
+      run: npm run test
       env:
         MNENOMIC: ${{secrets.MNENOMIC}}
         INFURA_API_KEY: ${{secrets.INFURA_API_KEY}}
