@@ -17,8 +17,6 @@ jobs:
         platform: [ubuntu-latest]
         node-version: [12.x]
     runs-on: ${{ matrix.platform }}
-    container:
-      image: trufflesuite/ganache-cli:latest
 
     steps:
     - uses: actions/checkout@v2
@@ -26,6 +24,9 @@ jobs:
       uses: actions/setup-node@v1
       with:
         node-version: ${{ matrix.node-version }}
+
+    - name: Run ganache-cli
+      uses: docker://trufflesuite/ganache-cli:latest
 
     - name: Install dependencies
       run: npm ci
