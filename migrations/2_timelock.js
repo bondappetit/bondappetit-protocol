@@ -13,7 +13,7 @@ module.exports = async (deployer, network) => {
   await deployer.deploy(
     Timelock,
     Governor.address,
-    2 * 24 * 60 * 60 // 2 days delay
+    0
   );
 
   if (network !== 'development') await delay(30000);
