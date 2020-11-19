@@ -7,6 +7,7 @@ const Investment = artifacts.require("Investment");
 const Vesting = artifacts.require("Vesting");
 const Treasury = artifacts.require("Treasury");
 const Issuer = artifacts.require("Issuer");
+const Market = artifacts.require("Market");
 
 module.exports = async (deployer, network) => {
   if (network === "development") return;
@@ -21,7 +22,8 @@ module.exports = async (deployer, network) => {
     investment,
     vesting,
     treasury,
-    issuer
+    issuer,
+    market
   ] = await Promise.all([
     Bond.deployed(),
     ABT.deployed(),
@@ -29,6 +31,7 @@ module.exports = async (deployer, network) => {
     Vesting.deployed(),
     Treasury.deployed(),
     Issuer.deployed(),
+    Market.deployed(),
   ])
   await bond.transferOwnership(Timelock.address, {from: Governor.address});
   await investment.transferOwnership(Timelock.address, {from: Governor.address});
@@ -36,6 +39,7 @@ module.exports = async (deployer, network) => {
   await treasury.transferOwnership(Timelock.address, {from: Governor.address});
   await issuer.transferOwnership(Timelock.address, {from: Governor.address});
   await abt.transferOwnership(Issuer.address, {from: Governor.address});
+  await market.transferOwnership(Timelock.address, {from: Governor.address});
 
   if (network !== 'development') await delay(30000);
 };
