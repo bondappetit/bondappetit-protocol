@@ -34,6 +34,11 @@ jobs:
         MNENOMIC: ${{secrets.MNENOMIC}}
         INFURA_API_KEY: ${{secrets.INFURA_API_KEY}}
 
+    - name: run ganache
+      run: |
+        ganache-cli -f https://ropsten.infura.io/v3/${{secrets.INFURA_API_KEY}} -m '${{secrets.MNENOMIC}}' -u 0x876A207aD9f6f0fA2C58A7902B2E7568a41c299f -i 999 --chainId 999 > /dev/null 2>&1 &
+        sleep 10
+
     - name: npm deploy
       run: npm run deploy -- --reset --dry-run
       env:
@@ -53,21 +58,3 @@ jobs:
         path: |
           networks
           build
-
-  test:
-    strategy:
-      matrix:
-        platform: [ubuntu-latest]
-        node-version: [12.x]
-    runs-on: ${{ matrix.platform }}
-    container:
-      image: trufflesuite/ganache-cli:latest
-
-    steps:
-    - uses: actions/checkout@v2
-    - uses: actions/download-artifact@v2
-    - name: truffle test
-      run: truffle test
-      env:
-        MNENOMIC: ${{secrets.MNENOMIC}}
-        INFURA_API_KEY: ${{secrets.INFURA_API_KEY}}
