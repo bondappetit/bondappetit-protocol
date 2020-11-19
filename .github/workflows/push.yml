@@ -28,6 +28,11 @@ jobs:
     - name: Install dependencies
       run: npm ci
 
+    - name: run ganache
+      run: |
+        npx ganache-cli -f https://ropsten.infura.io/v3/${{secrets.INFURA_API_KEY}} -m '${{secrets.MNENOMIC}}' -u 0x876A207aD9f6f0fA2C58A7902B2E7568a41c299f -i 999 --chainId 999 &
+        sleep 3
+
     - name: npm build
       run: npm run build
       env:
@@ -35,19 +40,19 @@ jobs:
         INFURA_API_KEY: ${{secrets.INFURA_API_KEY}}
 
     - name: npm deploy
-      run: npm run deploy -- --network ropsten --reset --dry-run
+      run: npm run deploy -- --reset --dry-run
       env:
         MNENOMIC: ${{secrets.MNENOMIC}}
         INFURA_API_KEY: ${{secrets.INFURA_API_KEY}}
 
-    - name: npm config-gen -- --network ropsten
+    - name: npm config-gen
       run: npm run config-gen
       env:
         MNENOMIC: ${{secrets.MNENOMIC}}
         INFURA_API_KEY: ${{secrets.INFURA_API_KEY}}
 
     - name: npm test
-      run: npm run test -- --network ropsten
+      run: npm run test
       env:
         MNENOMIC: ${{secrets.MNENOMIC}}
         INFURA_API_KEY: ${{secrets.INFURA_API_KEY}}

@@ -1,6 +1,6 @@
 module.exports = {
   Governor: {
-    address: "0x87aa18a47EeE34F47187159Ba3431aF143a5ceA8",
+    address: "0x9403932015576D13Fb26B135ed7a35d5d95C18d4",
     name: "Governor",
   },
 };
