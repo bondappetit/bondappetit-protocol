@@ -1,4 +1,4 @@
-const {delay} = require('./utils');
+const {afterMigration} = require("./utils");
 const networks = require("../networks");
 const Bond = artifacts.require("Bond");
 const Timelock = artifacts.require("Timelock");
@@ -17,7 +17,9 @@ module.exports = async (deployer, network) => {
   );
 
   const timelock = await Timelock.deployed();
-  await timelock.__transferAdmin(GovernorAlpha.address, {from: Governor.address});
+  await timelock.__transferAdmin(GovernorAlpha.address, {
+    from: Governor.address,
+  });
 
-  if (network !== 'development') await delay(30000);
+  await afterMigration(network);
 };

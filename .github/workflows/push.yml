@@ -40,7 +40,7 @@ jobs:
         INFURA_API_KEY: ${{secrets.INFURA_API_KEY}}
 
     - name: npm deploy
-      run: npm run deploy -- --reset --dry-run
+      run: npm run deploy -- --reset
       env:
         MNENOMIC: ${{secrets.MNENOMIC}}
         INFURA_API_KEY: ${{secrets.INFURA_API_KEY}}

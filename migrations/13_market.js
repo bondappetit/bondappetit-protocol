@@ -1,4 +1,4 @@
-const {delay} = require("./utils");
+const {afterMigration} = require("./utils");
 const networks = require("../networks");
 const ABT = artifacts.require("ABT");
 const Bond = artifacts.require("Bond");
@@ -14,8 +14,8 @@ module.exports = async (deployer, network) => {
     {address: USDT.address, symbol: USDT.symbol},
     {address: USDC.address, symbol: USDC.symbol},
     {address: DAI.address, symbol: DAI.symbol},
-    {address: WBTC.address, symbol: 'BTC'},
-    {address: WETH.address, symbol: 'ETH'},
+    {address: WBTC.address, symbol: "BTC"},
+    {address: WETH.address, symbol: "ETH"},
   ];
 
   await deployer.deploy(
@@ -35,5 +35,5 @@ module.exports = async (deployer, network) => {
     allowedTokens.map(({address, symbol}) => market.allowToken(address, symbol))
   );
 
-  if (network !== "development") await delay(30000);
+  await afterMigration(network);
 };

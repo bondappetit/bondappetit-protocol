@@ -1,4 +1,4 @@
-const {delay} = require("./utils");
+const {afterMigration} = require("./utils");
 const networks = require("../networks");
 const ABT = artifacts.require("ABT");
 const Treasury = artifacts.require("Treasury");
@@ -15,9 +15,9 @@ module.exports = async (deployer, network) => {
   await deployer.deploy(Issuer, ABT.address, Treasury.address, {
     from: Governor.address,
   });
-  
+
   const issuer = await Issuer.deployed();
   await issuer.addDepositary(BondDepositaryBalanceView.address);
 
-  if (network !== "development") await delay(30000);
+  await afterMigration(network);
 };
