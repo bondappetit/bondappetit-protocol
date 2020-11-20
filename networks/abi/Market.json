@@ -85,6 +85,19 @@
             "anonymous": false,
             "inputs": [
                 {
+                    "indexed": false,
+                    "internalType": "address",
+                    "name": "newToken",
+                    "type": "address"
+                }
+            ],
+            "name": "CumulativeChanged",
+            "type": "event"
+        },
+        {
+            "anonymous": false,
+            "inputs": [
+                {
                     "indexed": true,
                     "internalType": "address",
                     "name": "previousOwner",
@@ -108,6 +121,12 @@
                     "internalType": "address",
                     "name": "token",
                     "type": "address"
+                },
+                {
+                    "indexed": false,
+                    "internalType": "string",
+                    "name": "symbol",
+                    "type": "string"
                 }
             ],
             "name": "TokenAllowed",
@@ -153,7 +172,7 @@
         },
         {
             "inputs": [],
-            "name": "PRICE_ACCURACY",
+            "name": "PRICE_DECIMALS",
             "outputs": [
                 {
                     "internalType": "uint256",
@@ -173,26 +192,6 @@
                     "internalType": "contract ABT",
                     "name": "",
                     "type": "address"
-                }
-            ],
-            "stateMutability": "view",
-            "type": "function",
-            "constant": true
-        },
-        {
-            "inputs": [
-                {
-                    "internalType": "address",
-                    "name": "",
-                    "type": "address"
-                }
-            ],
-            "name": "allowedTokens",
-            "outputs": [
-                {
-                    "internalType": "bool",
-                    "name": "",
-                    "type": "bool"
                 }
             ],
             "stateMutability": "view",
@@ -307,8 +306,31 @@
             "inputs": [
                 {
                     "internalType": "address",
+                    "name": "newToken",
+                    "type": "address"
+                },
+                {
+                    "internalType": "address",
+                    "name": "recipient",
+                    "type": "address"
+                }
+            ],
+            "name": "changeCumulativeToken",
+            "outputs": [],
+            "stateMutability": "nonpayable",
+            "type": "function"
+        },
+        {
+            "inputs": [
+                {
+                    "internalType": "address",
                     "name": "token",
                     "type": "address"
+                },
+                {
+                    "internalType": "string",
+                    "name": "symbol",
+                    "type": "string"
                 }
             ],
             "name": "allowToken",
@@ -328,6 +350,26 @@
             "outputs": [],
             "stateMutability": "nonpayable",
             "type": "function"
+        },
+        {
+            "inputs": [
+                {
+                    "internalType": "address",
+                    "name": "token",
+                    "type": "address"
+                }
+            ],
+            "name": "isAllowedToken",
+            "outputs": [
+                {
+                    "internalType": "bool",
+                    "name": "",
+                    "type": "bool"
+                }
+            ],
+            "stateMutability": "view",
+            "type": "function",
+            "constant": true
         },
         {
             "inputs": [

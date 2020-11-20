@@ -3,7 +3,7 @@ const {utils} = require("web3");
 const ABT = artifacts.require("ABT");
 const {development} = require("../../networks");
 
-contract("ABT", (accounts) => {
+contract("ABT.burn", (accounts) => {
   const governor = development.accounts.Governor.address;
 
   it("burn: should burn tokens", async () => {

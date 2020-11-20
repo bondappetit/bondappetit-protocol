@@ -76,8 +76,8 @@ contract("Investment.invest", (accounts) => {
     const bondInvestorBalanceStart = await bondContract.balanceOf(investor);
     const reward = await instance.price(USDC.address, amountIn);
     assert.equal(
-      utils.toBN(amountIn).mul(utils.toBN('10').pow(utils.toBN('12'))),
       reward.toString(),
+      utils.toBN(amountIn).mul(utils.toBN('10').pow(utils.toBN('12'))),
       "Invalid reward"
     );
 

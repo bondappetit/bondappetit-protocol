@@ -3,7 +3,7 @@ const Bond = artifacts.require("Bond");
 const Vesting = artifacts.require("Vesting");
 const {development} = require("../../networks");
 
-contract("Vesting", (accounts) => {
+contract("Vesting.lock", (accounts) => {
   const governor = development.accounts.Governor.address;
   const recipient = accounts[1];
   const amount = "100";
@@ -25,9 +25,9 @@ contract("Vesting", (accounts) => {
       "New period not added"
     );
     const addedPeriod = endPeriods[endPeriods.length - 1];
-    assert.equal(amount, addedPeriod.amount, "Invalid amount");
-    assert.equal(date, addedPeriod.date, "Invalid date");
-    assert.equal(false, addedPeriod.withdrawal, "Invalid withdrawal flag");
+    assert.equal(addedPeriod.amount, amount, "Invalid amount");
+    assert.equal(addedPeriod.date, date, "Invalid date");
+    assert.equal(addedPeriod.withdrawal, false, "Invalid withdrawal flag");
   });
 
   it("lock: should rever tx if amount not approved", async () => {

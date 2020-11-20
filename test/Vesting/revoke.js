@@ -4,7 +4,7 @@ const Bond = artifacts.require("Bond");
 const Vesting = artifacts.require("Vesting");
 const {development} = require("../../networks");
 
-contract("Vesting", (accounts) => {
+contract("Vesting.revoke", (accounts) => {
   const governor = development.accounts.Governor.address;
   const recipient = accounts[1];
   const amount = "100";
@@ -20,7 +20,7 @@ contract("Vesting", (accounts) => {
 
     const startPeriods = await instance.info(recipient);
     const addedPeriod = startPeriods[startPeriods.length - 1];
-    assert.equal(amount, addedPeriod.amount, "Invalid amount");
+    assert.equal(addedPeriod.amount, amount, "Invalid amount");
 
     await instance.revoke(recipient, addedPeriod.id, {from: governor});
 
@@ -28,7 +28,7 @@ contract("Vesting", (accounts) => {
     const endPeriods = await instance.info(recipient);
     const revokedPeriod = endPeriods[endPeriods.length - 1];
     assert.equal(endBalance.toString(), startBalance.toString(), "Reward not returned");
-    assert.equal('0', revokedPeriod.amount, "Reward not reset");
+    assert.equal(revokedPeriod.amount, '0', "Reward not reset");
   });
 
   it("revoke: should revert tx if called is not the owner", async () => {

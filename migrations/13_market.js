@@ -7,9 +7,16 @@ const Market = artifacts.require("Market");
 module.exports = async (deployer, network) => {
   const {
     accounts: {Governor},
-    assets: {USDC},
+    assets: {USDC, USDT, DAI, WBTC, WETH},
     contracts: {UniswapV2Router02, UniswapAnchoredView},
   } = networks[network];
+  const allowedTokens = [
+    {address: USDT.address, symbol: USDT.symbol},
+    {address: USDC.address, symbol: USDC.symbol},
+    {address: DAI.address, symbol: DAI.symbol},
+    {address: WBTC.address, symbol: 'BTC'},
+    {address: WETH.address, symbol: 'ETH'},
+  ];
 
   await deployer.deploy(
     Market,
@@ -17,11 +24,24 @@ module.exports = async (deployer, network) => {
     ABT.address,
     Bond.address,
     UniswapV2Router02.address,
-    UniswapV2Router02.address,
+    UniswapAnchoredView.address,
     {
       from: Governor.address,
     }
   );
+
+  const market = await Market.deployed();
+  await Promise.all(
+    allowedTokens.map(({address, symbol}) => market.allowToken(address, symbol))
+  );
+
+  if (network === "development") {
+    const bond = await Bond.deployed();
+    const abt = await ABT.deployed();
+
+    await bond.transfer(Market.address, '1000000000000000000000', {from: Governor.address});
+    await abt.mint(Market.address, '1000000000000000000000', {from: Governor.address});
+  }
 
   if (network !== "development") await delay(30000);
 };

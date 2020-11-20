@@ -1,21 +1,21 @@
 const Market = artifacts.require("Market");
 
-contract("Market", (accounts) => {
+contract("Market.allowedToken", (accounts) => {
   const token = accounts[1];
 
   it("allowToken: should allow tokens", async () => {
     const instance = await Market.deployed();
 
     assert.equal(
+      await instance.isAllowedToken(token),
       false,
-      await instance.allowedTokens(token),
       "Invalid allowed token by default"
     );
 
-    await instance.allowToken(token);
+    await instance.allowToken(token, 'test');
     assert.equal(
+      await instance.isAllowedToken(token),
       true,
-      await instance.allowedTokens(token),
       "Invalid allowed token"
     );
   });
@@ -24,15 +24,15 @@ contract("Market", (accounts) => {
     const instance = await Market.deployed();
 
     assert.equal(
+      await instance.isAllowedToken(token),
       true,
-      await instance.allowedTokens(token),
       "Invalid denied token by default"
     );
 
     await instance.denyToken(token);
     assert.equal(
+      await instance.isAllowedToken(token),
       false,
-      await instance.allowedTokens(token),
       "Invalid denied token"
     );
   });

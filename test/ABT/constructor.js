@@ -1,6 +1,6 @@
 const ABT = artifacts.require("ABT");
 
-contract("ABT", (accounts) => {
+contract("ABT.constructor", (accounts) => {
   it("constructor: should mint 0 tokens", async () => {
     const instance = await ABT.deployed();
 

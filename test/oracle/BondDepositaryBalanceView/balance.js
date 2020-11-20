@@ -5,7 +5,7 @@ const BondDepositaryBalanceView = artifacts.require(
 );
 const {development} = require("../../../networks");
 
-contract("BondDepositaryBalanceView", () => {
+contract("BondDepositaryBalanceView.balance", () => {
   const governor = development.accounts.Governor.address;
 
   it("balance: get bond depositary balance", async () => {
@@ -57,6 +57,6 @@ contract("BondDepositaryBalanceView", () => {
     );
 
     const endBalance = await instance.balance();
-    assert.equal(45, endBalance, "End balance invalid");
+    assert.equal(endBalance, 45, "End balance invalid");
   });
 });

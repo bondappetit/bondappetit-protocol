@@ -1,6 +1,6 @@
 module.exports = {
     "Bond": {
-        "address": "0xBB843b47adB0084461986BebA9037Dde6dDeFB96",
+        "address": "0x99Ba26a7AbCD7cbbaad7f83006ad454029CA6512",
         "name": "Bond",
         "voting": true,
         "abi": [
@@ -691,7 +691,7 @@ module.exports = {
         ]
     },
     "Timelock": {
-        "address": "0xF954B5F37d2493301d5efE8908D8f36AcB487Ac3",
+        "address": "0x256eD3b67Fb2295c8246e08Aa7c941e7746f2C4c",
         "name": "Timelock",
         "voting": true,
         "abi": [
@@ -1149,7 +1149,7 @@ module.exports = {
         ]
     },
     "GovernorAlpha": {
-        "address": "0x31588F1ECcFA306470d65473e4b4FD970E9550C6",
+        "address": "0x6E96Bb6650907FF31A5e5CA47CECcd7a9635a013",
         "name": "GovernorAlpha",
         "abi": [
             {
@@ -1838,7 +1838,7 @@ module.exports = {
         ]
     },
     "Investment": {
-        "address": "0x47a4e51510669697C23DffDD46F2D3268D372268",
+        "address": "0x78c7e24FEC9Bf1Aba0251e17FE91D3dae5D37293",
         "name": "Investment",
         "voting": true,
         "abi": [
@@ -2210,7 +2210,7 @@ module.exports = {
         ]
     },
     "Vesting": {
-        "address": "0x176BeCFC3E78F91A2302785dfd6cDAA982F92c44",
+        "address": "0x637dcd7bCF2E39e1f8261788aFa0DE1F042B3621",
         "name": "Vesting",
         "voting": true,
         "abi": [
@@ -2456,7 +2456,7 @@ module.exports = {
         ]
     },
     "ABT": {
-        "address": "0x26BcD7790dc3607633fa07013B4E8823Adb44A6D",
+        "address": "0x16bb954ad451fBF1860E0C01765D5bdE390EDaC6",
         "name": "ABT",
         "voting": true,
         "abi": [
@@ -2839,7 +2839,7 @@ module.exports = {
         ]
     },
     "Treasury": {
-        "address": "0x843a397cd9eFCc2e6fd1CfEC9684a678B42A6560",
+        "address": "0xC540760f878a5382e9668A5561Eab81c8044CB78",
         "name": "Treasury",
         "voting": true,
         "abi": [
@@ -2957,7 +2957,7 @@ module.exports = {
         ]
     },
     "Issuer": {
-        "address": "0xF296A147fB1651A6a40A1e5BfEAA5865E8AB1C8E",
+        "address": "0x68b413db716F2CeAc1c206bCE96ec0169cFBeB6C",
         "name": "Issuer",
         "voting": true,
         "abi": [
@@ -3228,7 +3228,7 @@ module.exports = {
         ]
     },
     "Market": {
-        "address": "0x429b716bADC686E82302cE694EB48De69E964B58",
+        "address": "0x240856c9a388615F54D5dB743Ad805723AeF9E63",
         "name": "Market",
         "voting": true,
         "abi": [
@@ -3317,6 +3317,19 @@ module.exports = {
                 "anonymous": false,
                 "inputs": [
                     {
+                        "indexed": false,
+                        "internalType": "address",
+                        "name": "newToken",
+                        "type": "address"
+                    }
+                ],
+                "name": "CumulativeChanged",
+                "type": "event"
+            },
+            {
+                "anonymous": false,
+                "inputs": [
+                    {
                         "indexed": true,
                         "internalType": "address",
                         "name": "previousOwner",
@@ -3340,6 +3353,12 @@ module.exports = {
                         "internalType": "address",
                         "name": "token",
                         "type": "address"
+                    },
+                    {
+                        "indexed": false,
+                        "internalType": "string",
+                        "name": "symbol",
+                        "type": "string"
                     }
                 ],
                 "name": "TokenAllowed",
@@ -3385,7 +3404,7 @@ module.exports = {
             },
             {
                 "inputs": [],
-                "name": "PRICE_ACCURACY",
+                "name": "PRICE_DECIMALS",
                 "outputs": [
                     {
                         "internalType": "uint256",
@@ -3405,26 +3424,6 @@ module.exports = {
                         "internalType": "contract ABT",
                         "name": "",
                         "type": "address"
-                    }
-                ],
-                "stateMutability": "view",
-                "type": "function",
-                "constant": true
-            },
-            {
-                "inputs": [
-                    {
-                        "internalType": "address",
-                        "name": "",
-                        "type": "address"
-                    }
-                ],
-                "name": "allowedTokens",
-                "outputs": [
-                    {
-                        "internalType": "bool",
-                        "name": "",
-                        "type": "bool"
                     }
                 ],
                 "stateMutability": "view",
@@ -3539,8 +3538,31 @@ module.exports = {
                 "inputs": [
                     {
                         "internalType": "address",
+                        "name": "newToken",
+                        "type": "address"
+                    },
+                    {
+                        "internalType": "address",
+                        "name": "recipient",
+                        "type": "address"
+                    }
+                ],
+                "name": "changeCumulativeToken",
+                "outputs": [],
+                "stateMutability": "nonpayable",
+                "type": "function"
+            },
+            {
+                "inputs": [
+                    {
+                        "internalType": "address",
                         "name": "token",
                         "type": "address"
+                    },
+                    {
+                        "internalType": "string",
+                        "name": "symbol",
+                        "type": "string"
                     }
                 ],
                 "name": "allowToken",
@@ -3560,6 +3582,26 @@ module.exports = {
                 "outputs": [],
                 "stateMutability": "nonpayable",
                 "type": "function"
+            },
+            {
+                "inputs": [
+                    {
+                        "internalType": "address",
+                        "name": "token",
+                        "type": "address"
+                    }
+                ],
+                "name": "isAllowedToken",
+                "outputs": [
+                    {
+                        "internalType": "bool",
+                        "name": "",
+                        "type": "bool"
+                    }
+                ],
+                "stateMutability": "view",
+                "type": "function",
+                "constant": true
             },
             {
                 "inputs": [

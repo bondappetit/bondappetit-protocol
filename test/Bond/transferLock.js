@@ -3,7 +3,7 @@ const Bond = artifacts.require("Bond");
 const {development} = require("../../networks");
 const dayjs = require("dayjs");
 
-contract("Bond", (accounts) => {
+contract("Bond.transferLock", (accounts) => {
   const governor = development.accounts.Governor.address;
   const lockedAcc = accounts[1];
   const lockedAmount = 10;

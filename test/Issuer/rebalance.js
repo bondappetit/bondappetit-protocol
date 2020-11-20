@@ -6,7 +6,7 @@ const DepositaryOracle = artifacts.require("oracle/DepositaryOracle");
 const SecurityOracle = artifacts.require("oracle/SecurityOracle");
 const {development} = require("../../networks");
 
-contract("Issuer", (accounts) => {
+contract("Issuer.rebalance", () => {
   const governor = development.accounts.Governor.address;
 
   it("rebalance: should mint ABT", async () => {
@@ -30,13 +30,13 @@ contract("Issuer", (accounts) => {
     const startABTTotalSupply = await abt.totalSupply();
     const startABTTreasuryBalance = await abt.balanceOf(Treasury.address);
     assert.equal(
-      "0",
       startABTTotalSupply.toString(),
+      "0",
       "Invalid start ABT total supply"
     );
     assert.equal(
-      "0",
       startABTTreasuryBalance.toString(),
+      "0",
       "Invalid start treasury balance"
     );
 
@@ -52,8 +52,8 @@ contract("Issuer", (accounts) => {
       .mul(utils.toBN(10).pow(utils.toBN(12)))
       .toString();
     assert.equal(
-      expectedAmount,
       issuerBalance.toString(),
+      expectedAmount,
       "Invalid issuer balance"
     );
 
@@ -62,13 +62,13 @@ contract("Issuer", (accounts) => {
     const middleABTTotalSupply = await abt.totalSupply();
     const middleABTTreasuryBalance = await abt.balanceOf(Treasury.address);
     assert.equal(
-      expectedAmount,
       middleABTTotalSupply.toString(),
+      expectedAmount,
       "Invalid middle ABT total supply"
     );
     assert.equal(
-      expectedAmount,
       middleABTTreasuryBalance.toString(),
+      expectedAmount,
       "Invalid middle treasury balance"
     );
 
@@ -80,18 +80,18 @@ contract("Issuer", (accounts) => {
     const endABTTreasuryBalance = await abt.balanceOf(Treasury.address);
     const endABTIssuerBalance = await abt.balanceOf(Issuer.address);
     assert.equal(
-      '0',
       endABTTotalSupply.toString(),
+      '0',
       "Invalid end ABT total supply"
     );
     assert.equal(
-      '0',
       endABTTreasuryBalance.toString(),
+      '0',
       "Invalid end treasury balance on treasury"
     );
     assert.equal(
-      '0',
       endABTIssuerBalance.toString(),
+      '0',
       "Invalid end treasury balance on issuer"
     );
   });

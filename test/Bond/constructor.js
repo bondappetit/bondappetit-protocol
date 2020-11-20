@@ -1,6 +1,6 @@
 const Bond = artifacts.require("Bond");
 
-contract("Bond", () => {
+contract("Bond.constructor", () => {
   it("constructor: should mint 10 million tokens", async () => {
     const instance = await Bond.deployed();
 

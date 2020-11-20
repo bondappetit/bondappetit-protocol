@@ -2,7 +2,7 @@ const assertions = require("truffle-assertions");
 const DepositaryOracle = artifacts.require("oracle/DepositaryOracle");
 const {development} = require("../../../networks");
 
-contract("DepositaryOracle", (accounts) => {
+contract("DepositaryOracle.put", (accounts) => {
   const governor = development.accounts.Governor.address;
 
   it("put: should add security to depositary", async () => {
@@ -10,13 +10,13 @@ contract("DepositaryOracle", (accounts) => {
     const amount = 10;
 
     const startSecurity = await instance.get("test bond");
-    assert.equal("0", startSecurity.amount, "Start security amount invalid");
+    assert.equal(startSecurity.amount, "0", "Start security amount invalid");
 
     await instance.put("test bond", amount, {
       from: governor,
     });
     const endSecurity = await instance.get("test bond");
-    assert.equal(amount, endSecurity.amount, "End security amount invalid");
+    assert.equal(endSecurity.amount, amount, "End security amount invalid");
   });
 
   it("put: should revert tx if sender not owner", async () => {

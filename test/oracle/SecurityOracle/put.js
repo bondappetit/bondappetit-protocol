@@ -2,7 +2,7 @@ const assertions = require("truffle-assertions");
 const SecurityOracle = artifacts.require("oracle/SecurityOracle");
 const {development} = require("../../../networks");
 
-contract("SecurityOracle", (accounts) => {
+contract("SecurityOracle.put", (accounts) => {
   const governor = development.accounts.Governor.address;
 
   it("put: should add security property value to oracle", async () => {
@@ -12,12 +12,15 @@ contract("SecurityOracle", (accounts) => {
     const value = 10;
     const valueBytes = web3.eth.abi.encodeParameters(["uint256"], [value]);
 
-    await instance.put(isin, prop, valueBytes);
+    await instance.put(isin, prop, valueBytes, {from: governor});
 
     const endValue = await instance.get(isin, prop);
-    assert.equal(valueBytes, endValue, "End value bytes invalid");
-    const decodedValue = web3.eth.abi.decodeParameters(["uint256"], endValue)[0];
-    assert.equal(value, decodedValue, "End value invalid");
+    assert.equal(endValue, valueBytes, "End value bytes invalid");
+    const decodedValue = web3.eth.abi.decodeParameters(
+      ["uint256"],
+      endValue
+    )[0];
+    assert.equal(decodedValue, value, "End value invalid");
   });
 
   it("put: should revert tx if sender not owner", async () => {
