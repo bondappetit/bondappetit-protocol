@@ -35,13 +35,5 @@ module.exports = async (deployer, network) => {
     allowedTokens.map(({address, symbol}) => market.allowToken(address, symbol))
   );
 
-  if (network === "development") {
-    const bond = await Bond.deployed();
-    const abt = await ABT.deployed();
-
-    await bond.transfer(Market.address, '1000000000000000000000', {from: Governor.address});
-    await abt.mint(Market.address, '1000000000000000000000', {from: Governor.address});
-  }
-
   if (network !== "development") await delay(30000);
 };
