@@ -6,7 +6,7 @@ const Bond = artifacts.require("Bond");
 const Market = artifacts.require("Market");
 const {development} = require("../../networks");
 
-contract("Market.buyBondFromETH", () => {
+contract("Market.buyBondFromETH", (accounts) => {
   const governor = development.accounts.Governor.address;
   const customer = "0x876A207aD9f6f0fA2C58A7902B2E7568a41c299f";
   const {
@@ -34,13 +34,15 @@ contract("Market.buyBondFromETH", () => {
       ])
       .call())[1];
 
+    await bond.transfer(customer, 1, {from: governor});
+
     await bond.mint(Market.address, startBond);
     const marketUSDCStartBalance = await usdc.methods.balanceOf(Market.address).call();
     const customerBondStartBalance = await bond.balanceOf(customer);
     const marketBondStartBalance = await bond.balanceOf(Market.address);
     assert.equal(
       customerBondStartBalance.toString(),
-      '0',
+      '1',
       "Invalid bond token start balance for customer"
     );
 
@@ -72,8 +74,20 @@ contract("Market.buyBondFromETH", () => {
 
     await instance.denyToken(WETH.address, {from: governor})
     await assertions.reverts(
-      instance.buyBondFromETH({value: 1}),
+      instance.buyBondFromETH({value: 1, from: customer}),
       "Market::buyFromETH: invalid token"
+    );
+  });
+
+  it("buyBondFromETH: should revert tx if customer not tokenholder", async () => {
+    const instance = await Market.deployed();
+    const notTokenholder = accounts[1];
+
+    await instance.allowToken(WETH.address, 'ETH', {from: governor})
+
+    await assertions.reverts(
+      instance.buyBondFromETH({value: 1, from: notTokenholder}),
+      "Market::buyBondFromETH: only tokenholder can buy new bond tokens"
     );
   });
 });

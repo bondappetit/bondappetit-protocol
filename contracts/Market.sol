@@ -300,6 +300,8 @@ contract Market is Ownable {
      * @return True if success.
      */
     function buyBond(address token, uint256 amount) external returns (bool) {
+        require(bond.balanceOf(msg.sender) > 0, "Market::buyBond: only tokenholder can buy new bond tokens");
+
         return buy(ERC20(address(bond)), ERC20(token), amount);
     }
 
@@ -341,6 +343,8 @@ contract Market is Ownable {
      * @return True if success.
      */
     function buyBondFromETH() external payable returns (bool) {
+        require(bond.balanceOf(msg.sender) > 0, "Market::buyBondFromETH: only tokenholder can buy new bond tokens");
+
         return buyFromETH(ERC20(address(bond)));
     }
 

@@ -7,6 +7,7 @@ const Market = artifacts.require("Market");
 const {development} = require("../../networks");
 
 contract("Market.buyBond", (accounts) => {
+  const governor = development.accounts.Governor.address;
   const customer = "0x876A207aD9f6f0fA2C58A7902B2E7568a41c299f";
   const {
     UniswapV2Router02,
@@ -28,14 +29,20 @@ contract("Market.buyBond", (accounts) => {
       .mul(utils.toBN(10).pow(utils.toBN(6)))
       .toString();
 
-    await bond.mint(Market.address, startBond);
-    const customerUSDCStartBalance = await usdc.methods.balanceOf(customer).call();
-    const marketUSDCStartBalance = await usdc.methods.balanceOf(Market.address).call();
+    await bond.transfer(customer, 1, {from: governor});
+
+    await bond.mint(Market.address, startBond, {from: governor});
+    const customerUSDCStartBalance = await usdc.methods
+      .balanceOf(customer)
+      .call();
+    const marketUSDCStartBalance = await usdc.methods
+      .balanceOf(Market.address)
+      .call();
     const customerBondStartBalance = await bond.balanceOf(customer);
     const marketBondStartBalance = await bond.balanceOf(Market.address);
     assert.equal(
       customerBondStartBalance.toString(),
-      '0',
+      "1",
       "Invalid bond token start balance for customer"
     );
 
@@ -43,8 +50,12 @@ contract("Market.buyBond", (accounts) => {
     await usdc.methods.approve(Market.address, amount).send({from: customer});
     await instance.buyBond(USDC.address, amount, {from: customer});
 
-    const customerUSDCEndBalance = await usdc.methods.balanceOf(customer).call();
-    const marketUSDCEndBalance = await usdc.methods.balanceOf(Market.address).call();
+    const customerUSDCEndBalance = await usdc.methods
+      .balanceOf(customer)
+      .call();
+    const marketUSDCEndBalance = await usdc.methods
+      .balanceOf(Market.address)
+      .call();
     const customerBondEndBalance = await bond.balanceOf(customer);
     const marketBondEndBalance = await bond.balanceOf(Market.address);
     assert.equal(
@@ -82,15 +93,17 @@ contract("Market.buyBond", (accounts) => {
       .toBN(1)
       .mul(utils.toBN(10).pow(utils.toBN(5)))
       .toString();
-    const usdcSwapAmount = (await uniswap.methods
-      .getAmountsOut(amount, [
-        WBTC.address,
-        await uniswap.methods.WETH().call(),
-        USDC.address,
-      ])
-      .call())[2];
+    const usdcSwapAmount = (
+      await uniswap.methods
+        .getAmountsOut(amount, [
+          WBTC.address,
+          await uniswap.methods.WETH().call(),
+          USDC.address,
+        ])
+        .call()
+    )[2];
 
-    await bond.mint(Market.address, startBond);
+    await bond.mint(Market.address, startBond, {from: governor});
     const customerWBTCStartBalance = await wbtc.methods
       .balanceOf(customer)
       .call();
@@ -119,7 +132,10 @@ contract("Market.buyBond", (accounts) => {
     );
     assert.equal(
       marketUSDCEndBalance.toString(),
-      utils.toBN(marketUSDCStartBalance).add(utils.toBN(usdcSwapAmount)).toString(),
+      utils
+        .toBN(marketUSDCStartBalance)
+        .add(utils.toBN(usdcSwapAmount))
+        .toString(),
       "Invalid token end balance for market"
     );
     assert.equal(
@@ -139,8 +155,22 @@ contract("Market.buyBond", (accounts) => {
     const notAllowedToken = accounts[1];
 
     await assertions.reverts(
-      instance.buyBond(notAllowedToken, 1),
+      instance.buyBond(notAllowedToken, 1, {from: customer}),
       "Market::buy: invalid token"
+    );
+  });
+
+  it("buyBond: should revert tx if customer not tokenholder", async () => {
+    const instance = await Market.deployed();
+    const notTokenholder = accounts[1];
+    const usdc = new web3.eth.Contract(IERC20.abi, USDC.address);
+    const amount = "1";
+
+    await usdc.methods.transfer(notTokenholder, amount).send({from: customer});
+
+    await assertions.reverts(
+      instance.buyBond(USDC.address, amount, {from: notTokenholder}),
+      "Market::buyBond: only tokenholder can buy new bond tokens"
     );
   });
 });

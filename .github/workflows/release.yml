@@ -110,6 +110,12 @@ jobs:
     runs-on: ${{ matrix.platform }}
 
     steps:
+      - name: Use Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v1
+        with:
+          node-version: ${{ matrix.node-version }}
+          registry-url: https://registry.npmjs.org/
+
       - name: Clone master branch
         run: |
           git config --global user.name "${GITHUB_ACTOR}"
@@ -126,7 +132,7 @@ jobs:
         run: |
           npm version ${{ github.event.release.tag_name }} --no-git-tag-version
           npm publish --access public
-        working-directory: ./output
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+        working-directory: ./output
 
