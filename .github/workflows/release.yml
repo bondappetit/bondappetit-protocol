@@ -122,15 +122,6 @@ jobs:
           name: networks-$GITHUB_REF-$GITHUB_SHA
           path: ./output
 
-      - name: Publish master branch
-        run: |
-          COMMIT_MESSAGE="new build ${{ github.event.release.tag_name }} on $(date +'%Y-%m-%d %H:%M:%S')"
-          git add --all
-          git diff-index --quiet --cached HEAD -- && echo "No changes!" && exit 0 || echo $COMMIT_MESSAGE
-          git commit -m "${COMMIT_MESSAGE}"
-          git push https://${{ secrets.ACCESS_TOKEN }}@github.com/bondappetit/networks.git master
-        working-directory: ./output
-
       - name: Publish
         run: |
           npm version ${{ github.event.release.tag_name }}
