@@ -37,18 +37,31 @@ contract Market is Ownable {
     /// @dev Allowed tokens symbols list.
     mapping(address => string) internal allowedTokens;
 
+    /// @notice An event thats emitted when an cumulative token changed.
     event CumulativeChanged(address newToken);
 
+    /// @notice An event thats emitted when an token allowed.
     event TokenAllowed(address token, string symbol);
 
+    /// @notice An event thats emitted when an token denied.
     event TokenDenied(address token);
 
+    /// @notice An event thats emitted when an bond token price changed.
     event BondPriceChanged(uint256 newPrice);
 
+    /// @notice An event thats emitted when an account buyed token.
     event Buy(address customer, address product, address token, uint256 amount, uint256 buy);
 
+    /// @notice An event thats emitted when an cumulative token withdrawal.
     event Withdrawal(address recipient, address token, uint256 amount);
 
+    /**
+     * @param _cumulative Address of cumulative token.
+     * @param _abt Address of ABT token.
+     * @param _bond Address of Bond token.
+     * @param _uniswapRouter Address of Uniswap router contract.
+     * @param _priceOracle Address of Price oracle contract.
+     */
     constructor(
         address _cumulative,
         address _abt,
@@ -64,6 +77,7 @@ contract Market is Ownable {
     }
 
     /**
+     * @notice Changed cumulative token address.
      * @param newToken Address new cumulative token.
      * @param recipient Address of recipient for withdraw current cumulative balance.
      */
@@ -110,6 +124,12 @@ contract Market is Ownable {
         emit BondPriceChanged(newPrice);
     }
 
+    /**
+     * @dev Transfer token to recipient.
+     * @param from Address of transfered token contract.
+     * @param recipient Address of recipient.
+     * @param amount Amount of transfered token.
+     */
     function transfer(
         ERC20 from,
         address recipient,
@@ -123,18 +143,40 @@ contract Market is Ownable {
         from.transfer(recipient, amount);
     }
 
+    /**
+     * @notice Transfer ABT token to recipient.
+     * @param recipient Address of recipient.
+     * @param amount Amount of transfered token.
+     */
     function transferABT(address recipient, uint256 amount) external onlyOwner {
         transfer(ERC20(address(abt)), recipient, amount);
     }
 
+    /**
+     * @notice Transfer Bond token to recipient.
+     * @param recipient Address of recipient.
+     * @param amount Amount of transfered token.
+     */
     function transferBond(address recipient, uint256 amount) external onlyOwner {
         transfer(ERC20(address(bond)), recipient, amount);
     }
 
+    /**
+     * @dev Convert token amount to Bond token amount.
+     * @param amount Target token amount.
+     * @return Bond token amount.
+     */
     function _bondPrice(uint256 amount) internal view returns (uint256) {
         return amount.mul(10**PRICE_DECIMALS).div(bondPrice);
     }
 
+    /**
+     * @dev Get product token price from payment token amount.
+     * @param product Product token.
+     * @param token Payment token.
+     * @param amount Payment token amount.
+     * @return Price of product token.
+     */
     function price(
         ERC20 product,
         ERC20 token,
@@ -158,10 +200,22 @@ contract Market is Ownable {
         return result;
     }
 
+    /**
+     * @dev Get ABT token price from payment token amount.
+     * @param token Payment token.
+     * @param amount Payment token amount.
+     * @return Price of product token.
+     */
     function priceABT(address token, uint256 amount) external view returns (uint256) {
         return price(ERC20(address(abt)), ERC20(token), amount);
     }
 
+    /**
+     * @dev Get Bond token price from payment token amount.
+     * @param token Payment token.
+     * @param amount Payment token amount.
+     * @return Price of product token.
+     */
     function priceBond(address token, uint256 amount) external view returns (uint256) {
         return price(ERC20(address(bond)), ERC20(token), amount);
     }
@@ -198,6 +252,13 @@ contract Market is Ownable {
         return amountsOut[amountsOut.length - 1];
     }
 
+    /**
+     * @dev Buy product token with ERC20 payment token amount.
+     * @param product Purchased token.
+     * @param token Payment token.
+     * @param amount Amount of payment token.
+     * @return True if success.
+     */
     function buy(
         ERC20 product,
         ERC20 token,
@@ -222,14 +283,31 @@ contract Market is Ownable {
         return true;
     }
 
+    /**
+     * @notice Buy ABT token with ERC20 payment token amount.
+     * @param token Payment token.
+     * @param amount Amount of payment token.
+     * @return True if success.
+     */
     function buyABT(address token, uint256 amount) external returns (bool) {
         return buy(ERC20(address(abt)), ERC20(token), amount);
     }
 
+    /**
+     * @notice Buy Bond token with ERC20 payment token amount.
+     * @param token Payment token.
+     * @param amount Amount of payment token.
+     * @return True if success.
+     */
     function buyBond(address token, uint256 amount) external returns (bool) {
         return buy(ERC20(address(bond)), ERC20(token), amount);
     }
 
+    /**
+     * @dev Buy product token with ETH amount.
+     * @param product Purchased token.
+     * @return True if success.
+     */
     function buyFromETH(ERC20 product) internal returns (bool) {
         ERC20 token = ERC20(uniswapRouter.WETH());
         uint256 amount = msg.value;
@@ -250,10 +328,18 @@ contract Market is Ownable {
         return true;
     }
 
+    /**
+     * @notice Buy ABT token with ETH amount.
+     * @return True if success.
+     */
     function buyABTFromETH() external payable returns (bool) {
         return buyFromETH(ERC20(address(abt)));
     }
 
+    /**
+     * @notice Buy Bond token with ETH amount.
+     * @return True if success.
+     */
     function buyBondFromETH() external payable returns (bool) {
         return buyFromETH(ERC20(address(bond)));
     }
