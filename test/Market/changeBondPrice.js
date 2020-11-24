@@ -19,7 +19,7 @@ contract("Market.changeBondPrice", (accounts) => {
     );
   });
 
-  it("approve: should revert tx if called is not the owner", async () => {
+  it("changeBondPrice: should revert tx if called is not the owner", async () => {
     const instance = await Market.deployed();
     const notOwner = accounts[1];
 
