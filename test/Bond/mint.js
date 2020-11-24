@@ -3,7 +3,7 @@ const {utils} = require("web3");
 const Bond = artifacts.require("Bond");
 const {development} = require("../../networks");
 
-contract("Bond", (accounts) => {
+contract("Bond.mint", (accounts) => {
   const governor = development.accounts.Governor.address;
 
   it("mint: should mint tokens", async () => {

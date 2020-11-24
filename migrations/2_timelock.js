@@ -1,4 +1,4 @@
-const {delay} = require('./utils');
+const {afterMigration} = require("./utils");
 const networks = require("../networks");
 const SafeMath = artifacts.require("SafeMath");
 const Timelock = artifacts.require("Timelock");
@@ -16,5 +16,5 @@ module.exports = async (deployer, network) => {
     0
   );
 
-  if (network !== 'development') await delay(30000);
+  await afterMigration(network);
 };

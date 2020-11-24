@@ -3,7 +3,7 @@ const Bond = artifacts.require("Bond");
 const Treasury = artifacts.require("Treasury");
 const {development} = require("../../networks");
 
-contract("Treasury", (accounts) => {
+contract("Treasury.transfer", (accounts) => {
   const governor = development.accounts.Governor.address;
 
   it("transfer: should transfer target token", async () => {
@@ -16,13 +16,13 @@ contract("Treasury", (accounts) => {
     const startTreasuryBalance = await bond.balanceOf(Treasury.address);
     const startAccountBalance = await bond.balanceOf(accountWithoutTokens);
     assert.equal(
-      amount.toString(),
       startTreasuryBalance.toString(),
+      amount.toString(),
       "Invalid start treasury balance"
     );
     assert.equal(
-      "0",
       startAccountBalance.toString(),
+      "0",
       "Invalid start account balance"
     );
 
@@ -32,13 +32,13 @@ contract("Treasury", (accounts) => {
     const endTreasuryBalance = await bond.balanceOf(Treasury.address);
     const endAccountBalance = await bond.balanceOf(accountWithoutTokens);
     assert.equal(
-      "0",
       endTreasuryBalance.toString(),
+      "0",
       "Invalid end treasury balance"
     );
     assert.equal(
-      amount.toString(),
       endAccountBalance.toString(),
+      amount.toString(),
       "Invalid end account balance"
     );
   });

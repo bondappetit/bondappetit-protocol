@@ -3,7 +3,7 @@ const Bond = artifacts.require("Bond");
 const Market = artifacts.require("Market");
 const {development} = require("../../networks");
 
-contract("Market", (accounts) => {
+contract("Market.transferBond", (accounts) => {
   const governor = development.accounts.Governor.address;
 
   it("transferABT: should transfer ABT tokens", async () => {
@@ -13,8 +13,8 @@ contract("Market", (accounts) => {
     const amount = '1000000';
 
     assert.equal(
-      0,
       await bond.balanceOf(recipient),
+      0,
       "Invalid start balance"
     );
 
@@ -22,8 +22,8 @@ contract("Market", (accounts) => {
     bond.mint(Market.address, amount, {from: governor});
     await instance.transferBond(recipient, amount, {from: governor});
     assert.equal(
-      amount,
       await bond.balanceOf(recipient),
+      amount,
       "Invalid end balance"
     );
   });

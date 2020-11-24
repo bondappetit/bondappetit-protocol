@@ -3,7 +3,7 @@ const Bond = artifacts.require("Bond");
 const Treasury = artifacts.require("Treasury");
 const {development} = require("../../networks");
 
-contract("Treasury", (accounts) => {
+contract("Treasury.approve", (accounts) => {
   const governor = development.accounts.Governor.address;
 
   it("approve: should approve target token", async () => {
@@ -15,8 +15,8 @@ contract("Treasury", (accounts) => {
     await bond.transfer(Treasury.address, amount, {from: governor});
     const startAccountAllowance = await bond.allowance(Treasury.address, accountWithoutTokens);
     assert.equal(
-      "0",
       startAccountAllowance.toString(),
+      "0",
       "Invalid start account allowance"
     );
 
@@ -25,8 +25,8 @@ contract("Treasury", (accounts) => {
     });
     const endAccountAllowance = await bond.allowance(Treasury.address, accountWithoutTokens);
     assert.equal(
-      amount.toString(),
       endAccountAllowance.toString(),
+      amount.toString(),
       "Invalid end account allowance"
     );
   });

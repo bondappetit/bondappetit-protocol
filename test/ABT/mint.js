@@ -3,7 +3,7 @@ const {utils} = require("web3");
 const ABT = artifacts.require("ABT");
 const {development} = require("../../networks");
 
-contract("ABT", (accounts) => {
+contract("ABT.mint", (accounts) => {
   const governor = development.accounts.Governor.address;
 
   it("mint: should mint tokens", async () => {

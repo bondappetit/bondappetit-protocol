@@ -1,4 +1,4 @@
-const {delay} = require('./utils');
+const {afterMigration} = require('./utils');
 const networks = require("../networks");
 const Timelock = artifacts.require("Timelock");
 const Bond = artifacts.require("Bond");
@@ -41,5 +41,5 @@ module.exports = async (deployer, network) => {
   await abt.transferOwnership(Issuer.address, {from: Governor.address});
   await market.transferOwnership(Timelock.address, {from: Governor.address});
 
-  if (network !== 'development') await delay(30000);
+  await afterMigration(network);
 };

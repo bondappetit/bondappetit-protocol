@@ -1,4 +1,4 @@
-const {delay} = require('./utils');
+const {afterMigration} = require("./utils");
 const networks = require("../networks");
 const DepositaryOracle = artifacts.require("oracle/DepositaryOracle");
 const SecurityOracle = artifacts.require("oracle/SecurityOracle");
@@ -20,5 +20,5 @@ module.exports = async (deployer, network) => {
     }
   );
 
-  if (network !== 'development') await delay(30000);
+  await afterMigration(network);
 };

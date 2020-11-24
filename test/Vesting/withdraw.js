@@ -5,7 +5,7 @@ const Vesting = artifacts.require("Vesting");
 const {development} = require("../../networks");
 const dayjs = require('dayjs');
 
-contract("Vesting", (accounts) => {
+contract("Vesting.withdraw", (accounts) => {
   const governor = development.accounts.Governor.address;
   const recipient = accounts[1];
   const amount = "100";
@@ -32,7 +32,7 @@ contract("Vesting", (accounts) => {
       startBalance.add(utils.toBN(amount)).toString(),
       "Invalid balance"
     );
-    assert.equal(true, withdrawalPeriod.withdrawal, "Invalid withdrawal flag");
+    assert.equal(withdrawalPeriod.withdrawal, true, "Invalid withdrawal flag");
   });
 
   it("withdraw: should revert tx if period is empty", async () => {

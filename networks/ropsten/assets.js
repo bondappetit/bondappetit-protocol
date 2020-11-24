@@ -20,6 +20,13 @@ module.exports = {
     decimals: 6,
     investing: true,
   },
+  WBTC: {
+    address: "0xbde8bb00a7ef67007a96945b3a3621177b615c44",
+    name: "Wrapped BTC",
+    symbol: "WBTC",
+    decimals: 8,
+    investing: false,
+  },
   WETH: {
     address: "0xc778417E063141139Fce010982780140Aa0cD5Ab",
     name: "Wrapped Ether",
