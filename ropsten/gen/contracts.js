@@ -1,6 +1,6 @@
 module.exports = {
     "Bond": {
-        "address": "0xAd58a1bA653A577bfae69D7b3c7b8aB101012f2B",
+        "address": "0x99Ba26a7AbCD7cbbaad7f83006ad454029CA6512",
         "name": "Bond",
         "voting": true,
         "abi": [
@@ -691,7 +691,7 @@ module.exports = {
         ]
     },
     "Timelock": {
-        "address": "0x82CB241B50b193e76857b475a41288356588a548",
+        "address": "0x256eD3b67Fb2295c8246e08Aa7c941e7746f2C4c",
         "name": "Timelock",
         "voting": true,
         "abi": [
@@ -1149,7 +1149,7 @@ module.exports = {
         ]
     },
     "GovernorAlpha": {
-        "address": "0x9070faa86Be8D383cd00d7AF9cF71F1b813B4923",
+        "address": "0x6E96Bb6650907FF31A5e5CA47CECcd7a9635a013",
         "name": "GovernorAlpha",
         "abi": [
             {
@@ -1838,7 +1838,7 @@ module.exports = {
         ]
     },
     "Investment": {
-        "address": "0x3C67DA6bDd28f2c5316978A5d77b103b2C8ba622",
+        "address": "0x78c7e24FEC9Bf1Aba0251e17FE91D3dae5D37293",
         "name": "Investment",
         "voting": true,
         "abi": [
@@ -2210,7 +2210,7 @@ module.exports = {
         ]
     },
     "Vesting": {
-        "address": "0xF164fE81F84aae0dA59E08c1769DEc7dda6A4Aa9",
+        "address": "0x637dcd7bCF2E39e1f8261788aFa0DE1F042B3621",
         "name": "Vesting",
         "voting": true,
         "abi": [
@@ -2456,7 +2456,7 @@ module.exports = {
         ]
     },
     "ABT": {
-        "address": "0x1A89B9BF4F7b0d75BB4c9B56cAB358278D8Fc196",
+        "address": "0x16bb954ad451fBF1860E0C01765D5bdE390EDaC6",
         "name": "ABT",
         "voting": true,
         "abi": [
@@ -2839,7 +2839,7 @@ module.exports = {
         ]
     },
     "Treasury": {
-        "address": "0xF171552DcE47b2895fB51c8c5d4455AAC3B4F0C2",
+        "address": "0xC540760f878a5382e9668A5561Eab81c8044CB78",
         "name": "Treasury",
         "voting": true,
         "abi": [
@@ -2957,7 +2957,7 @@ module.exports = {
         ]
     },
     "Issuer": {
-        "address": "0xeE7ee75369fAF9612E53C16dabDFe73d47626c82",
+        "address": "0x68b413db716F2CeAc1c206bCE96ec0169cFBeB6C",
         "name": "Issuer",
         "voting": true,
         "abi": [
@@ -3221,6 +3221,572 @@ module.exports = {
             {
                 "inputs": [],
                 "name": "rebalance",
+                "outputs": [],
+                "stateMutability": "nonpayable",
+                "type": "function"
+            }
+        ]
+    },
+    "Market": {
+        "address": "0x240856c9a388615F54D5dB743Ad805723AeF9E63",
+        "name": "Market",
+        "voting": true,
+        "abi": [
+            {
+                "inputs": [
+                    {
+                        "internalType": "address",
+                        "name": "_cumulative",
+                        "type": "address"
+                    },
+                    {
+                        "internalType": "address",
+                        "name": "_abt",
+                        "type": "address"
+                    },
+                    {
+                        "internalType": "address",
+                        "name": "_bond",
+                        "type": "address"
+                    },
+                    {
+                        "internalType": "address",
+                        "name": "_uniswapRouter",
+                        "type": "address"
+                    },
+                    {
+                        "internalType": "address",
+                        "name": "_priceOracle",
+                        "type": "address"
+                    }
+                ],
+                "stateMutability": "nonpayable",
+                "type": "constructor"
+            },
+            {
+                "anonymous": false,
+                "inputs": [
+                    {
+                        "indexed": false,
+                        "internalType": "uint256",
+                        "name": "newPrice",
+                        "type": "uint256"
+                    }
+                ],
+                "name": "BondPriceChanged",
+                "type": "event"
+            },
+            {
+                "anonymous": false,
+                "inputs": [
+                    {
+                        "indexed": false,
+                        "internalType": "address",
+                        "name": "customer",
+                        "type": "address"
+                    },
+                    {
+                        "indexed": false,
+                        "internalType": "address",
+                        "name": "product",
+                        "type": "address"
+                    },
+                    {
+                        "indexed": false,
+                        "internalType": "address",
+                        "name": "token",
+                        "type": "address"
+                    },
+                    {
+                        "indexed": false,
+                        "internalType": "uint256",
+                        "name": "amount",
+                        "type": "uint256"
+                    },
+                    {
+                        "indexed": false,
+                        "internalType": "uint256",
+                        "name": "buy",
+                        "type": "uint256"
+                    }
+                ],
+                "name": "Buy",
+                "type": "event"
+            },
+            {
+                "anonymous": false,
+                "inputs": [
+                    {
+                        "indexed": false,
+                        "internalType": "address",
+                        "name": "newToken",
+                        "type": "address"
+                    }
+                ],
+                "name": "CumulativeChanged",
+                "type": "event"
+            },
+            {
+                "anonymous": false,
+                "inputs": [
+                    {
+                        "indexed": true,
+                        "internalType": "address",
+                        "name": "previousOwner",
+                        "type": "address"
+                    },
+                    {
+                        "indexed": true,
+                        "internalType": "address",
+                        "name": "newOwner",
+                        "type": "address"
+                    }
+                ],
+                "name": "OwnershipTransferred",
+                "type": "event"
+            },
+            {
+                "anonymous": false,
+                "inputs": [
+                    {
+                        "indexed": false,
+                        "internalType": "address",
+                        "name": "token",
+                        "type": "address"
+                    },
+                    {
+                        "indexed": false,
+                        "internalType": "string",
+                        "name": "symbol",
+                        "type": "string"
+                    }
+                ],
+                "name": "TokenAllowed",
+                "type": "event"
+            },
+            {
+                "anonymous": false,
+                "inputs": [
+                    {
+                        "indexed": false,
+                        "internalType": "address",
+                        "name": "token",
+                        "type": "address"
+                    }
+                ],
+                "name": "TokenDenied",
+                "type": "event"
+            },
+            {
+                "anonymous": false,
+                "inputs": [
+                    {
+                        "indexed": false,
+                        "internalType": "address",
+                        "name": "recipient",
+                        "type": "address"
+                    },
+                    {
+                        "indexed": false,
+                        "internalType": "address",
+                        "name": "token",
+                        "type": "address"
+                    },
+                    {
+                        "indexed": false,
+                        "internalType": "uint256",
+                        "name": "amount",
+                        "type": "uint256"
+                    }
+                ],
+                "name": "Withdrawal",
+                "type": "event"
+            },
+            {
+                "inputs": [],
+                "name": "PRICE_DECIMALS",
+                "outputs": [
+                    {
+                        "internalType": "uint256",
+                        "name": "",
+                        "type": "uint256"
+                    }
+                ],
+                "stateMutability": "view",
+                "type": "function",
+                "constant": true
+            },
+            {
+                "inputs": [],
+                "name": "abt",
+                "outputs": [
+                    {
+                        "internalType": "contract ABT",
+                        "name": "",
+                        "type": "address"
+                    }
+                ],
+                "stateMutability": "view",
+                "type": "function",
+                "constant": true
+            },
+            {
+                "inputs": [],
+                "name": "bond",
+                "outputs": [
+                    {
+                        "internalType": "contract Bond",
+                        "name": "",
+                        "type": "address"
+                    }
+                ],
+                "stateMutability": "view",
+                "type": "function",
+                "constant": true
+            },
+            {
+                "inputs": [],
+                "name": "bondPrice",
+                "outputs": [
+                    {
+                        "internalType": "uint256",
+                        "name": "",
+                        "type": "uint256"
+                    }
+                ],
+                "stateMutability": "view",
+                "type": "function",
+                "constant": true
+            },
+            {
+                "inputs": [],
+                "name": "cumulative",
+                "outputs": [
+                    {
+                        "internalType": "contract ERC20",
+                        "name": "",
+                        "type": "address"
+                    }
+                ],
+                "stateMutability": "view",
+                "type": "function",
+                "constant": true
+            },
+            {
+                "inputs": [],
+                "name": "owner",
+                "outputs": [
+                    {
+                        "internalType": "address",
+                        "name": "",
+                        "type": "address"
+                    }
+                ],
+                "stateMutability": "view",
+                "type": "function",
+                "constant": true
+            },
+            {
+                "inputs": [],
+                "name": "priceOracle",
+                "outputs": [
+                    {
+                        "internalType": "contract IUniswapAnchoredView",
+                        "name": "",
+                        "type": "address"
+                    }
+                ],
+                "stateMutability": "view",
+                "type": "function",
+                "constant": true
+            },
+            {
+                "inputs": [],
+                "name": "renounceOwnership",
+                "outputs": [],
+                "stateMutability": "nonpayable",
+                "type": "function"
+            },
+            {
+                "inputs": [
+                    {
+                        "internalType": "address",
+                        "name": "newOwner",
+                        "type": "address"
+                    }
+                ],
+                "name": "transferOwnership",
+                "outputs": [],
+                "stateMutability": "nonpayable",
+                "type": "function"
+            },
+            {
+                "inputs": [],
+                "name": "uniswapRouter",
+                "outputs": [
+                    {
+                        "internalType": "contract IUniswapV2Router02",
+                        "name": "",
+                        "type": "address"
+                    }
+                ],
+                "stateMutability": "view",
+                "type": "function",
+                "constant": true
+            },
+            {
+                "inputs": [
+                    {
+                        "internalType": "address",
+                        "name": "newToken",
+                        "type": "address"
+                    },
+                    {
+                        "internalType": "address",
+                        "name": "recipient",
+                        "type": "address"
+                    }
+                ],
+                "name": "changeCumulativeToken",
+                "outputs": [],
+                "stateMutability": "nonpayable",
+                "type": "function"
+            },
+            {
+                "inputs": [
+                    {
+                        "internalType": "address",
+                        "name": "token",
+                        "type": "address"
+                    },
+                    {
+                        "internalType": "string",
+                        "name": "symbol",
+                        "type": "string"
+                    }
+                ],
+                "name": "allowToken",
+                "outputs": [],
+                "stateMutability": "nonpayable",
+                "type": "function"
+            },
+            {
+                "inputs": [
+                    {
+                        "internalType": "address",
+                        "name": "token",
+                        "type": "address"
+                    }
+                ],
+                "name": "denyToken",
+                "outputs": [],
+                "stateMutability": "nonpayable",
+                "type": "function"
+            },
+            {
+                "inputs": [
+                    {
+                        "internalType": "address",
+                        "name": "token",
+                        "type": "address"
+                    }
+                ],
+                "name": "isAllowedToken",
+                "outputs": [
+                    {
+                        "internalType": "bool",
+                        "name": "",
+                        "type": "bool"
+                    }
+                ],
+                "stateMutability": "view",
+                "type": "function",
+                "constant": true
+            },
+            {
+                "inputs": [
+                    {
+                        "internalType": "uint256",
+                        "name": "newPrice",
+                        "type": "uint256"
+                    }
+                ],
+                "name": "changeBondPrice",
+                "outputs": [],
+                "stateMutability": "nonpayable",
+                "type": "function"
+            },
+            {
+                "inputs": [
+                    {
+                        "internalType": "address",
+                        "name": "recipient",
+                        "type": "address"
+                    },
+                    {
+                        "internalType": "uint256",
+                        "name": "amount",
+                        "type": "uint256"
+                    }
+                ],
+                "name": "transferABT",
+                "outputs": [],
+                "stateMutability": "nonpayable",
+                "type": "function"
+            },
+            {
+                "inputs": [
+                    {
+                        "internalType": "address",
+                        "name": "recipient",
+                        "type": "address"
+                    },
+                    {
+                        "internalType": "uint256",
+                        "name": "amount",
+                        "type": "uint256"
+                    }
+                ],
+                "name": "transferBond",
+                "outputs": [],
+                "stateMutability": "nonpayable",
+                "type": "function"
+            },
+            {
+                "inputs": [
+                    {
+                        "internalType": "address",
+                        "name": "token",
+                        "type": "address"
+                    },
+                    {
+                        "internalType": "uint256",
+                        "name": "amount",
+                        "type": "uint256"
+                    }
+                ],
+                "name": "priceABT",
+                "outputs": [
+                    {
+                        "internalType": "uint256",
+                        "name": "",
+                        "type": "uint256"
+                    }
+                ],
+                "stateMutability": "view",
+                "type": "function",
+                "constant": true
+            },
+            {
+                "inputs": [
+                    {
+                        "internalType": "address",
+                        "name": "token",
+                        "type": "address"
+                    },
+                    {
+                        "internalType": "uint256",
+                        "name": "amount",
+                        "type": "uint256"
+                    }
+                ],
+                "name": "priceBond",
+                "outputs": [
+                    {
+                        "internalType": "uint256",
+                        "name": "",
+                        "type": "uint256"
+                    }
+                ],
+                "stateMutability": "view",
+                "type": "function",
+                "constant": true
+            },
+            {
+                "inputs": [
+                    {
+                        "internalType": "address",
+                        "name": "token",
+                        "type": "address"
+                    },
+                    {
+                        "internalType": "uint256",
+                        "name": "amount",
+                        "type": "uint256"
+                    }
+                ],
+                "name": "buyABT",
+                "outputs": [
+                    {
+                        "internalType": "bool",
+                        "name": "",
+                        "type": "bool"
+                    }
+                ],
+                "stateMutability": "nonpayable",
+                "type": "function"
+            },
+            {
+                "inputs": [
+                    {
+                        "internalType": "address",
+                        "name": "token",
+                        "type": "address"
+                    },
+                    {
+                        "internalType": "uint256",
+                        "name": "amount",
+                        "type": "uint256"
+                    }
+                ],
+                "name": "buyBond",
+                "outputs": [
+                    {
+                        "internalType": "bool",
+                        "name": "",
+                        "type": "bool"
+                    }
+                ],
+                "stateMutability": "nonpayable",
+                "type": "function"
+            },
+            {
+                "inputs": [],
+                "name": "buyABTFromETH",
+                "outputs": [
+                    {
+                        "internalType": "bool",
+                        "name": "",
+                        "type": "bool"
+                    }
+                ],
+                "stateMutability": "payable",
+                "type": "function",
+                "payable": true
+            },
+            {
+                "inputs": [],
+                "name": "buyBondFromETH",
+                "outputs": [
+                    {
+                        "internalType": "bool",
+                        "name": "",
+                        "type": "bool"
+                    }
+                ],
+                "stateMutability": "payable",
+                "type": "function",
+                "payable": true
+            },
+            {
+                "inputs": [
+                    {
+                        "internalType": "address",
+                        "name": "recipient",
+                        "type": "address"
+                    }
+                ],
+                "name": "withdraw",
                 "outputs": [],
                 "stateMutability": "nonpayable",
                 "type": "function"
