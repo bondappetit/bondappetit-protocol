@@ -8,7 +8,8 @@
     {"path": "build/contracts/ABT.json", "voting": true},
     {"path": "build/contracts/Treasury.json", "voting": true},
     {"path": "build/contracts/Issuer.json", "voting": true},
-    {"path": "build/contracts/Market.json", "voting": true}
+    {"path": "build/contracts/Market.json", "voting": true},
+    {"path": "build/contracts/Stacking.json", "voting": true}
   ],
   "assets": [
     {
@@ -32,6 +33,7 @@
     {"path": "build/contracts/Investment.json"},
     {"path": "build/contracts/Treasury.json"},
     {"path": "build/contracts/Issuer.json"},
-    {"path": "build/contracts/Market.json"}
+    {"path": "build/contracts/Market.json"},
+    {"path": "build/contracts/Stacking.json"}
   ]
 }
