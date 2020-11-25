@@ -29,8 +29,17 @@ jobs:
           MNENOMIC: ${{secrets.MNENOMIC}}
           INFURA_API_KEY: ${{secrets.INFURA_API_KEY}}
 
-      - name: npm release-test
-        run: npm run release-test
+      - name: npm deploy
+        run: npm run deploy -- --network ropsten --reset
+        env:
+          MNENOMIC: ${{secrets.MNENOMIC}}
+          INFURA_API_KEY: ${{secrets.INFURA_API_KEY}}
+
+      - name: npm config-gen
+        run: npm run config-gen -- --network ropsten
+        env:
+          MNENOMIC: ${{secrets.MNENOMIC}}
+          INFURA_API_KEY: ${{secrets.INFURA_API_KEY}}
 
       - name: Archive artifacts
         uses: actions/upload-artifact@v2
@@ -114,9 +123,9 @@ jobs:
         uses: actions/setup-node@v1
         with:
           node-version: ${{ matrix.node-version }}
-          registry-url: https://registry.npmjs.org/
+          registry-url: https://registry.npmjs.com/
 
-      - name: Clone master branch
+      - name: Clone networks
         run: |
           git config --global user.name "${GITHUB_ACTOR}"
           git config --global user.email "${GITHUB_ACTOR}@https://users.noreply.github.com/"
@@ -128,7 +137,7 @@ jobs:
           name: networks-$GITHUB_REF-$GITHUB_SHA
           path: ./output
 
-      - name: Publish
+      - name: Publish to npm
         run: |
           npm version ${{ github.event.release.tag_name }} --no-git-tag-version
           npm publish --access public
