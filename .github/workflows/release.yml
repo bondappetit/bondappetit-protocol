@@ -29,8 +29,17 @@ jobs:
           MNENOMIC: ${{secrets.MNENOMIC}}
           INFURA_API_KEY: ${{secrets.INFURA_API_KEY}}
 
-      - name: npm release-test
-        run: npm run release-test
+      - name: npm deploy
+        run: npm run deploy -- --network ropsten --reset
+        env:
+          MNENOMIC: ${{secrets.MNENOMIC}}
+          INFURA_API_KEY: ${{secrets.INFURA_API_KEY}}
+
+      - name: npm config-gen
+        run: npm run config-gen -- --network ropsten
+        env:
+          MNENOMIC: ${{secrets.MNENOMIC}}
+          INFURA_API_KEY: ${{secrets.INFURA_API_KEY}}
 
       - name: Archive artifacts
         uses: actions/upload-artifact@v2
