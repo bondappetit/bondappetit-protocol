@@ -110,12 +110,11 @@ jobs:
     runs-on: ${{ matrix.platform }}
 
     steps:
-      - uses: actions/checkout@v2
       - name: Use Node.js ${{ matrix.node-version }}
         uses: actions/setup-node@v1
         with:
           node-version: ${{ matrix.node-version }}
-          registry-url: https://registry.npmjs.org/
+          registry-url: https://registry.npmjs.com/
 
       - name: Clone networks
         run: |
