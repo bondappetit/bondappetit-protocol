@@ -110,13 +110,14 @@ jobs:
     runs-on: ${{ matrix.platform }}
 
     steps:
+      - uses: actions/checkout@v2
       - name: Use Node.js ${{ matrix.node-version }}
         uses: actions/setup-node@v1
         with:
           node-version: ${{ matrix.node-version }}
           registry-url: https://registry.npmjs.org/
 
-      - name: Clone master branch
+      - name: Clone networks
         run: |
           git config --global user.name "${GITHUB_ACTOR}"
           git config --global user.email "${GITHUB_ACTOR}@https://users.noreply.github.com/"
@@ -128,7 +129,8 @@ jobs:
           name: networks-$GITHUB_REF-$GITHUB_SHA
           path: ./output
 
-      - name: Publish
+      - name: Publish to npm
+        uses: actions/setup-node@v1
         run: |
           npm version ${{ github.event.release.tag_name }} --no-git-tag-version
           npm publish --access public
