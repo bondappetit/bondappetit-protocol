@@ -1,6 +1,6 @@
 module.exports = {
     "Bond": {
-        "address": "0x99Ba26a7AbCD7cbbaad7f83006ad454029CA6512",
+        "address": "0xDBb083b9d9C2D567387e38e36E549E37D780903E",
         "name": "Bond",
         "voting": true,
         "abi": [
@@ -691,7 +691,7 @@ module.exports = {
         ]
     },
     "Timelock": {
-        "address": "0x256eD3b67Fb2295c8246e08Aa7c941e7746f2C4c",
+        "address": "0x269b7f15475A3248aF100A345341d0B50e687a2f",
         "name": "Timelock",
         "voting": true,
         "abi": [
@@ -1149,7 +1149,7 @@ module.exports = {
         ]
     },
     "GovernorAlpha": {
-        "address": "0x6E96Bb6650907FF31A5e5CA47CECcd7a9635a013",
+        "address": "0x63d90b463022D8782FEDca492f6C23Fd48C42d52",
         "name": "GovernorAlpha",
         "abi": [
             {
@@ -1838,7 +1838,7 @@ module.exports = {
         ]
     },
     "Investment": {
-        "address": "0x78c7e24FEC9Bf1Aba0251e17FE91D3dae5D37293",
+        "address": "0x3BA2f55Ef507DF28693EA58B3CF972A9aE476b72",
         "name": "Investment",
         "voting": true,
         "abi": [
@@ -2210,7 +2210,7 @@ module.exports = {
         ]
     },
     "Vesting": {
-        "address": "0x637dcd7bCF2E39e1f8261788aFa0DE1F042B3621",
+        "address": "0xE857022F382787E6b3d8518A5A71E8ed92C0A690",
         "name": "Vesting",
         "voting": true,
         "abi": [
@@ -2456,7 +2456,7 @@ module.exports = {
         ]
     },
     "ABT": {
-        "address": "0x16bb954ad451fBF1860E0C01765D5bdE390EDaC6",
+        "address": "0x70550Bc958F97F000fb55Df8CdE609632e0B20A3",
         "name": "ABT",
         "voting": true,
         "abi": [
@@ -2839,7 +2839,7 @@ module.exports = {
         ]
     },
     "Treasury": {
-        "address": "0xC540760f878a5382e9668A5561Eab81c8044CB78",
+        "address": "0x49B72e178A5dfB9697D0E28C239B5032E11250cc",
         "name": "Treasury",
         "voting": true,
         "abi": [
@@ -2957,7 +2957,7 @@ module.exports = {
         ]
     },
     "Issuer": {
-        "address": "0x68b413db716F2CeAc1c206bCE96ec0169cFBeB6C",
+        "address": "0xF741F1720F635aBBeE90D09150B22e3fa5C310bB",
         "name": "Issuer",
         "voting": true,
         "abi": [
@@ -3228,7 +3228,7 @@ module.exports = {
         ]
     },
     "Market": {
-        "address": "0x240856c9a388615F54D5dB743Ad805723AeF9E63",
+        "address": "0xaC7960A01CDCDc15Af4EEDd4C819029b1ffB4fCC",
         "name": "Market",
         "voting": true,
         "abi": [

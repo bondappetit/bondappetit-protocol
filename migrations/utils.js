@@ -4,7 +4,7 @@ function delay(timeout) {
 
 async function afterMigration(network) {
   if (!["development", "development-fork"].includes(network)) {
-    await delay(30000);
+    await delay(15000);
   }
 }
 
