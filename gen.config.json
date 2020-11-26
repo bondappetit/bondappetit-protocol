@@ -27,6 +27,7 @@
   ],
   "abi": [
     {"path": "build/contracts/IERC20.json"},
+    {"path": "build/contracts/UniswapAnchoredView.json"},
     {"path": "build/contracts/Bond.json"},
     {"path": "build/contracts/ABT.json"},
     {"path": "build/contracts/GovernorAlpha.json"},
