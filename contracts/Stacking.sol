@@ -111,9 +111,15 @@ contract Stacking is Ownable {
      * @param token Address of unstacking token.
      */
     function unlock(address token) external {
+        Balance memory balance = balances[msg.sender][token];
+        require(balance.amount > 0, "Stacking::unlock: balance is empty");
+        uint256 _reward = reward(token);
+
         balances[msg.sender][token] = Balance(0, 0);
-        ERC20(token).safeTransfer(msg.sender, balances[msg.sender][token].amount);
-        rewardToken.safeTransfer(msg.sender, reward(token));
+        ERC20(token).safeTransfer(msg.sender, balance.amount);
+        if (_reward > 0) {
+            rewardToken.safeTransfer(msg.sender, _reward);
+        }
         emit Unlocked(msg.sender, token);
     }
 }

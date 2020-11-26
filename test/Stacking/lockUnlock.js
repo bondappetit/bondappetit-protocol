@@ -112,21 +112,24 @@ contract("Stacking.lockUnlock", (accounts) => {
     );
   });
 
-  it("unlock", async () => {
+  it("unlock: should withdraw locked tokens and reward", async () => {
     const instance = await Stacking.deployed();
     const bond = await Bond.deployed();
 
     await bond.transfer(Stacking.address, utils.toBN(10).pow(utils.toBN(18)).toString(), {from: governor});
 
     const startBondBalance = await bond.balanceOf(governor);
+    const reward = await instance.reward(Bond.address, {from: governor});
+    const balance = await instance.balances(governor, Bond.address);
+    const {delta} = await instance.rewards(Bond.address);
+    const rewardToUnlockBlock = balance.amount.mul(delta).div(utils.toBN(10).pow(utils.toBN(18)));
 
-    await instance.unlock(Bond.address);
+    await instance.unlock(Bond.address, {from: governor});
 
     const endBondBalance = await bond.balanceOf(governor);
-    const reward = await instance.reward(Bond.address);
     assert.equal(
       endBondBalance.toString(),
-      startBondBalance.add(reward).toString(),
+      startBondBalance.add(balance.amount).add(reward).add(rewardToUnlockBlock).toString(),
       "Invalid end bond balance"
     );
   });
