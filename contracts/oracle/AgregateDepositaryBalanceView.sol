@@ -2,10 +2,10 @@
 pragma solidity ^0.6.0;
 
 import "@openzeppelin/contracts/math/SafeMath.sol";
-import "@openzeppelin/contracts/access/Ownable.sol";
+import "../utils/OwnablePausable.sol";
 import "./IDepositaryBalanceView.sol";
 
-contract AgregateDepositaryBalanceView is IDepositaryBalanceView, Ownable {
+contract AgregateDepositaryBalanceView is IDepositaryBalanceView, OwnablePausable {
     using SafeMath for uint256;
 
     /// @notice The number of depositaries in agregate.

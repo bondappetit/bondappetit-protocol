@@ -8,6 +8,7 @@ const Vesting = artifacts.require("Vesting");
 const Treasury = artifacts.require("Treasury");
 const Issuer = artifacts.require("Issuer");
 const Market = artifacts.require("Market");
+const Stacking = artifacts.require("Stacking");
 
 module.exports = async (deployer, network) => {
   if (network === "development") return;
@@ -23,7 +24,8 @@ module.exports = async (deployer, network) => {
     vesting,
     treasury,
     issuer,
-    market
+    market,
+    stacking
   ] = await Promise.all([
     Bond.deployed(),
     ABT.deployed(),
@@ -32,6 +34,7 @@ module.exports = async (deployer, network) => {
     Treasury.deployed(),
     Issuer.deployed(),
     Market.deployed(),
+    Stacking.deployed(),
   ])
   await bond.transferOwnership(Timelock.address, {from: Governor.address});
   await investment.transferOwnership(Timelock.address, {from: Governor.address});
@@ -40,6 +43,7 @@ module.exports = async (deployer, network) => {
   await issuer.transferOwnership(Timelock.address, {from: Governor.address});
   await abt.transferOwnership(Issuer.address, {from: Governor.address});
   await market.transferOwnership(Timelock.address, {from: Governor.address});
+  await stacking.transferOwnership(Timelock.address, {from: Governor.address});
 
   await afterMigration(network);
 };

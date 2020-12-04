@@ -1,13 +1,13 @@
 module.exports = {
     "Bond": {
-        "address": "0xAd58a1bA653A577bfae69D7b3c7b8aB101012f2B",
+        "address": "0x99Ba26a7AbCD7cbbaad7f83006ad454029CA6512",
         "name": "Bond",
         "symbol": "BOND",
         "decimals": 18,
         "investing": false
     },
     "ABT": {
-        "address": "0x1A89B9BF4F7b0d75BB4c9B56cAB358278D8Fc196",
+        "address": "0x16bb954ad451fBF1860E0C01765D5bdE390EDaC6",
         "name": "ABT",
         "symbol": "ABT",
         "decimals": 18,

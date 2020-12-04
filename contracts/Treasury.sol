@@ -8,6 +8,8 @@ import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 contract Treasury is Ownable {
     using SafeMath for uint256;
 
+    receive() external payable {}
+
     /**
      * @notice Transfer target token to recipient.
      * @param token Target token.
@@ -20,6 +22,16 @@ contract Treasury is Ownable {
         uint256 amount
     ) external onlyOwner returns (bool) {
         return IERC20(token).transfer(recipient, amount);
+    }
+
+    /**
+     * @notice Transfer ETH to recipient.
+     * @param recipient Recipient.
+     * @param amount Transfer amount.
+     */
+    function transferETH(address payable recipient, uint256 amount) external onlyOwner returns (bool) {
+        recipient.transfer(amount);
+        return true;
     }
 
     /**

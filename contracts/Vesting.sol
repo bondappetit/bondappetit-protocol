@@ -3,11 +3,13 @@ pragma solidity ^0.6.0;
 pragma experimental ABIEncoderV2;
 
 import "@openzeppelin/contracts/math/SafeMath.sol";
-import "@openzeppelin/contracts/access/Ownable.sol";
+import "@openzeppelin/contracts/utils/EnumerableSet.sol";
+import "./utils/OwnablePausable.sol";
 import "./Bond.sol";
 
-contract Vesting is Ownable {
+contract Vesting is OwnablePausable {
     using SafeMath for uint256;
+    using EnumerableSet for EnumerableSet.AddressSet;
 
     /// @notice The number of periods for a per recipient.
     function maxPeriodsPerRecipient() public pure returns (uint256) {
@@ -30,6 +32,9 @@ contract Vesting is Ownable {
 
     /// @dev Index last period.
     uint256 internal currentPeriod = 0;
+
+    /// @dev Participants list.
+    EnumerableSet.AddressSet internal participants;
 
     /// @dev All registered periods.
     mapping(address => mapping(uint256 => Period)) internal periods;
@@ -70,6 +75,7 @@ contract Vesting is Ownable {
         bond.transferFrom(_msgSender(), address(this), amount);
 
         currentPeriod += 1;
+        participants.add(recipient);
         periods[recipient][currentPeriod] = Period(currentPeriod, amount, date, false);
         periodsIndex[recipient].push(currentPeriod);
         emit Locked(currentPeriod);
@@ -95,6 +101,20 @@ contract Vesting is Ownable {
     }
 
     /**
+     * @notice Return all participants addresses.
+     * @return Participants addresses.
+     */
+    function getParticipants() external view returns (address[] memory) {
+        address[] memory result = new address[](participants.length());
+
+        for (uint256 i = 0; i < participants.length(); i++) {
+            result[i] = participants.at(i);
+        }
+
+        return result;
+    }
+
+    /**
      * @notice Get information of period.
      * @param recipient Recipient address.
      * @return Recipient periods list.
@@ -115,7 +135,7 @@ contract Vesting is Ownable {
      * @notice Withdraw reward.
      * @param periodId Target period identifier.
      */
-    function withdraw(uint256 periodId) external {
+    function withdraw(uint256 periodId) external whenNotPaused {
         address recipient = _msgSender();
         Period storage period = periods[recipient][periodId];
         require(period.amount > 0, "Vesting::withdraw: period is empty");

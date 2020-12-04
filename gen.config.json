@@ -7,8 +7,11 @@
     {"path": "build/contracts/Vesting.json", "voting": true},
     {"path": "build/contracts/ABT.json", "voting": true},
     {"path": "build/contracts/Treasury.json", "voting": true},
+    {"path": "build/contracts/SecurityOracle.json", "voting": false},
+    {"path": "build/contracts/DepositaryOracle.json", "voting": false},
     {"path": "build/contracts/Issuer.json", "voting": true},
-    {"path": "build/contracts/Market.json", "voting": true}
+    {"path": "build/contracts/Market.json", "voting": true},
+    {"path": "build/contracts/Stacking.json", "voting": true}
   ],
   "assets": [
     {
@@ -26,12 +29,18 @@
   ],
   "abi": [
     {"path": "build/contracts/IERC20.json"},
+    {"path": "build/contracts/UniswapAnchoredView.json"},
+    {"path": "build/contracts/IUniswapV2Router02.json"},
     {"path": "build/contracts/Bond.json"},
     {"path": "build/contracts/ABT.json"},
     {"path": "build/contracts/GovernorAlpha.json"},
     {"path": "build/contracts/Investment.json"},
+    {"path": "build/contracts/Vesting.json"},
     {"path": "build/contracts/Treasury.json"},
+    {"path": "build/contracts/SecurityOracle.json"},
+    {"path": "build/contracts/DepositaryOracle.json"},
     {"path": "build/contracts/Issuer.json"},
-    {"path": "build/contracts/Market.json"}
+    {"path": "build/contracts/Market.json"},
+    {"path": "build/contracts/Stacking.json"}
   ]
 }

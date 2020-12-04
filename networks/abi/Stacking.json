@@ -4,22 +4,7 @@
             "inputs": [
                 {
                     "internalType": "address",
-                    "name": "_cumulative",
-                    "type": "address"
-                },
-                {
-                    "internalType": "address",
-                    "name": "_bond",
-                    "type": "address"
-                },
-                {
-                    "internalType": "uint256",
-                    "name": "_bondTokenLockDate",
-                    "type": "uint256"
-                },
-                {
-                    "internalType": "address",
-                    "name": "_uniswapRouter",
+                    "name": "_rewardToken",
                     "type": "address"
                 }
             ],
@@ -31,47 +16,8 @@
             "inputs": [
                 {
                     "indexed": false,
-                    "internalType": "uint256",
-                    "name": "newPrice",
-                    "type": "uint256"
-                }
-            ],
-            "name": "BondPriceChanged",
-            "type": "event"
-        },
-        {
-            "anonymous": false,
-            "inputs": [
-                {
-                    "indexed": false,
                     "internalType": "address",
-                    "name": "token",
-                    "type": "address"
-                }
-            ],
-            "name": "InvestTokenAllowed",
-            "type": "event"
-        },
-        {
-            "anonymous": false,
-            "inputs": [
-                {
-                    "indexed": false,
-                    "internalType": "address",
-                    "name": "token",
-                    "type": "address"
-                }
-            ],
-            "name": "InvestTokenDenied",
-            "type": "event"
-        },
-        {
-            "anonymous": false,
-            "inputs": [
-                {
-                    "indexed": false,
-                    "internalType": "address",
-                    "name": "investor",
+                    "name": "account",
                     "type": "address"
                 },
                 {
@@ -85,15 +31,9 @@
                     "internalType": "uint256",
                     "name": "amount",
                     "type": "uint256"
-                },
-                {
-                    "indexed": false,
-                    "internalType": "uint256",
-                    "name": "reward",
-                    "type": "uint256"
                 }
             ],
-            "name": "Invested",
+            "name": "Locked",
             "type": "event"
         },
         {
@@ -121,9 +61,29 @@
                 {
                     "indexed": false,
                     "internalType": "address",
-                    "name": "recipient",
+                    "name": "account",
                     "type": "address"
-                },
+                }
+            ],
+            "name": "Paused",
+            "type": "event"
+        },
+        {
+            "anonymous": false,
+            "inputs": [
+                {
+                    "indexed": false,
+                    "internalType": "address",
+                    "name": "newPauser",
+                    "type": "address"
+                }
+            ],
+            "name": "PauserChanged",
+            "type": "event"
+        },
+        {
+            "anonymous": false,
+            "inputs": [
                 {
                     "indexed": false,
                     "internalType": "address",
@@ -133,63 +93,75 @@
                 {
                     "indexed": false,
                     "internalType": "uint256",
-                    "name": "amount",
+                    "name": "from",
+                    "type": "uint256"
+                },
+                {
+                    "indexed": false,
+                    "internalType": "uint256",
+                    "name": "to",
                     "type": "uint256"
                 }
             ],
-            "name": "Withdrawal",
+            "name": "RewardChanged",
             "type": "event"
         },
         {
-            "inputs": [],
-            "name": "bond",
-            "outputs": [
+            "anonymous": false,
+            "inputs": [
                 {
-                    "internalType": "contract Bond",
+                    "indexed": false,
+                    "internalType": "address",
+                    "name": "account",
+                    "type": "address"
+                },
+                {
+                    "indexed": false,
+                    "internalType": "address",
+                    "name": "token",
+                    "type": "address"
+                }
+            ],
+            "name": "Unlocked",
+            "type": "event"
+        },
+        {
+            "anonymous": false,
+            "inputs": [
+                {
+                    "indexed": false,
+                    "internalType": "address",
+                    "name": "account",
+                    "type": "address"
+                }
+            ],
+            "name": "Unpaused",
+            "type": "event"
+        },
+        {
+            "inputs": [
+                {
+                    "internalType": "address",
+                    "name": "",
+                    "type": "address"
+                },
+                {
+                    "internalType": "address",
                     "name": "",
                     "type": "address"
                 }
             ],
-            "stateMutability": "view",
-            "type": "function",
-            "constant": true
-        },
-        {
-            "inputs": [],
-            "name": "bondPrice",
+            "name": "balances",
             "outputs": [
                 {
                     "internalType": "uint256",
-                    "name": "",
+                    "name": "amount",
                     "type": "uint256"
-                }
-            ],
-            "stateMutability": "view",
-            "type": "function",
-            "constant": true
-        },
-        {
-            "inputs": [],
-            "name": "bondTokenLockDate",
-            "outputs": [
+                },
                 {
                     "internalType": "uint256",
-                    "name": "",
+                    "name": "cost",
                     "type": "uint256"
-                }
-            ],
-            "stateMutability": "view",
-            "type": "function",
-            "constant": true
-        },
-        {
-            "inputs": [],
-            "name": "cumulative",
-            "outputs": [
-                {
-                    "internalType": "contract ERC20",
-                    "name": "",
-                    "type": "address"
                 }
             ],
             "stateMutability": "view",
@@ -200,11 +172,39 @@
             "inputs": [
                 {
                     "internalType": "address",
+                    "name": "newPauser",
+                    "type": "address"
+                }
+            ],
+            "name": "changePauser",
+            "outputs": [],
+            "stateMutability": "nonpayable",
+            "type": "function"
+        },
+        {
+            "inputs": [],
+            "name": "owner",
+            "outputs": [
+                {
+                    "internalType": "address",
                     "name": "",
                     "type": "address"
                 }
             ],
-            "name": "investmentTokens",
+            "stateMutability": "view",
+            "type": "function",
+            "constant": true
+        },
+        {
+            "inputs": [],
+            "name": "pause",
+            "outputs": [],
+            "stateMutability": "nonpayable",
+            "type": "function"
+        },
+        {
+            "inputs": [],
+            "name": "paused",
             "outputs": [
                 {
                     "internalType": "bool",
@@ -218,7 +218,7 @@
         },
         {
             "inputs": [],
-            "name": "owner",
+            "name": "pauser",
             "outputs": [
                 {
                     "internalType": "address",
@@ -238,6 +238,50 @@
             "type": "function"
         },
         {
+            "inputs": [],
+            "name": "rewardToken",
+            "outputs": [
+                {
+                    "internalType": "contract ERC20",
+                    "name": "",
+                    "type": "address"
+                }
+            ],
+            "stateMutability": "view",
+            "type": "function",
+            "constant": true
+        },
+        {
+            "inputs": [
+                {
+                    "internalType": "address",
+                    "name": "",
+                    "type": "address"
+                }
+            ],
+            "name": "rewards",
+            "outputs": [
+                {
+                    "internalType": "uint256",
+                    "name": "delta",
+                    "type": "uint256"
+                },
+                {
+                    "internalType": "uint256",
+                    "name": "blockAt",
+                    "type": "uint256"
+                },
+                {
+                    "internalType": "uint256",
+                    "name": "priceAt",
+                    "type": "uint256"
+                }
+            ],
+            "stateMutability": "view",
+            "type": "function",
+            "constant": true
+        },
+        {
             "inputs": [
                 {
                     "internalType": "address",
@@ -251,40 +295,8 @@
             "type": "function"
         },
         {
-            "inputs": [
-                {
-                    "internalType": "address",
-                    "name": "token",
-                    "type": "address"
-                }
-            ],
-            "name": "allowToken",
-            "outputs": [],
-            "stateMutability": "nonpayable",
-            "type": "function"
-        },
-        {
-            "inputs": [
-                {
-                    "internalType": "address",
-                    "name": "token",
-                    "type": "address"
-                }
-            ],
-            "name": "denyToken",
-            "outputs": [],
-            "stateMutability": "nonpayable",
-            "type": "function"
-        },
-        {
-            "inputs": [
-                {
-                    "internalType": "uint256",
-                    "name": "newPrice",
-                    "type": "uint256"
-                }
-            ],
-            "name": "changeBondPrice",
+            "inputs": [],
+            "name": "unpause",
             "outputs": [],
             "stateMutability": "nonpayable",
             "type": "function"
@@ -298,8 +310,21 @@
                 },
                 {
                     "internalType": "uint256",
-                    "name": "amount",
+                    "name": "newDelta",
                     "type": "uint256"
+                }
+            ],
+            "name": "changeReward",
+            "outputs": [],
+            "stateMutability": "nonpayable",
+            "type": "function"
+        },
+        {
+            "inputs": [
+                {
+                    "internalType": "address",
+                    "name": "token",
+                    "type": "address"
                 }
             ],
             "name": "price",
@@ -320,6 +345,26 @@
                     "internalType": "address",
                     "name": "token",
                     "type": "address"
+                }
+            ],
+            "name": "reward",
+            "outputs": [
+                {
+                    "internalType": "uint256",
+                    "name": "",
+                    "type": "uint256"
+                }
+            ],
+            "stateMutability": "view",
+            "type": "function",
+            "constant": true
+        },
+        {
+            "inputs": [
+                {
+                    "internalType": "address",
+                    "name": "token",
+                    "type": "address"
                 },
                 {
                     "internalType": "uint256",
@@ -327,40 +372,20 @@
                     "type": "uint256"
                 }
             ],
-            "name": "invest",
-            "outputs": [
-                {
-                    "internalType": "bool",
-                    "name": "",
-                    "type": "bool"
-                }
-            ],
+            "name": "lock",
+            "outputs": [],
             "stateMutability": "nonpayable",
             "type": "function"
-        },
-        {
-            "inputs": [],
-            "name": "investETH",
-            "outputs": [
-                {
-                    "internalType": "bool",
-                    "name": "",
-                    "type": "bool"
-                }
-            ],
-            "stateMutability": "payable",
-            "type": "function",
-            "payable": true
         },
         {
             "inputs": [
                 {
                     "internalType": "address",
-                    "name": "recipient",
+                    "name": "token",
                     "type": "address"
                 }
             ],
-            "name": "withdraw",
+            "name": "unlock",
             "outputs": [],
             "stateMutability": "nonpayable",
             "type": "function"
