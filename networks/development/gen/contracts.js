@@ -1,6 +1,6 @@
 module.exports = {
     "Bond": {
-        "address": "0x67a6e3E2924C1C978E15f26C768245560Dc420D8",
+        "address": "0x40276A78FfE77102757762108e8810eF333200fb",
         "name": "Bond",
         "voting": true,
         "abi": [
@@ -691,7 +691,7 @@ module.exports = {
         ]
     },
     "Timelock": {
-        "address": "0x4BB3F5891BD82729E6Cad40446a466efD3f1b30B",
+        "address": "0x016a1eDDB690C207fc47A8e800d1bD399BFaB417",
         "name": "Timelock",
         "voting": true,
         "abi": [
@@ -1149,7 +1149,7 @@ module.exports = {
         ]
     },
     "GovernorAlpha": {
-        "address": "0xe690D3D7c04e5d18F1E19a75aE6F36486cE70c08",
+        "address": "0x70550Bc958F97F000fb55Df8CdE609632e0B20A3",
         "name": "GovernorAlpha",
         "abi": [
             {
@@ -1838,7 +1838,7 @@ module.exports = {
         ]
     },
     "Investment": {
-        "address": "0xE857022F382787E6b3d8518A5A71E8ed92C0A690",
+        "address": "0x43d2EC873FF86eff7156196469AaC6c2c19F57C1",
         "name": "Investment",
         "voting": true,
         "abi": [
@@ -1963,6 +1963,58 @@ module.exports = {
                     {
                         "indexed": false,
                         "internalType": "address",
+                        "name": "account",
+                        "type": "address"
+                    }
+                ],
+                "name": "Paused",
+                "type": "event"
+            },
+            {
+                "anonymous": false,
+                "inputs": [
+                    {
+                        "indexed": false,
+                        "internalType": "address",
+                        "name": "newPauser",
+                        "type": "address"
+                    }
+                ],
+                "name": "PauserChanged",
+                "type": "event"
+            },
+            {
+                "anonymous": false,
+                "inputs": [
+                    {
+                        "indexed": false,
+                        "internalType": "address",
+                        "name": "newUniswapRouter",
+                        "type": "address"
+                    }
+                ],
+                "name": "UniswapRouterChanged",
+                "type": "event"
+            },
+            {
+                "anonymous": false,
+                "inputs": [
+                    {
+                        "indexed": false,
+                        "internalType": "address",
+                        "name": "account",
+                        "type": "address"
+                    }
+                ],
+                "name": "Unpaused",
+                "type": "event"
+            },
+            {
+                "anonymous": false,
+                "inputs": [
+                    {
+                        "indexed": false,
+                        "internalType": "address",
                         "name": "recipient",
                         "type": "address"
                     },
@@ -2025,6 +2077,19 @@ module.exports = {
                 "constant": true
             },
             {
+                "inputs": [
+                    {
+                        "internalType": "address",
+                        "name": "newPauser",
+                        "type": "address"
+                    }
+                ],
+                "name": "changePauser",
+                "outputs": [],
+                "stateMutability": "nonpayable",
+                "type": "function"
+            },
+            {
                 "inputs": [],
                 "name": "cumulative",
                 "outputs": [
@@ -2074,6 +2139,41 @@ module.exports = {
             },
             {
                 "inputs": [],
+                "name": "pause",
+                "outputs": [],
+                "stateMutability": "nonpayable",
+                "type": "function"
+            },
+            {
+                "inputs": [],
+                "name": "paused",
+                "outputs": [
+                    {
+                        "internalType": "bool",
+                        "name": "",
+                        "type": "bool"
+                    }
+                ],
+                "stateMutability": "view",
+                "type": "function",
+                "constant": true
+            },
+            {
+                "inputs": [],
+                "name": "pauser",
+                "outputs": [
+                    {
+                        "internalType": "address",
+                        "name": "",
+                        "type": "address"
+                    }
+                ],
+                "stateMutability": "view",
+                "type": "function",
+                "constant": true
+            },
+            {
+                "inputs": [],
                 "name": "renounceOwnership",
                 "outputs": [],
                 "stateMutability": "nonpayable",
@@ -2088,6 +2188,26 @@ module.exports = {
                     }
                 ],
                 "name": "transferOwnership",
+                "outputs": [],
+                "stateMutability": "nonpayable",
+                "type": "function"
+            },
+            {
+                "inputs": [],
+                "name": "unpause",
+                "outputs": [],
+                "stateMutability": "nonpayable",
+                "type": "function"
+            },
+            {
+                "inputs": [
+                    {
+                        "internalType": "address",
+                        "name": "_uniswapRouter",
+                        "type": "address"
+                    }
+                ],
+                "name": "changeUniswapRouter",
                 "outputs": [],
                 "stateMutability": "nonpayable",
                 "type": "function"
@@ -2210,7 +2330,7 @@ module.exports = {
         ]
     },
     "Vesting": {
-        "address": "0xF741F1720F635aBBeE90D09150B22e3fa5C310bB",
+        "address": "0x1809734e462d626379f2A3E85c92A51b4Ed581d7",
         "name": "Vesting",
         "voting": true,
         "abi": [
@@ -2262,12 +2382,51 @@ module.exports = {
                 "inputs": [
                     {
                         "indexed": false,
+                        "internalType": "address",
+                        "name": "account",
+                        "type": "address"
+                    }
+                ],
+                "name": "Paused",
+                "type": "event"
+            },
+            {
+                "anonymous": false,
+                "inputs": [
+                    {
+                        "indexed": false,
+                        "internalType": "address",
+                        "name": "newPauser",
+                        "type": "address"
+                    }
+                ],
+                "name": "PauserChanged",
+                "type": "event"
+            },
+            {
+                "anonymous": false,
+                "inputs": [
+                    {
+                        "indexed": false,
                         "internalType": "uint256",
                         "name": "periodId",
                         "type": "uint256"
                     }
                 ],
                 "name": "Revoked",
+                "type": "event"
+            },
+            {
+                "anonymous": false,
+                "inputs": [
+                    {
+                        "indexed": false,
+                        "internalType": "address",
+                        "name": "account",
+                        "type": "address"
+                    }
+                ],
+                "name": "Unpaused",
                 "type": "event"
             },
             {
@@ -2304,8 +2463,56 @@ module.exports = {
                 "constant": true
             },
             {
+                "inputs": [
+                    {
+                        "internalType": "address",
+                        "name": "newPauser",
+                        "type": "address"
+                    }
+                ],
+                "name": "changePauser",
+                "outputs": [],
+                "stateMutability": "nonpayable",
+                "type": "function"
+            },
+            {
                 "inputs": [],
                 "name": "owner",
+                "outputs": [
+                    {
+                        "internalType": "address",
+                        "name": "",
+                        "type": "address"
+                    }
+                ],
+                "stateMutability": "view",
+                "type": "function",
+                "constant": true
+            },
+            {
+                "inputs": [],
+                "name": "pause",
+                "outputs": [],
+                "stateMutability": "nonpayable",
+                "type": "function"
+            },
+            {
+                "inputs": [],
+                "name": "paused",
+                "outputs": [
+                    {
+                        "internalType": "bool",
+                        "name": "",
+                        "type": "bool"
+                    }
+                ],
+                "stateMutability": "view",
+                "type": "function",
+                "constant": true
+            },
+            {
+                "inputs": [],
+                "name": "pauser",
                 "outputs": [
                     {
                         "internalType": "address",
@@ -2333,6 +2540,13 @@ module.exports = {
                     }
                 ],
                 "name": "transferOwnership",
+                "outputs": [],
+                "stateMutability": "nonpayable",
+                "type": "function"
+            },
+            {
+                "inputs": [],
+                "name": "unpause",
                 "outputs": [],
                 "stateMutability": "nonpayable",
                 "type": "function"
@@ -2399,6 +2613,20 @@ module.exports = {
                 "type": "function"
             },
             {
+                "inputs": [],
+                "name": "getParticipants",
+                "outputs": [
+                    {
+                        "internalType": "address[]",
+                        "name": "",
+                        "type": "address[]"
+                    }
+                ],
+                "stateMutability": "view",
+                "type": "function",
+                "constant": true
+            },
+            {
                 "inputs": [
                     {
                         "internalType": "address",
@@ -2456,7 +2684,7 @@ module.exports = {
         ]
     },
     "ABT": {
-        "address": "0x49B72e178A5dfB9697D0E28C239B5032E11250cc",
+        "address": "0x7C04274a08B05e7c4F019b464cA1C44BfA76B8a3",
         "name": "ABT",
         "voting": true,
         "abi": [
@@ -2839,7 +3067,7 @@ module.exports = {
         ]
     },
     "Treasury": {
-        "address": "0xE88c611229F523940abFDcb748d308Ad825582f6",
+        "address": "0x23C73b813aFBCa50f0d6445ac57b6b0311D0da27",
         "name": "Treasury",
         "voting": true,
         "abi": [
@@ -2897,6 +3125,11 @@ module.exports = {
                 "type": "function"
             },
             {
+                "stateMutability": "payable",
+                "type": "receive",
+                "payable": true
+            },
+            {
                 "inputs": [
                     {
                         "internalType": "address",
@@ -2915,6 +3148,30 @@ module.exports = {
                     }
                 ],
                 "name": "transfer",
+                "outputs": [
+                    {
+                        "internalType": "bool",
+                        "name": "",
+                        "type": "bool"
+                    }
+                ],
+                "stateMutability": "nonpayable",
+                "type": "function"
+            },
+            {
+                "inputs": [
+                    {
+                        "internalType": "address payable",
+                        "name": "recipient",
+                        "type": "address"
+                    },
+                    {
+                        "internalType": "uint256",
+                        "name": "amount",
+                        "type": "uint256"
+                    }
+                ],
+                "name": "transferETH",
                 "outputs": [
                     {
                         "internalType": "bool",
@@ -2957,7 +3214,7 @@ module.exports = {
         ]
     },
     "SecurityOracle": {
-        "address": "0xE9ECBEe34923096E43CD36A351Dc3d37C647F377",
+        "address": "0xD5FC86EA83b8B7a5aFbAD4596574CFa8c04109d7",
         "name": "SecurityOracle",
         "voting": false,
         "abi": [
@@ -3090,7 +3347,7 @@ module.exports = {
         ]
     },
     "DepositaryOracle": {
-        "address": "0x5e84f57EA4c11D48b12560063c0F53A016f129F2",
+        "address": "0xaC7960A01CDCDc15Af4EEDd4C819029b1ffB4fCC",
         "name": "DepositaryOracle",
         "voting": false,
         "abi": [
@@ -3259,7 +3516,7 @@ module.exports = {
         ]
     },
     "Issuer": {
-        "address": "0x4276914D35eCa4F591862c4c6De44d71738380Fb",
+        "address": "0x548Ee0E39c438a177C7d045F5EEBA25367710EbB",
         "name": "Issuer",
         "voting": true,
         "abi": [
@@ -3326,6 +3583,32 @@ module.exports = {
             },
             {
                 "anonymous": false,
+                "inputs": [
+                    {
+                        "indexed": false,
+                        "internalType": "address",
+                        "name": "account",
+                        "type": "address"
+                    }
+                ],
+                "name": "Paused",
+                "type": "event"
+            },
+            {
+                "anonymous": false,
+                "inputs": [
+                    {
+                        "indexed": false,
+                        "internalType": "address",
+                        "name": "newPauser",
+                        "type": "address"
+                    }
+                ],
+                "name": "PauserChanged",
+                "type": "event"
+            },
+            {
+                "anonymous": false,
                 "inputs": [],
                 "name": "Rebalance",
                 "type": "event"
@@ -3341,6 +3624,19 @@ module.exports = {
                     }
                 ],
                 "name": "TransferTreasury",
+                "type": "event"
+            },
+            {
+                "anonymous": false,
+                "inputs": [
+                    {
+                        "indexed": false,
+                        "internalType": "address",
+                        "name": "account",
+                        "type": "address"
+                    }
+                ],
+                "name": "Unpaused",
                 "type": "event"
             },
             {
@@ -3383,6 +3679,19 @@ module.exports = {
                 "stateMutability": "view",
                 "type": "function",
                 "constant": true
+            },
+            {
+                "inputs": [
+                    {
+                        "internalType": "address",
+                        "name": "newPauser",
+                        "type": "address"
+                    }
+                ],
+                "name": "changePauser",
+                "outputs": [],
+                "stateMutability": "nonpayable",
+                "type": "function"
             },
             {
                 "inputs": [],
@@ -3435,6 +3744,41 @@ module.exports = {
             {
                 "inputs": [],
                 "name": "owner",
+                "outputs": [
+                    {
+                        "internalType": "address",
+                        "name": "",
+                        "type": "address"
+                    }
+                ],
+                "stateMutability": "view",
+                "type": "function",
+                "constant": true
+            },
+            {
+                "inputs": [],
+                "name": "pause",
+                "outputs": [],
+                "stateMutability": "nonpayable",
+                "type": "function"
+            },
+            {
+                "inputs": [],
+                "name": "paused",
+                "outputs": [
+                    {
+                        "internalType": "bool",
+                        "name": "",
+                        "type": "bool"
+                    }
+                ],
+                "stateMutability": "view",
+                "type": "function",
+                "constant": true
+            },
+            {
+                "inputs": [],
+                "name": "pauser",
                 "outputs": [
                     {
                         "internalType": "address",
@@ -3508,6 +3852,13 @@ module.exports = {
                 "constant": true
             },
             {
+                "inputs": [],
+                "name": "unpause",
+                "outputs": [],
+                "stateMutability": "nonpayable",
+                "type": "function"
+            },
+            {
                 "inputs": [
                     {
                         "internalType": "address",
@@ -3515,7 +3866,7 @@ module.exports = {
                         "type": "address"
                     }
                 ],
-                "name": "transferTreasury",
+                "name": "changeTreasury",
                 "outputs": [],
                 "stateMutability": "nonpayable",
                 "type": "function"
@@ -3530,7 +3881,7 @@ module.exports = {
         ]
     },
     "Market": {
-        "address": "0xBCbF4E9Ec43928342fb9Ac26C19666A787EEF474",
+        "address": "0x3c7D8b1Eb49F9F1b9dF588a155AA14872aa5bD45",
         "name": "Market",
         "voting": true,
         "abi": [
@@ -3653,6 +4004,45 @@ module.exports = {
                     {
                         "indexed": false,
                         "internalType": "address",
+                        "name": "account",
+                        "type": "address"
+                    }
+                ],
+                "name": "Paused",
+                "type": "event"
+            },
+            {
+                "anonymous": false,
+                "inputs": [
+                    {
+                        "indexed": false,
+                        "internalType": "address",
+                        "name": "newPauser",
+                        "type": "address"
+                    }
+                ],
+                "name": "PauserChanged",
+                "type": "event"
+            },
+            {
+                "anonymous": false,
+                "inputs": [
+                    {
+                        "indexed": false,
+                        "internalType": "address",
+                        "name": "newPriceOracle",
+                        "type": "address"
+                    }
+                ],
+                "name": "PriceOracleChanged",
+                "type": "event"
+            },
+            {
+                "anonymous": false,
+                "inputs": [
+                    {
+                        "indexed": false,
+                        "internalType": "address",
                         "name": "token",
                         "type": "address"
                     },
@@ -3677,6 +4067,32 @@ module.exports = {
                     }
                 ],
                 "name": "TokenDenied",
+                "type": "event"
+            },
+            {
+                "anonymous": false,
+                "inputs": [
+                    {
+                        "indexed": false,
+                        "internalType": "address",
+                        "name": "newUniswapRouter",
+                        "type": "address"
+                    }
+                ],
+                "name": "UniswapRouterChanged",
+                "type": "event"
+            },
+            {
+                "anonymous": false,
+                "inputs": [
+                    {
+                        "indexed": false,
+                        "internalType": "address",
+                        "name": "account",
+                        "type": "address"
+                    }
+                ],
+                "name": "Unpaused",
                 "type": "event"
             },
             {
@@ -3761,6 +4177,19 @@ module.exports = {
                 "constant": true
             },
             {
+                "inputs": [
+                    {
+                        "internalType": "address",
+                        "name": "newPauser",
+                        "type": "address"
+                    }
+                ],
+                "name": "changePauser",
+                "outputs": [],
+                "stateMutability": "nonpayable",
+                "type": "function"
+            },
+            {
                 "inputs": [],
                 "name": "cumulative",
                 "outputs": [
@@ -3777,6 +4206,41 @@ module.exports = {
             {
                 "inputs": [],
                 "name": "owner",
+                "outputs": [
+                    {
+                        "internalType": "address",
+                        "name": "",
+                        "type": "address"
+                    }
+                ],
+                "stateMutability": "view",
+                "type": "function",
+                "constant": true
+            },
+            {
+                "inputs": [],
+                "name": "pause",
+                "outputs": [],
+                "stateMutability": "nonpayable",
+                "type": "function"
+            },
+            {
+                "inputs": [],
+                "name": "paused",
+                "outputs": [
+                    {
+                        "internalType": "bool",
+                        "name": "",
+                        "type": "bool"
+                    }
+                ],
+                "stateMutability": "view",
+                "type": "function",
+                "constant": true
+            },
+            {
+                "inputs": [],
+                "name": "pauser",
                 "outputs": [
                     {
                         "internalType": "address",
@@ -3835,6 +4299,39 @@ module.exports = {
                 "stateMutability": "view",
                 "type": "function",
                 "constant": true
+            },
+            {
+                "inputs": [],
+                "name": "unpause",
+                "outputs": [],
+                "stateMutability": "nonpayable",
+                "type": "function"
+            },
+            {
+                "inputs": [
+                    {
+                        "internalType": "address",
+                        "name": "_uniswapRouter",
+                        "type": "address"
+                    }
+                ],
+                "name": "changeUniswapRouter",
+                "outputs": [],
+                "stateMutability": "nonpayable",
+                "type": "function"
+            },
+            {
+                "inputs": [
+                    {
+                        "internalType": "address",
+                        "name": "_priceOracle",
+                        "type": "address"
+                    }
+                ],
+                "name": "changePriceOracle",
+                "outputs": [],
+                "stateMutability": "nonpayable",
+                "type": "function"
             },
             {
                 "inputs": [
@@ -4096,7 +4593,7 @@ module.exports = {
         ]
     },
     "Stacking": {
-        "address": "0x0193DfCa1F80b90343126F5Fb312e36a0C82A7fB",
+        "address": "0x56d95a7aFB2A7c319d8974a9827A0AA033956231",
         "name": "Stacking",
         "voting": true,
         "abi": [
@@ -4161,6 +4658,32 @@ module.exports = {
                     {
                         "indexed": false,
                         "internalType": "address",
+                        "name": "account",
+                        "type": "address"
+                    }
+                ],
+                "name": "Paused",
+                "type": "event"
+            },
+            {
+                "anonymous": false,
+                "inputs": [
+                    {
+                        "indexed": false,
+                        "internalType": "address",
+                        "name": "newPauser",
+                        "type": "address"
+                    }
+                ],
+                "name": "PauserChanged",
+                "type": "event"
+            },
+            {
+                "anonymous": false,
+                "inputs": [
+                    {
+                        "indexed": false,
+                        "internalType": "address",
                         "name": "token",
                         "type": "address"
                     },
@@ -4200,6 +4723,19 @@ module.exports = {
                 "type": "event"
             },
             {
+                "anonymous": false,
+                "inputs": [
+                    {
+                        "indexed": false,
+                        "internalType": "address",
+                        "name": "account",
+                        "type": "address"
+                    }
+                ],
+                "name": "Unpaused",
+                "type": "event"
+            },
+            {
                 "inputs": [
                     {
                         "internalType": "address",
@@ -4230,8 +4766,56 @@ module.exports = {
                 "constant": true
             },
             {
+                "inputs": [
+                    {
+                        "internalType": "address",
+                        "name": "newPauser",
+                        "type": "address"
+                    }
+                ],
+                "name": "changePauser",
+                "outputs": [],
+                "stateMutability": "nonpayable",
+                "type": "function"
+            },
+            {
                 "inputs": [],
                 "name": "owner",
+                "outputs": [
+                    {
+                        "internalType": "address",
+                        "name": "",
+                        "type": "address"
+                    }
+                ],
+                "stateMutability": "view",
+                "type": "function",
+                "constant": true
+            },
+            {
+                "inputs": [],
+                "name": "pause",
+                "outputs": [],
+                "stateMutability": "nonpayable",
+                "type": "function"
+            },
+            {
+                "inputs": [],
+                "name": "paused",
+                "outputs": [
+                    {
+                        "internalType": "bool",
+                        "name": "",
+                        "type": "bool"
+                    }
+                ],
+                "stateMutability": "view",
+                "type": "function",
+                "constant": true
+            },
+            {
+                "inputs": [],
+                "name": "pauser",
                 "outputs": [
                     {
                         "internalType": "address",
@@ -4303,6 +4887,13 @@ module.exports = {
                     }
                 ],
                 "name": "transferOwnership",
+                "outputs": [],
+                "stateMutability": "nonpayable",
+                "type": "function"
+            },
+            {
+                "inputs": [],
+                "name": "unpause",
                 "outputs": [],
                 "stateMutability": "nonpayable",
                 "type": "function"

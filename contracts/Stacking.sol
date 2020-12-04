@@ -5,9 +5,9 @@ pragma experimental ABIEncoderV2;
 import "@openzeppelin/contracts/token/ERC20/ERC20.sol";
 import "@openzeppelin/contracts/token/ERC20/SafeERC20.sol";
 import "@openzeppelin/contracts/math/SafeMath.sol";
-import "@openzeppelin/contracts/access/Ownable.sol";
+import "./utils/OwnablePausable.sol";
 
-contract Stacking is Ownable {
+contract Stacking is OwnablePausable {
     using SafeMath for uint256;
     using SafeERC20 for ERC20;
 
@@ -94,7 +94,7 @@ contract Stacking is Ownable {
      * @param token Address of stacking token.
      * @param amount Amount of stacking token.
      */
-    function lock(address token, uint256 amount) external {
+    function lock(address token, uint256 amount) external whenNotPaused {
         require(amount != 0, "Stacking::lock: negative amount");
 
         ERC20(token).safeTransferFrom(msg.sender, address(this), amount);
@@ -110,7 +110,7 @@ contract Stacking is Ownable {
      * @notice Unstacking token.
      * @param token Address of unstacking token.
      */
-    function unlock(address token) external {
+    function unlock(address token) external whenNotPaused {
         Balance memory balance = balances[msg.sender][token];
         require(balance.amount > 0, "Stacking::unlock: balance is empty");
         uint256 _reward = reward(token);

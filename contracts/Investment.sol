@@ -4,11 +4,11 @@ pragma solidity ^0.6.0;
 import "@openzeppelin/contracts/token/ERC20/ERC20.sol";
 import "@openzeppelin/contracts/token/ERC20/SafeERC20.sol";
 import "@openzeppelin/contracts/math/SafeMath.sol";
-import "@openzeppelin/contracts/access/Ownable.sol";
+import "./utils/OwnablePausable.sol";
 import "./uniswap/IUniswapV2Router02.sol";
 import "./Bond.sol";
 
-contract Investment is Ownable {
+contract Investment is OwnablePausable {
     using SafeMath for uint256;
     using SafeERC20 for ERC20;
 
@@ -32,14 +32,22 @@ contract Investment is Ownable {
     ///@notice Investment tokens list
     mapping(address => bool) public investmentTokens;
 
+    /// @notice An event thats emitted when an uniswap router contract address changed.
+    event UniswapRouterChanged(address newUniswapRouter);
+
+    /// @notice An event thats emitted when an invest token allowed.
     event InvestTokenAllowed(address token);
 
+    /// @notice An event thats emitted when an invest token denied.
     event InvestTokenDenied(address token);
 
+    /// @notice An event thats emitted when an bond price changed.
     event BondPriceChanged(uint256 newPrice);
 
+    /// @notice An event thats emitted when an invested token.
     event Invested(address investor, address token, uint256 amount, uint256 reward);
 
+    /// @notice An event thats emitted when an withdrawal token.
     event Withdrawal(address recipient, address token, uint256 amount);
 
     /**
@@ -57,6 +65,15 @@ contract Investment is Ownable {
         bond = Bond(_bond);
         bondTokenLockDate = _bondTokenLockDate;
         uniswapRouter = IUniswapV2Router02(_uniswapRouter);
+    }
+
+    /**
+     * @notice Changed uniswap router contract address.
+     * @param _uniswapRouter Address new uniswap router contract.
+     */
+    function changeUniswapRouter(address _uniswapRouter) external onlyOwner {
+        uniswapRouter = IUniswapV2Router02(_uniswapRouter);
+        emit UniswapRouterChanged(_uniswapRouter);
     }
 
     /**
@@ -151,7 +168,7 @@ contract Investment is Ownable {
      * @param token Invested token
      * @param amount Invested amount
      */
-    function invest(address token, uint256 amount) external returns (bool) {
+    function invest(address token, uint256 amount) external whenNotPaused returns (bool) {
         require(investmentTokens[token], "Investment::invest: invalid investable token");
         uint256 reward = _bondPrice(amount);
 
@@ -175,7 +192,7 @@ contract Investment is Ownable {
     /**
      * @notice Invest ETH to protocol
      */
-    function investETH() external payable returns (bool) {
+    function investETH() external payable whenNotPaused returns (bool) {
         address token = uniswapRouter.WETH();
         require(investmentTokens[token], "Investment::investETH: invalid investable token");
         uint256 reward = _bondPrice(msg.value);

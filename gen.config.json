@@ -35,6 +35,7 @@
     {"path": "build/contracts/ABT.json"},
     {"path": "build/contracts/GovernorAlpha.json"},
     {"path": "build/contracts/Investment.json"},
+    {"path": "build/contracts/Vesting.json"},
     {"path": "build/contracts/Treasury.json"},
     {"path": "build/contracts/SecurityOracle.json"},
     {"path": "build/contracts/DepositaryOracle.json"},

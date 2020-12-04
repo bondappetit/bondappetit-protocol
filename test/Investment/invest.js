@@ -4,7 +4,6 @@ const networks = require("../../networks");
 const Investment = artifacts.require("Investment");
 const IERC20 = artifacts.require("IERC20");
 const Uniswap2Router = artifacts.require("IUniswapV2Router02");
-
 const Bond = artifacts.require("Bond");
 
 contract("Investment.invest", (accounts) => {

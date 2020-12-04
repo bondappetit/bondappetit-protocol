@@ -2,15 +2,15 @@
 pragma solidity ^0.6.0;
 
 import "@openzeppelin/contracts/math/SafeMath.sol";
-import "@openzeppelin/contracts/access/Ownable.sol";
 import "@openzeppelin/contracts/token/ERC20/ERC20.sol";
 import "@openzeppelin/contracts/token/ERC20/SafeERC20.sol";
+import "./utils/OwnablePausable.sol";
 import "./Bond.sol";
 import "./ABT.sol";
 import "./uniswap/IUniswapV2Router02.sol";
 import "./uniswap/IUniswapAnchoredView.sol";
 
-contract Market is Ownable {
+contract Market is OwnablePausable {
     using SafeMath for uint256;
     using SafeERC20 for ERC20;
 
@@ -36,6 +36,12 @@ contract Market is Ownable {
 
     /// @dev Allowed tokens symbols list.
     mapping(address => string) internal allowedTokens;
+
+    /// @notice An event thats emitted when an price oracle contract address changed.
+    event PriceOracleChanged(address newPriceOracle);
+
+    /// @notice An event thats emitted when an uniswap router contract address changed.
+    event UniswapRouterChanged(address newUniswapRouter);
 
     /// @notice An event thats emitted when an cumulative token changed.
     event CumulativeChanged(address newToken);
@@ -74,6 +80,24 @@ contract Market is Ownable {
         bond = Bond(_bond);
         uniswapRouter = IUniswapV2Router02(_uniswapRouter);
         priceOracle = IUniswapAnchoredView(_priceOracle);
+    }
+
+    /**
+     * @notice Changed uniswap router contract address.
+     * @param _uniswapRouter Address new uniswap router contract.
+     */
+    function changeUniswapRouter(address _uniswapRouter) external onlyOwner {
+        uniswapRouter = IUniswapV2Router02(_uniswapRouter);
+        emit UniswapRouterChanged(_uniswapRouter);
+    }
+
+    /**
+     * @notice Changed price oracle contract address.
+     * @param _priceOracle Address new price oracle contract.
+     */
+    function changePriceOracle(address _priceOracle) external onlyOwner {
+        priceOracle = IUniswapAnchoredView(_priceOracle);
+        emit PriceOracleChanged(_priceOracle);
     }
 
     /**
@@ -263,7 +287,7 @@ contract Market is Ownable {
         ERC20 product,
         ERC20 token,
         uint256 amount
-    ) internal returns (bool) {
+    ) internal whenNotPaused returns (bool) {
         require(isAllowedToken(address(token)), "Market::buy: invalid token");
 
         uint256 reward = price(product, token, amount);
@@ -310,7 +334,7 @@ contract Market is Ownable {
      * @param product Purchased token.
      * @return True if success.
      */
-    function buyFromETH(ERC20 product) internal returns (bool) {
+    function buyFromETH(ERC20 product) internal whenNotPaused returns (bool) {
         ERC20 token = ERC20(uniswapRouter.WETH());
         uint256 amount = msg.value;
         require(isAllowedToken(address(token)), "Market::buyFromETH: invalid token");

@@ -2,7 +2,6 @@
 pragma solidity ^0.6.0;
 
 import "@openzeppelin/contracts/math/SafeMath.sol";
-import "@openzeppelin/contracts/access/Ownable.sol";
 import "./oracle/AgregateDepositaryBalanceView.sol";
 import "./ABT.sol";
 
@@ -34,7 +33,7 @@ contract Issuer is AgregateDepositaryBalanceView {
      * @notice Transfer Treasury contract to new address.
      * @param _treasury New address Treasury contract.
      */
-    function transferTreasury(address _treasury) external onlyOwner {
+    function changeTreasury(address _treasury) external onlyOwner {
         treasury = _treasury;
         emit TransferTreasury(treasury);
     }
@@ -42,7 +41,7 @@ contract Issuer is AgregateDepositaryBalanceView {
     /**
      * @notice Rebalance ABT total supply by depositary balance. Mint ABT tokens if depositary balance greater token total supply and burn otherwise.
      */
-    function rebalance() external {
+    function rebalance() external whenNotPaused {
         uint256 currentDepositaryBalance = this.balance();
         uint256 burningBalance = abt.balanceOf(address(this));
         uint256 abtTotalSupply = abt.totalSupply();
