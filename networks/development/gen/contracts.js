@@ -5775,6 +5775,31 @@ module.exports = {
                 "anonymous": false,
                 "inputs": [
                     {
+                        "indexed": false,
+                        "internalType": "uint256",
+                        "name": "lp",
+                        "type": "uint256"
+                    },
+                    {
+                        "indexed": false,
+                        "internalType": "uint256",
+                        "name": "incoming",
+                        "type": "uint256"
+                    },
+                    {
+                        "indexed": false,
+                        "internalType": "uint256",
+                        "name": "support",
+                        "type": "uint256"
+                    }
+                ],
+                "name": "LiquidityRemoved",
+                "type": "event"
+            },
+            {
+                "anonymous": false,
+                "inputs": [
+                    {
                         "indexed": true,
                         "internalType": "address",
                         "name": "previousOwner",
@@ -6079,6 +6104,33 @@ module.exports = {
                     }
                 ],
                 "name": "addLiquidity",
+                "outputs": [],
+                "stateMutability": "nonpayable",
+                "type": "function"
+            },
+            {
+                "inputs": [],
+                "name": "liquidityPair",
+                "outputs": [
+                    {
+                        "internalType": "address",
+                        "name": "",
+                        "type": "address"
+                    }
+                ],
+                "stateMutability": "view",
+                "type": "function",
+                "constant": true
+            },
+            {
+                "inputs": [
+                    {
+                        "internalType": "uint256",
+                        "name": "amount",
+                        "type": "uint256"
+                    }
+                ],
+                "name": "removeLiquidity",
                 "outputs": [],
                 "stateMutability": "nonpayable",
                 "type": "function"

@@ -6,6 +6,7 @@ import "@openzeppelin/contracts/token/ERC20/SafeERC20.sol";
 import "@openzeppelin/contracts/math/SafeMath.sol";
 import "../utils/OwnablePausable.sol";
 import "../uniswap/IUniswapV2Router02.sol";
+import "../uniswap/IUniswapV2Factory.sol";
 
 contract UniswapMarketMaker is OwnablePausable {
     using SafeMath for uint256;
@@ -31,6 +32,9 @@ contract UniswapMarketMaker is OwnablePausable {
 
     /// @notice An event thats emitted when an liquidity added.
     event LiquidityAdded(uint256 incoming, uint256 support);
+
+    /// @notice An event thats emitted when an liquidity removed.
+    event LiquidityRemoved(uint256 lp, uint256 incoming, uint256 support);
 
     /**
      * @param _incoming Address of incoming token.
@@ -145,5 +149,31 @@ contract UniswapMarketMaker is OwnablePausable {
         support.safeApprove(address(uniswapRouter), supportBalance);
         (uint256 amountA, uint256 amountB, ) = uniswapRouter.addLiquidity(address(incoming), address(support), incomingBalance, supportBalance, 0, 0, address(this), block.timestamp);
         emit LiquidityAdded(amountA, amountB);
+    }
+
+    /**
+     * @notice Return liquidity pair address.
+     * @return Liquidity pair address.
+     */
+    function liquidityPair() public view returns (address) {
+        IUniswapV2Factory uniswapFactory = IUniswapV2Factory(uniswapRouter.factory());
+        return uniswapFactory.getPair(address(incoming), address(support));
+    }
+
+    /**
+     * @notice Remove liquidity.
+     * @param amount Amount of liquidity pool token.
+     */
+    function removeLiquidity(uint256 amount) external onlyOwner {
+        address pair = liquidityPair();
+        require(pair != address(0), "UniswapMarketMaker::removeLiquidity: liquidity pair not found");
+
+        uint256 lpBalance = ERC20(pair).balanceOf(address(this));
+        amount = lpBalance < amount ? lpBalance : amount;
+        require(amount > 0, "UniswapMarketMaker::removeLiquidity: zero amount");
+
+        ERC20(pair).approve(address(uniswapRouter), amount);
+        (uint256 incomingAmount, uint256 supportAmount) = uniswapRouter.removeLiquidity(address(incoming), address(support), amount, 0, 0, address(this), block.timestamp);
+        emit LiquidityRemoved(amount, incomingAmount, supportAmount);
     }
 }
