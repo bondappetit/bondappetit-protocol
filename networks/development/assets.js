@@ -29,8 +29,8 @@ module.exports = {
   },
   WETH: {
     address: "0xc778417E063141139Fce010982780140Aa0cD5Ab",
-    name: "Wrapped Ether",
-    symbol: "WETH",
+    name: "Ether",
+    symbol: "ETH",
     decimals: 18,
     investing: true,
   },
