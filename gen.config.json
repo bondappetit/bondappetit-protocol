@@ -14,7 +14,7 @@
     {"path": "build/contracts/Stacking.json", "voting": true},
     {"path": "build/contracts/Budget.json", "voting": true},
     {"path": "build/contracts/Buyback.json", "voting": true},
-    {"path": "build/contracts/MarketMaker.json", "voting": true},
+    {"path": "build/contracts/UniswapMarketMaker.json", "voting": true},
     {"path": "build/contracts/ProfitSplitter.json", "voting": true}
   ],
   "assets": [
@@ -49,7 +49,7 @@
     {"path": "build/contracts/Stacking.json"},
     {"path": "build/contracts/Budget.json"},
     {"path": "build/contracts/Buyback.json"},
-    {"path": "build/contracts/MarketMaker.json"},
+    {"path": "build/contracts/UniswapMarketMaker.json"},
     {"path": "build/contracts/ProfitSplitter.json"}
   ]
 }

@@ -1,7 +1,7 @@
 const {afterMigration} = require("./utils");
 const networks = require("../networks");
 const Bond = artifacts.require("Bond");
-const MarketMaker = artifacts.require("MarketMaker");
+const UniswapMarketMaker = artifacts.require("UniswapMarketMaker");
 
 module.exports = async (deployer, network) => {
   const {
@@ -11,7 +11,7 @@ module.exports = async (deployer, network) => {
   } = networks[network];
 
   await deployer.deploy(
-    MarketMaker,
+    UniswapMarketMaker,
     USDC.address,
     Bond.address,
     UniswapV2Router02.address,

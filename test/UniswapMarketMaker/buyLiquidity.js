@@ -1,15 +1,15 @@
 const {utils} = require("web3");
-const MarketMaker = artifacts.require("MarketMaker");
+const UniswapMarketMaker = artifacts.require("UniswapMarketMaker");
 const ABT = artifacts.require("ABT");
 const Bond = artifacts.require("Bond");
 const {development} = require("../../networks");
 
-contract("MarketMaker.buyLiquidity", (accounts) => {
+contract("UniswapMarketMaker.buyLiquidity", (accounts) => {
   const governor = development.accounts.Governor.address;
   const UniswapRouter = development.contracts.UniswapV2Router02;
 
   it("buyLiquidity: should buy support token and add liquidity to pool", async () => {
-    const instance = await MarketMaker.deployed();
+    const instance = await UniswapMarketMaker.deployed();
     const abt = await ABT.deployed();
     const bond = await Bond.deployed();
     const uniswapRouter = new web3.eth.Contract(
@@ -47,7 +47,7 @@ contract("MarketMaker.buyLiquidity", (accounts) => {
     const startAmountsOut = await uniswapRouter.methods.getAmountsOut(abtAmount, [ABT.address, Bond.address]).call();
 
     await instance.changeIncoming(ABT.address, governor, {from: governor});
-    await abt.approve(MarketMaker.address, abtAmount, {
+    await abt.approve(UniswapMarketMaker.address, abtAmount, {
       from: governor,
       gas: 2000000,
     });

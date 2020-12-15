@@ -3,7 +3,7 @@ const networks = require("../networks");
 const Timelock = artifacts.require("Timelock");
 const Budget = artifacts.require("Budget");
 const Buyback = artifacts.require("Buyback");
-const MarketMaker = artifacts.require("MarketMaker");
+const UniswapMarketMaker = artifacts.require("UniswapMarketMaker");
 const ProfitSplitter = artifacts.require("ProfitSplitter");
 
 module.exports = async (deployer, network) => {
@@ -16,17 +16,17 @@ module.exports = async (deployer, network) => {
   const [
     budget,
     buyback,
-    marketMaker,
+    uniswapMarketMaker,
     profitSplitter
   ] = await Promise.all([
     Budget.deployed(),
     Buyback.deployed(),
-    MarketMaker.deployed(),
+    UniswapMarketMaker.deployed(),
     ProfitSplitter.deployed(),
   ])
   await budget.transferOwnership(Timelock.address, {from: Governor.address});
   await buyback.transferOwnership(Timelock.address, {from: Governor.address});
-  await marketMaker.transferOwnership(Timelock.address, {from: Governor.address});
+  await uniswapMarketMaker.transferOwnership(Timelock.address, {from: Governor.address});
   await profitSplitter.transferOwnership(Timelock.address, {from: Governor.address});
  
   await afterMigration(network);

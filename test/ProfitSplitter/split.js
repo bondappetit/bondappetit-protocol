@@ -1,9 +1,8 @@
 const assertions = require("truffle-assertions");
-const {utils} = require("web3");
 const ProfitSplitter = artifacts.require("ProfitSplitter");
 const ABT = artifacts.require("ABT");
 const Budget = artifacts.require("Budget");
-const MarketMaker = artifacts.require("MarketMaker");
+const UniswapMarketMaker = artifacts.require("UniswapMarketMaker");
 const Buyback = artifacts.require("Buyback");
 const {development} = require("../../networks");
 
@@ -33,11 +32,11 @@ contract("ProfitSplitter.split", () => {
     );
     await instance.changeIncoming(ABT.address, governor, {from: governor});
     await instance.changeBudget(Budget.address, budgetAmount);
-    await instance.addRecipient(MarketMaker.address, 80);
+    await instance.addRecipient(UniswapMarketMaker.address, 80);
     await instance.addRecipient(Buyback.address, 20);
 
     const startBudgetBalance = await web3.eth.getBalance(Budget.address);
-    const startMarketMakerBalance = await abt.balanceOf(MarketMaker.address);
+    const startMarketMakerBalance = await abt.balanceOf(UniswapMarketMaker.address);
     const startBuybackBalance = await abt.balanceOf(Buyback.address);
 
     await abt.approve(ProfitSplitter.address, amount, {from: governor});
@@ -48,11 +47,11 @@ contract("ProfitSplitter.split", () => {
       (ev) => ev.recipient === Budget.address
     );
     assertions.eventEmitted(tx, "PayToRecipient", (ev) =>
-      [MarketMaker.address, Buyback.address].includes(ev.recipient)
+      [UniswapMarketMaker.address, Buyback.address].includes(ev.recipient)
     );
 
     const endBudgetBalance = await web3.eth.getBalance(Budget.address);
-    const endMarketMakerBalance = await abt.balanceOf(MarketMaker.address);
+    const endMarketMakerBalance = await abt.balanceOf(UniswapMarketMaker.address);
     const endBuybackBalance = await abt.balanceOf(Buyback.address);
     assert.equal(
       endBudgetBalance.toString() > startBudgetBalance.toString(),

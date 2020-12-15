@@ -1,13 +1,13 @@
 const assertions = require("truffle-assertions");
-const MarketMaker = artifacts.require("MarketMaker");
+const UniswapMarketMaker = artifacts.require("UniswapMarketMaker");
 const Bond = artifacts.require("Bond");
 const {development} = require("../../networks");
 
-contract("MarketMaker.changeUniswapRouter", (accounts) => {
+contract("UniswapMarketMaker.changeUniswapRouter", (accounts) => {
   const governor = development.accounts.Governor.address;
 
   it("changeUniswapRouter: should change uniswap router address", async () => {
-    const instance = await MarketMaker.deployed();
+    const instance = await UniswapMarketMaker.deployed();
     const contract = Bond.address;
 
     const startRouter = await instance.uniswapRouter();
@@ -28,7 +28,7 @@ contract("MarketMaker.changeUniswapRouter", (accounts) => {
   });
 
   it("changeUniswapRouter: should revert tx if sender not owner", async () => {
-    const instance = await MarketMaker.deployed();
+    const instance = await UniswapMarketMaker.deployed();
     const notOwner = accounts[1];
 
     await assertions.reverts(

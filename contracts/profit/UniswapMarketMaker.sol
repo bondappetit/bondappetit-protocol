@@ -7,7 +7,7 @@ import "@openzeppelin/contracts/math/SafeMath.sol";
 import "../utils/OwnablePausable.sol";
 import "../uniswap/IUniswapV2Router02.sol";
 
-contract MarketMaker is OwnablePausable {
+contract UniswapMarketMaker is OwnablePausable {
     using SafeMath for uint256;
     using SafeERC20 for ERC20;
 
@@ -58,7 +58,7 @@ contract MarketMaker is OwnablePausable {
         address recipient,
         uint256 amount
     ) external onlyOwner {
-        require(recipient != address(0), "MarketMaker::transfer: cannot transfer to the zero address");
+        require(recipient != address(0), "UniswapMarketMaker::transfer: cannot transfer to the zero address");
 
         ERC20(token).safeTransfer(recipient, amount);
         emit Transfer(token, recipient, amount);
@@ -79,7 +79,7 @@ contract MarketMaker is OwnablePausable {
      * @param _recipient Address of recipient.
      */
     function changeIncoming(address _incoming, address _recipient) external onlyOwner {
-        require(address(incoming) != _incoming, "MarketMaker::changeIncoming: duplicate incoming token address");
+        require(address(incoming) != _incoming, "UniswapMarketMaker::changeIncoming: duplicate incoming token address");
 
         uint256 balance = incoming.balanceOf(address(this));
         if (balance > 0) {
@@ -103,19 +103,19 @@ contract MarketMaker is OwnablePausable {
         path[1] = address(support);
 
         uint256 amountIn = incoming.balanceOf(address(this)).div(2);
-        require(amountIn > 0, "MarketMaker::buyLiquidity: not enough funds to buy back");
+        require(amountIn > 0, "UniswapMarketMaker::buyLiquidity: not enough funds to buy back");
         uint256[] memory amountsOut = uniswapRouter.getAmountsOut(amountIn, path);
-        require(amountsOut.length != 0, "MarketMaker::buyLiquidity: invalid amounts out length");
+        require(amountsOut.length != 0, "UniswapMarketMaker::buyLiquidity: invalid amounts out length");
         uint256 amountOut = amountsOut[amountsOut.length - 1];
-        require(amountOut > 0, "MarketMaker::buyLiquidity: liquidity pool is empty");
+        require(amountOut > 0, "UniswapMarketMaker::buyLiquidity: liquidity pool is empty");
 
         incoming.safeApprove(address(uniswapRouter), amountIn);
         uniswapRouter.swapExactTokensForTokens(amountIn, amountOut, path, address(this), block.timestamp);
 
         uint256 incomingBalance = incoming.balanceOf(address(this));
-        require(incomingBalance > 0, "MarketMaker::buyLiquidity: incoming token balance is empty");
+        require(incomingBalance > 0, "UniswapMarketMaker::buyLiquidity: incoming token balance is empty");
         uint256 supportBalance = support.balanceOf(address(this));
-        require(supportBalance > 0, "MarketMaker::buyLiquidity: support token balance is empty");
+        require(supportBalance > 0, "UniswapMarketMaker::buyLiquidity: support token balance is empty");
 
         incoming.safeApprove(address(uniswapRouter), incomingBalance);
         support.safeApprove(address(uniswapRouter), supportBalance);
@@ -137,9 +137,9 @@ contract MarketMaker is OwnablePausable {
         }
 
         uint256 incomingBalance = incoming.balanceOf(address(this));
-        require(incomingBalance > 0, "MarketMaker::addLiquidity: incoming token balance is empty");
+        require(incomingBalance > 0, "UniswapMarketMaker::addLiquidity: incoming token balance is empty");
         uint256 supportBalance = support.balanceOf(address(this));
-        require(supportBalance > 0, "MarketMaker::addLiquidity: support token balance is empty");
+        require(supportBalance > 0, "UniswapMarketMaker::addLiquidity: support token balance is empty");
 
         incoming.safeApprove(address(uniswapRouter), incomingBalance);
         support.safeApprove(address(uniswapRouter), supportBalance);

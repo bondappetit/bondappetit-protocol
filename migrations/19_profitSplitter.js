@@ -3,7 +3,7 @@ const {utils} = require("web3");
 const networks = require("../networks");
 const Budget = artifacts.require("Budget");
 const Buyback = artifacts.require("Buyback");
-const MarketMaker = artifacts.require("MarketMaker");
+const UniswapMarketMaker = artifacts.require("UniswapMarketMaker");
 const ProfitSplitter = artifacts.require("ProfitSplitter");
 
 module.exports = async (deployer, network) => {
@@ -25,7 +25,7 @@ module.exports = async (deployer, network) => {
       share: 10,
     },
     {
-      recipient: MarketMaker.address,
+      recipient: UniswapMarketMaker.address,
       share: 90,
     },
   ];

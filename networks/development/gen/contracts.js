@@ -5713,9 +5713,9 @@ module.exports = {
             }
         ]
     },
-    "MarketMaker": {
+    "UniswapMarketMaker": {
         "address": "0xd08FF1d2365526a93Aa4E18AbAa9CECDb8eA12E5",
-        "name": "MarketMaker",
+        "name": "UniswapMarketMaker",
         "voting": true,
         "abi": [
             {
