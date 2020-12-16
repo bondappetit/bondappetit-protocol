@@ -189,12 +189,21 @@ contract ProfitSplitter is OwnablePausable {
             path[1] = uniswapRouter.WETH();
 
             uint256[] memory amountsIn = uniswapRouter.getAmountsIn(amountOut, path);
-            require(amountsIn.length > 0, "ProfitSplitter::_payToBudget: invalid amounts in length");
+            require(amountsIn.length == 2, "ProfitSplitter::_payToBudget: invalid amounts in length");
             require(amountsIn[0] > 0, "ProfitSplitter::_payToBudget: liquidity pool is empty");
-            require(amountsIn[0] <= splitterIncomingBalance, "ProfitSplitter::_payToBudget: insufficient funds");
+            if (amountsIn[0] <= splitterIncomingBalance) {
+                incoming.approve(address(uniswapRouter), amountsIn[0]);
+                uniswapRouter.swapTokensForExactETH(amountOut, amountsIn[0], path, address(this), block.timestamp);
+            } else {
+                uint256[] memory amountsOut = uniswapRouter.getAmountsOut(splitterIncomingBalance, path);
+                require(amountsOut.length == 2, "ProfitSplitter::_payToBudget: invalid amounts out length");
+                require(amountsOut[1] > 0, "ProfitSplitter::_payToBudget: amounts out liquidity pool is empty");
 
-            incoming.approve(address(uniswapRouter), amountsIn[0]);
-            uniswapRouter.swapTokensForExactETH(amountOut, amountsIn[0], path, address(this), block.timestamp);
+                amount = amountsOut[1];
+
+                incoming.approve(address(uniswapRouter), splitterIncomingBalance);
+                uniswapRouter.swapExactTokensForETH(splitterIncomingBalance, amountsOut[1], path, address(this), block.timestamp);
+            }
         }
 
         budget.transfer(amount);
