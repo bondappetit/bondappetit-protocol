@@ -1,7 +1,7 @@
 const networks = require("./networks");
 const HDWalletProvider = require("truffle-hdwallet-provider");
 
-require('dotenv').config();
+require("dotenv").config();
 
 module.exports = {
   compilers: {
@@ -17,9 +17,9 @@ module.exports = {
   networks: {
     development: {
       from: networks.development.accounts.Governor.address,
-      host: 'localhost',
+      host: "localhost",
       port: 8545,
-      network_id: '999' // Match any network id
+      network_id: "999", // Match any network id
     },
     // testnets
     // properties
@@ -28,10 +28,17 @@ module.exports = {
     // gasPrice: gas price in gwei
     ropsten: {
       from: networks.ropsten.accounts.Governor.address,
-      provider: () => new HDWalletProvider(process.env.MNENOMIC, "https://ropsten.infura.io/v3/" + process.env.INFURA_API_KEY),
-      network_id: '3',
+      provider: () =>
+        new HDWalletProvider({
+          mnemonic: process.env.MNENOMIC,
+          providerOrUrl:
+            "https://ropsten.infura.io/v3/" + process.env.INFURA_API_KEY,
+          pollingInterval: 15000,
+        }),
+      network_id: "3",
       gas: 5500000,
-      gasPrice: 100000000000
+      gasPrice: 100000000000,
+      deploymentPollingInterval: 15000,
     },
     // kovan: {
     //   from: networks.kovan.accounts.Governor.address,
