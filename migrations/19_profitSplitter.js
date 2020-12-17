@@ -15,7 +15,7 @@ module.exports = async (deployer, network) => {
   const budget = {
     recipient: Budget.address,
     balance: utils
-      .toBN(10)
+      .toBN(1)
       .mul(utils.toBN(10).pow(utils.toBN(18)))
       .toString(),
   };

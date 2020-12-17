@@ -125,6 +125,9 @@ contract UniswapMarketMaker is OwnablePausable {
         support.safeApprove(address(uniswapRouter), supportBalance);
         (uint256 amountA, uint256 amountB, ) = uniswapRouter.addLiquidity(address(incoming), address(support), incomingBalance, supportBalance, 0, 0, address(this), block.timestamp);
         emit LiquidityAdded(amountA, amountB);
+
+        incoming.safeApprove(address(uniswapRouter), 0);
+        support.safeApprove(address(uniswapRouter), 0);
     }
 
     /**
@@ -149,6 +152,9 @@ contract UniswapMarketMaker is OwnablePausable {
         support.safeApprove(address(uniswapRouter), supportBalance);
         (uint256 amountA, uint256 amountB, ) = uniswapRouter.addLiquidity(address(incoming), address(support), incomingBalance, supportBalance, 0, 0, address(this), block.timestamp);
         emit LiquidityAdded(amountA, amountB);
+
+        incoming.safeApprove(address(uniswapRouter), 0);
+        support.safeApprove(address(uniswapRouter), 0);
     }
 
     /**
@@ -172,7 +178,7 @@ contract UniswapMarketMaker is OwnablePausable {
         amount = lpBalance < amount ? lpBalance : amount;
         require(amount > 0, "UniswapMarketMaker::removeLiquidity: zero amount");
 
-        ERC20(pair).approve(address(uniswapRouter), amount);
+        ERC20(pair).safeApprove(address(uniswapRouter), amount);
         (uint256 incomingAmount, uint256 supportAmount) = uniswapRouter.removeLiquidity(address(incoming), address(support), amount, 0, 0, address(this), block.timestamp);
         emit LiquidityRemoved(amount, incomingAmount, supportAmount);
     }
