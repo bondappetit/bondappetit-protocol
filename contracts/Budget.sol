@@ -29,6 +29,8 @@ contract Budget is OwnablePausable {
     /// @notice An event emitted when expenditure item payed.
     event Payed(address recipient, uint256 amount);
 
+    receive() external payable {}
+
     /**
      * @notice Change expenditure item.
      * @param recipient Recipient address.
