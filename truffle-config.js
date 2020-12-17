@@ -38,6 +38,7 @@ module.exports = {
       network_id: "3",
       gas: 5500000,
       gasPrice: 100000000000,
+      networkCheckTimeout: 100000,
       deploymentPollingInterval: 15000,
     },
     // kovan: {
