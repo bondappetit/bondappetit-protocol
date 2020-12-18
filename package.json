@@ -10,7 +10,8 @@
     "config-gen": "scripts/config-gen.sh",
     "node": "ganache-cli -f http://10.35.89.27:8545 -m 'tape total toast night perfect myself kiwi rich glow moment bitter actual spare bottom boss' -u 0x876A207aD9f6f0fA2C58A7902B2E7568a41c299f -i 999 --chainId 999",
     "test": "truffle test",
-    "console": "truffle console"
+    "console": "truffle console",
+    "docs": "solidity-docgen -i ./contracts -o ./docs/api -t ./docs/templates"
   },
   "author": "",
   "license": "ISC",
@@ -33,6 +34,7 @@
     "prettier-plugin-solidity": "^1.0.0-alpha.59",
     "solhint": "^3.2.1",
     "solhint-plugin-prettier": "0.0.5",
+    "solidity-docgen": "^0.5.11",
     "truffle-assertions": "^0.9.2"
   },
   "dependencies": {
