@@ -1,0 +1,47 @@
+## `{{name}}`
+
+{{{natspec.userdoc}}}
+
+{{{natspec.devdoc}}}
+
+### Events
+{{#each ownEvents}}
+#### `{{name}}({{args}})`
+
+{{{natspec.userdoc}}}
+
+{{{natspec.devdoc}}}
+
+{{/each}}
+
+### Variables
+{{#each ownVariables}}
+#### `{{type}} {{name}}`
+
+{{/each}}
+
+### Functions
+{{#each ownFunctions}}
+{{#if (or (eq visibility "public") (eq visibility "external"))}}
+#### `{{name}}({{args}}){{#if outputs}} → {{outputs}}{{/if}}` ({{visibility}})
+
+{{{natspec.userdoc}}}
+
+{{{natspec.devdoc}}}
+{{#if natspec.params}}
+
+**Arguments:**
+{{#each natspec.params}}
+- *{{param}}* - {{description}}
+{{/each}}
+{{/if}}
+{{#if natspec.returns}}
+
+**Returns:**
+{{#each natspec.returns}}
+- *{{param}}* - {{description}}
+{{/each}}
+{{/if}}
+
+{{/if}}
+{{/each}}
