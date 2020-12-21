@@ -8,7 +8,7 @@
     "build": "truffle compile --all",
     "deploy": "truffle migrate",
     "config-gen": "scripts/config-gen.sh",
-    "node": "ganache-cli -f http://10.35.89.27:8545 -m 'tape total toast night perfect myself kiwi rich glow moment bitter actual spare bottom boss' -u 0x876A207aD9f6f0fA2C58A7902B2E7568a41c299f -i 999 --chainId 999",
+    "node": "ganache-cli -f http://46.165.249.37:8545 -m 'tape total toast night perfect myself kiwi rich glow moment bitter actual spare bottom boss' -u 0x876A207aD9f6f0fA2C58A7902B2E7568a41c299f -i 999 --chainId 999",
     "test": "truffle test",
     "console": "truffle console",
     "docs": "solidity-docgen -i ./contracts -o ./docs/api -t ./docs/templates"
