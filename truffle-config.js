@@ -31,13 +31,14 @@ module.exports = {
       provider: () =>
         new HDWalletProvider({
           mnemonic: process.env.MNENOMIC,
-          providerOrUrl:
-            "https://ropsten.infura.io/v3/" + process.env.INFURA_API_KEY,
+          providerOrUrl: "http://46.165.249.37:8545",
+          //providerOrUrl: "https://ropsten.infura.io/v3/" + process.env.INFURA_API_KEY,
           pollingInterval: 15000,
         }),
       network_id: "3",
       gas: 5500000,
       gasPrice: 100000000000,
+      networkCheckTimeout: 100000,
       deploymentPollingInterval: 15000,
     },
     // kovan: {
