@@ -104,7 +104,7 @@ jobs:
         run: |
           git config --global user.name "${GITHUB_ACTOR}"
           git config --global user.email "${GITHUB_ACTOR}@https://users.noreply.github.com/"
-          git clone "https://${{ secrets.ACCESS_TOKEN }}@github.com/bondappetit/networks.git" --branch master --single-branch ./output
+          git clone "https://${{ secrets.ACCESS_TOKEN }}@github.com/bondappetit/bondappetit-protocol-networks.git" --branch master --single-branch ./output
 
       - name: Download artifacts
         uses: actions/download-artifact@v2
@@ -122,7 +122,7 @@ jobs:
           git add --all
           git diff-index --quiet --cached HEAD -- && echo "No changes!" && exit 0 || echo $COMMIT_MESSAGE
           git commit -m "${COMMIT_MESSAGE}"
-          git push https://${{ secrets.ACCESS_TOKEN }}@github.com/bondappetit/networks.git master
+          git push https://${{ secrets.ACCESS_TOKEN }}@github.com/bondappetit/bondappetit-protocol-networks.git master
         working-directory: ./output
 
   publish-npm-networks:
