@@ -1,4 +1,5 @@
 require("hardhat-deploy");
+require("dotenv").config();
 const networks = require("./networks");
 
 /**
@@ -13,12 +14,18 @@ module.exports = {
       chainId: 999,
       from: networks.development.accounts.Governor.address,
       gasPrice: parseInt(networks.development.gasPrice, 10),
+      accounts: {
+        mnemonic: process.env.MNENOMIC,
+      },
     },
     ropsten: {
       url: "http://46.165.249.37:8545",
       chainId: 3,
       from: networks.ropsten.accounts.Governor.address,
       gasPrice: parseInt(networks.ropsten.gasPrice, 10),
+      accounts: {
+        mnemonic: process.env.MNENOMIC,
+      },
     },
   },
 };
