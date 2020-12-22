@@ -81,7 +81,7 @@ contract HighAlertOracle is Ownable {
      * @notice Pause all pausable contracts.
      * @param reason Reason of pause.
      */
-    function pauseAll(string memory reason) external onlyOwner {
+    function pauseAll(string calldata reason) external onlyOwner {
         _pauseAll(reason);
     }
 
@@ -89,7 +89,7 @@ contract HighAlertOracle is Ownable {
      * @notice Unpause all pausable contracts.
      * @param reason Reason of unpause.
      */
-    function unpauseAll(string memory reason) external onlyOwner {
+    function unpauseAll(string calldata reason) external onlyOwner {
         _unpauseAll(reason);
     }
 }

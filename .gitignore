@@ -1,4 +1,7 @@
 node_modules
+artifacts
+cache
+deployments
 build
 docs/api
 .openzeppelin
