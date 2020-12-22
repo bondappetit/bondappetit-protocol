@@ -105,7 +105,11 @@ jobs:
         uses: actions/download-artifact@v2
         with:
           name: build-${{ github.head_ref }}-${{ github.sha }}
-          path: ./output
+          path: ./artifacts
+
+      - name: Move artifacts
+        run: |
+          cp -rf artifacts/networks ./output/
 
       - name: Publish master branch
         run: |
@@ -152,7 +156,7 @@ jobs:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
         working-directory: ./output
 
-  publish-git-docs:
+  publish-git-api-docs:
     needs: build
 
     strategy:
@@ -172,7 +176,12 @@ jobs:
         uses: actions/download-artifact@v2
         with:
           name: build-${{ github.head_ref }}-${{ github.sha }}
-          path: ./output
+          path: ./artifacts
+
+      - name: Move artifacts
+        run: |
+          rm -rf ./output/api
+          mv artifacts/docs/api ./output/
 
       - name: Publish master branch
         run: |
