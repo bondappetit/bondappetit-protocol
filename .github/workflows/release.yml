@@ -50,7 +50,7 @@ jobs:
             artifacts
             deployments
 
-  publish-master:
+  publish-git:
     needs: build
 
     strategy:
@@ -60,25 +60,25 @@ jobs:
     runs-on: ${{ matrix.platform }}
 
     steps:
-      - name: Clone master branch
+      - name: Clone ${GITHUB_REF} branch
         run: |
           git config --global user.name "${GITHUB_ACTOR}"
           git config --global user.email "${GITHUB_ACTOR}@https://users.noreply.github.com/"
-          git clone "https://${{ secrets.ACCESS_TOKEN }}@github.com/$GITHUB_REPOSITORY.git" --branch master --single-branch ./output
+          git clone "https://${{ secrets.ACCESS_TOKEN }}@github.com/$GITHUB_REPOSITORY.git" --branch ${GITHUB_REF} --single-branch ./output
 
       - name: Download artifacts
         uses: actions/download-artifact@v2
         with:
           name: networks-${{ github.head_ref }}-${{ github.sha }}
-          path: ./output/networks
+          path: ./output
 
-      - name: Publish master branch
+      - name: Publish ${GITHUB_REF} branch
         run: |
           COMMIT_MESSAGE="new build ${{ github.event.release.tag_name }} on $(date +'%Y-%m-%d %H:%M:%S')"
           git add --all
           git diff-index --quiet --cached HEAD -- && echo "No changes!" && exit 0 || echo $COMMIT_MESSAGE
           git commit -m "${COMMIT_MESSAGE}"
-          git push https://${{ secrets.ACCESS_TOKEN }}@github.com/$GITHUB_REPOSITORY.git master
+          git push https://${{ secrets.ACCESS_TOKEN }}@github.com/$GITHUB_REPOSITORY.git ${GITHUB_REF}
         working-directory: ./output
 
 #  publish-networks:
@@ -91,11 +91,11 @@ jobs:
 #    runs-on: ${{ matrix.platform }}
 #
 #    steps:
-#      - name: Clone master branch
+#      - name: Clone ${GITHUB_REF} branch
 #        run: |
 #          git config --global user.name "${GITHUB_ACTOR}"
 #          git config --global user.email "${GITHUB_ACTOR}@https://users.noreply.github.com/"
-#          git clone "https://${{ secrets.ACCESS_TOKEN }}@github.com/bondappetit/networks.git" --branch master --single-branch ./output
+#          git clone "https://${{ secrets.ACCESS_TOKEN }}@github.com/bondappetit/networks.git" --branch ${GITHUB_REF} --single-branch ./output
 #
 #      - name: Download artifacts
 #        uses: actions/download-artifact@v2
@@ -103,13 +103,13 @@ jobs:
 #          name: networks-${{ github.head_ref }}-${{ github.sha }}
 #          path: ./output
 #
-#      - name: Publish master branch
+#      - name: Publish ${GITHUB_REF} branch
 #        run: |
 #          COMMIT_MESSAGE="new build ${{ github.event.release.tag_name }} on $(date +'%Y-%m-%d %H:%M:%S')"
 #          git add --all
 #          git diff-index --quiet --cached HEAD -- && echo "No changes!" && exit 0 || echo $COMMIT_MESSAGE
 #          git commit -m "${COMMIT_MESSAGE}"
-#          git push https://${{ secrets.ACCESS_TOKEN }}@github.com/bondappetit/networks.git master
+#          git push https://${{ secrets.ACCESS_TOKEN }}@github.com/bondappetit/networks.git ${GITHUB_REF}
 #        working-directory: ./output
 #
 #  publish-npm:
@@ -132,7 +132,7 @@ jobs:
 #        run: |
 #          git config --global user.name "${GITHUB_ACTOR}"
 #          git config --global user.email "${GITHUB_ACTOR}@https://users.noreply.github.com/"
-#          git clone "https://${{ secrets.ACCESS_TOKEN }}@github.com/bondappetit/networks.git" --branch master --single-branch ./output
+#          git clone "https://${{ secrets.ACCESS_TOKEN }}@github.com/bondappetit/networks.git" --branch ${GITHUB_REF} --single-branch ./output
 #
 #      - name: Download artifacts
 #        uses: actions/download-artifact@v2
