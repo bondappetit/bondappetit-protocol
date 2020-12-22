@@ -58,11 +58,15 @@ jobs:
 #        MNENOMIC: ${{secrets.MNENOMIC}}
 #        INFURA_API_KEY: ${{secrets.INFURA_API_KEY}}
 
+     - name: npm docs
+       run: npm run docs
+
     - name: Archive artifacts
       uses: actions/upload-artifact@v2
       with:
         name: networks-${{ github.head_ref }}-${{ github.sha }}
         path: |
-          networks
           artifacts
+          docs/api
           deployments
+          networks
