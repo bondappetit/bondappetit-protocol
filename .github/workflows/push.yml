@@ -61,7 +61,7 @@ jobs:
     - name: Archive artifacts
       uses: actions/upload-artifact@v2
       with:
-        name: networks-${{ $GITHUB_REF }}-${{ $GITHUB_SHA }}
+        name: networks-${{ github.head_ref }}-${{ github.sha }}
         path: |
           networks
           artifacts
