@@ -1,5 +1,4 @@
 const fs = require("fs").promises;
-const truffleConfig = require("./truffle-config");
 const cla = require("command-line-args");
 
 const {config, network, out, abi: abiPath} = cla([
@@ -14,7 +13,10 @@ async function loadJson(path) {
 }
 
 async function writeJs(path, data) {
-  return fs.writeFile(path, 'module.exports = ' + JSON.stringify(data, null, 4));
+  return fs.writeFile(
+    path,
+    "module.exports = " + JSON.stringify(data, null, 4)
+  );
 }
 
 async function writeJson(path, data) {
@@ -22,33 +24,55 @@ async function writeJson(path, data) {
 }
 
 (async (configPath, network, out) => {
-  const networkId = truffleConfig.networks[network].network_id;
   const config = JSON.parse(await fs.readFile(configPath));
 
   const [assets, contracts, abiContracts] = await Promise.all([
     Promise.all(
-      (config.assets || []).map(async ({path, symbol, decimals, investing}) => ({
-        ...(await loadJson(path)),
-        symbol,
-        decimals,
-        investing,
-      }))
+      (config.assets || []).map(
+        async ({path, name, symbol, decimals, investing}) => {
+          const {address} = await loadJson(path.replace("%network%", network));
+
+          return {
+            name,
+            address,
+            symbol,
+            decimals,
+            investing,
+          };
+        }
+      )
     ),
-    Promise.all((config.contracts || []).map(async ({path, voting}) => ({
-      ...(await loadJson(path)),
-      voting,
-    }))),
-    Promise.all((config.abi || []).map(({path}) => loadJson(path))),
+    Promise.all(
+      (config.contracts || []).map(async ({path, name, voting}) => {
+        const {address, abi} = await loadJson(
+          path.replace("%network%", network)
+        );
+
+        return {
+          address,
+          name,
+          abi,
+          voting,
+        };
+      })
+    ),
+    Promise.all(
+      (config.abi || []).map(async ({path}) => {
+        const {contractName, abi} = await loadJson(path);
+
+        return {contractName, abi};
+      })
+    ),
   ]);
 
   await Promise.all([
     writeJs(
       `${out}/contracts.js`,
       contracts.reduce(
-        (result, {contractName: name, abi, networks, voting}) => ({
+        (result, {address, name, abi, voting}) => ({
           ...result,
           [name]: {
-            address: networks[networkId].address,
+            address,
             name,
             voting,
             abi,
@@ -57,17 +81,16 @@ async function writeJson(path, data) {
         {}
       )
     ),
-    ...abiContracts.map(({contractName: name, abi}) => writeJson(
-      `${abiPath}/${name}.json`,
-      { abi }
-    )),
+    ...abiContracts.map(({contractName: name, abi}) =>
+      writeJson(`${abiPath}/${name}.json`, {abi})
+    ),
     writeJs(
       `${out}/assets.js`,
       assets.reduce(
-        (result, {contractName: name, symbol, decimals, investing, networks}) => ({
+        (result, {address, name, symbol, decimals, investing}) => ({
           ...result,
           [name]: {
-            address: networks[networkId].address,
+            address,
             name,
             symbol,
             decimals,
