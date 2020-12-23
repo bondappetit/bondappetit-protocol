@@ -11,7 +11,7 @@ interface ISecurityOracle {
      * @param prop Property name of security.
      * @param value Property value.
      */
-    function put(string memory isin, string memory prop, bytes memory value) external;
+    function put(string calldata isin, string calldata prop, bytes calldata value) external;
 
     /**
      * @notice Get property value of security.
@@ -19,7 +19,7 @@ interface ISecurityOracle {
      * @param prop Property name of security.
      * @return Property value of security.
      */
-    function get(string memory isin, string memory prop) external view returns(bytes memory);
+    function get(string calldata isin, string calldata prop) external view returns(bytes memory);
 
     /**
      * @dev Emitted when the security property update.

@@ -41,13 +41,20 @@ jobs:
           MNENOMIC: ${{secrets.MNENOMIC}}
           INFURA_API_KEY: ${{secrets.INFURA_API_KEY}}
 
+      - name: npm docs
+        run: npm run docs
+
       - name: Archive artifacts
         uses: actions/upload-artifact@v2
         with:
-          name: networks-$GITHUB_REF-$GITHUB_SHA
-          path: networks
+          name: build-${{ github.head_ref }}-${{ github.sha }}
+          path: |
+            networks
+            docs/api
+            artifacts
+            deployments
 
-  publish-master:
+  publish-git:
     needs: build
 
     strategy:
@@ -57,59 +64,68 @@ jobs:
     runs-on: ${{ matrix.platform }}
 
     steps:
-      - name: Clone master branch
+      - name: Extract branch name
+        shell: bash
+        run: echo "##[set-output name=branch;]$(echo ${GITHUB_REF#refs/heads/})"
+        id: extract_branch
+
+      - name: Clone ${GITHUB_REF} branch
         run: |
           git config --global user.name "${GITHUB_ACTOR}"
           git config --global user.email "${GITHUB_ACTOR}@https://users.noreply.github.com/"
-          git clone "https://${{ secrets.ACCESS_TOKEN }}@github.com/$GITHUB_REPOSITORY.git" --branch master --single-branch ./output
+          git clone "https://${{ secrets.ACCESS_TOKEN }}@github.com/$GITHUB_REPOSITORY.git" --branch ${{ steps.extract_branch.outputs.branch }} --single-branch ./output
 
       - name: Download artifacts
         uses: actions/download-artifact@v2
         with:
-          name: networks-$GITHUB_REF-$GITHUB_SHA
-          path: ./output/networks
-
-      - name: Publish master branch
-        run: |
-          COMMIT_MESSAGE="new build ${{ github.event.release.tag_name }} on $(date +'%Y-%m-%d %H:%M:%S')"
-          git add --all
-          git diff-index --quiet --cached HEAD -- && echo "No changes!" && exit 0 || echo $COMMIT_MESSAGE
-          git commit -m "${COMMIT_MESSAGE}"
-          git push https://${{ secrets.ACCESS_TOKEN }}@github.com/$GITHUB_REPOSITORY.git master
-        working-directory: ./output
-
-  publish-networks:
-    needs: build
-
-    strategy:
-      matrix:
-        platform: [ubuntu-latest]
-        node-version: [12.x]
-    runs-on: ${{ matrix.platform }}
-
-    steps:
-      - name: Clone master branch
-        run: |
-          git config --global user.name "${GITHUB_ACTOR}"
-          git config --global user.email "${GITHUB_ACTOR}@https://users.noreply.github.com/"
-          git clone "https://${{ secrets.ACCESS_TOKEN }}@github.com/bondappetit/networks.git" --branch master --single-branch ./output
-
-      - name: Download artifacts
-        uses: actions/download-artifact@v2
-        with:
-          name: networks-$GITHUB_REF-$GITHUB_SHA
+          name: build-${{ github.head_ref }}-${{ github.sha }}
           path: ./output
 
+      - name: Publish ${GITHUB_REF} branch
+        run: |
+          COMMIT_MESSAGE="new build ${{ github.event.release.tag_name }} on $(date +'%Y-%m-%d %H:%M:%S')"
+          git add --all
+          git diff-index --quiet --cached HEAD -- && echo "No changes!" && exit 0 || echo $COMMIT_MESSAGE
+          git commit -m "${COMMIT_MESSAGE}"
+          git push https://${{ secrets.ACCESS_TOKEN }}@github.com/$GITHUB_REPOSITORY.git ${{ steps.extract_branch.outputs.branch }}
+        working-directory: ./output
+
+  publish-git-networks:
+    needs: build
+
+    strategy:
+      matrix:
+        platform: [ubuntu-latest]
+        node-version: [12.x]
+    runs-on: ${{ matrix.platform }}
+
+    steps:
+      - name: Clone master branch
+        run: |
+          git config --global user.name "${GITHUB_ACTOR}"
+          git config --global user.email "${GITHUB_ACTOR}@https://users.noreply.github.com/"
+          git clone "https://${{ secrets.ACCESS_TOKEN }}@github.com/bondappetit/bondappetit-protocol-networks.git" --branch master --single-branch ./output
+
+      - name: Download artifacts
+        uses: actions/download-artifact@v2
+        with:
+          name: build-${{ github.head_ref }}-${{ github.sha }}
+          path: ./artifacts
+
+      - name: Move artifacts
+        run: |
+          cp -rf artifacts/networks/* ./output/
+
       - name: Publish master branch
         run: |
           COMMIT_MESSAGE="new build ${{ github.event.release.tag_name }} on $(date +'%Y-%m-%d %H:%M:%S')"
           git add --all
           git diff-index --quiet --cached HEAD -- && echo "No changes!" && exit 0 || echo $COMMIT_MESSAGE
           git commit -m "${COMMIT_MESSAGE}"
-          git push https://${{ secrets.ACCESS_TOKEN }}@github.com/bondappetit/networks.git master
+          git push https://${{ secrets.ACCESS_TOKEN }}@github.com/bondappetit/bondappetit-protocol-networks.git master
         working-directory: ./output
 
-  publish-npm:
+  publish-npm-networks:
     needs: build
 
     strategy:
@@ -134,7 +150,7 @@ jobs:
       - name: Download artifacts
         uses: actions/download-artifact@v2
         with:
-          name: networks-$GITHUB_REF-$GITHUB_SHA
+          name: build-${{ github.head_ref }}-${{ github.sha }}
           path: ./output
 
       - name: Publish to npm
@@ -145,3 +161,74 @@ jobs:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
         working-directory: ./output
 
+  publish-git-api-docs:
+    needs: build
+
+    strategy:
+      matrix:
+        platform: [ubuntu-latest]
+        node-version: [12.x]
+    runs-on: ${{ matrix.platform }}
+
+    steps:
+      - name: Clone master branch
+        run: |
+          git config --global user.name "${GITHUB_ACTOR}"
+          git config --global user.email "${GITHUB_ACTOR}@https://users.noreply.github.com/"
+          git clone "https://${{ secrets.ACCESS_TOKEN }}@github.com/bondappetit/bondappetit-protocol-api-docs.git" --branch master --single-branch ./output
+
+      - name: Download artifacts
+        uses: actions/download-artifact@v2
+        with:
+          name: build-${{ github.head_ref }}-${{ github.sha }}
+          path: ./artifacts
+
+      - name: Move artifacts
+        run: |
+          rm -rf ./output/api
+          mv artifacts/docs/api ./output/
+
+      - name: Publish master branch
+        run: |
+          COMMIT_MESSAGE="new build ${{ github.event.release.tag_name }} on $(date +'%Y-%m-%d %H:%M:%S')"
+          git add --all
+          git diff-index --quiet --cached HEAD -- && echo "No changes!" && exit 0 || echo $COMMIT_MESSAGE
+          git commit -m "${COMMIT_MESSAGE}"
+          git push https://${{ secrets.ACCESS_TOKEN }}@github.com/bondappetit/bondappetit-protocol-api-docs.git master
+        working-directory: ./output
+
+  publish-npm-docs:
+    needs: build
+
+    strategy:
+      matrix:
+        platform: [ubuntu-latest]
+        node-version: [12.x]
+    runs-on: ${{ matrix.platform }}
+
+    steps:
+      - name: Use Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v1
+        with:
+          node-version: ${{ matrix.node-version }}
+          registry-url: https://registry.npmjs.com/
+
+      - name: Clone docs
+        run: |
+          git config --global user.name "${GITHUB_ACTOR}"
+          git config --global user.email "${GITHUB_ACTOR}@https://users.noreply.github.com/"
+          git clone "https://${{ secrets.ACCESS_TOKEN }}@github.com/bondappetit/bondappetit-protocol-api-docs.git" --branch master --single-branch ./output
+
+      - name: Download artifacts
+        uses: actions/download-artifact@v2
+        with:
+          name: build-${{ github.head_ref }}-${{ github.sha }}
+          path: ./output
+
+      - name: Publish to npm
+        run: |
+          npm version ${{ github.event.release.tag_name }} --no-git-tag-version
+          npm publish --access public
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+        working-directory: ./output
