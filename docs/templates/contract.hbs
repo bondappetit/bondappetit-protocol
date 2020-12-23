@@ -1,4 +1,4 @@
-## `{{name}}`
+## {{name}}
 
 {{{natspec.userdoc}}}
 
@@ -6,7 +6,9 @@
 
 ### Events
 {{#each ownEvents}}
-#### `{{name}}({{args}})`
+```solidity
+{{name}}({{args}})
+```
 
 {{{natspec.userdoc}}}
 
@@ -16,14 +18,18 @@
 
 ### Variables
 {{#each ownVariables}}
-#### `{{type}} {{name}}`
+```solidity
+{{type}} {{name}}
+```
 
 {{/each}}
 
 ### Functions
 {{#each ownFunctions}}
 {{#if (or (eq visibility "public") (eq visibility "external"))}}
-#### `{{name}}({{args}}){{#if outputs}} → {{outputs}}{{/if}}` ({{visibility}})
+```solidity
+{{name}}({{args}}){{#if outputs}} → {{outputs}}{{/if}}
+```
 
 {{{natspec.userdoc}}}
 
