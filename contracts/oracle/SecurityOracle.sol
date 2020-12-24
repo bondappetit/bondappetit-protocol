@@ -9,15 +9,15 @@ contract SecurityOracle is ISecurityOracle, Ownable {
     mapping(string => mapping(string => bytes)) private data;
 
     function put(
-        string memory isin,
-        string memory prop,
-        bytes memory value
+        string calldata isin,
+        string calldata prop,
+        bytes calldata value
     ) external override onlyOwner {
         data[isin][prop] = value;
         emit Update(isin, prop, value);
     }
 
-    function get(string memory isin, string memory prop) external override view returns (bytes memory) {
+    function get(string calldata isin, string calldata prop) external override view returns (bytes memory) {
         return data[isin][prop];
     }
 }

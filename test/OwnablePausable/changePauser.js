@@ -1,29 +1,28 @@
 const assertions = require("truffle-assertions");
-const networks = require("../../networks");
-const Investment = artifacts.require("Investment");
-const IERC20 = artifacts.require("IERC20");
+const {contract} = require("../../utils/test");
+const {development} = require("../../networks");
 
-contract("OwnablePausable.pause", (accounts) => {
-  const governor = networks.development.accounts.Governor.address;
-  const pauser = accounts[1];
+contract("OwnablePausable.pause", ({web3, artifacts}) => {
+  const governor = development.accounts.Governor.address;
 
   it("changePauser: should change pauser address", async () => {
-    const instance = await Investment.deployed();
+    const instance = await artifacts.require("Investment");
+    const pauser = (await web3.eth.getAccounts())[1];
 
     await assertions.reverts(
-      instance.pause({from: pauser}),
+      instance.methods.pause().send({from: pauser}),
       "OwnablePausable::pause: only pauser and owner must pause contract"
     );
     await assertions.reverts(
-      instance.unpause({from: pauser}),
+      instance.methods.unpause().send({from: pauser}),
       "OwnablePausable::unpause: only pauser and owner must unpause contract"
     );
 
-    await instance.changePauser(pauser, {from: governor});
+    await instance.methods.changePauser(pauser).send({from: governor});
 
-    await instance.pause({from: pauser});
-    await instance.unpause({from: pauser});
-    await instance.pause({from: governor});
-    await instance.unpause({from: governor});
+    await instance.methods.pause().send({from: pauser});
+    await instance.methods.unpause().send({from: pauser});
+    await instance.methods.pause().send({from: governor});
+    await instance.methods.unpause().send({from: governor});
   });
 });

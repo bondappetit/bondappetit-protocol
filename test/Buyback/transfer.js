@@ -1,43 +1,42 @@
 const assertions = require("truffle-assertions");
-const {utils} = require("web3");
-const Buyback = artifacts.require("Buyback");
-const Bond = artifacts.require("Bond");
+const {contract, assert, bn} = require("../../utils/test");
 const {development} = require("../../networks");
 
-contract("Buyback.transfer", (accounts) => {
+contract("Buyback.transfer", ({web3, artifacts}) => {
   const governor = development.accounts.Governor.address;
 
   it("transfer: should transfer incoming token to recipient", async () => {
-    const instance = await Buyback.deployed();
-    const bond = await Bond.deployed();
+    const [instance, bond] = await artifacts.requireAll("Buyback", "Bond");
     const amount = "5";
 
-    await instance.changeIncoming(Bond.address, governor, {from: governor});
+    await instance.methods
+      .changeIncoming(bond._address, governor)
+      .send({from: governor});
 
-    await bond.transfer(Buyback.address, amount);
-    const startOwnerBalance = await bond.balanceOf(governor);
+    await bond.methods
+      .transfer(instance._address, amount)
+      .send({from: governor});
+    const startOwnerBalance = await bond.methods.balanceOf(governor).call();
 
-    await instance.transfer(governor, amount, {from: governor});
-    const endBuybackBalance = await bond.balanceOf(Buyback.address);
-    const endOwnerBalance = await bond.balanceOf(governor);
+    await instance.methods.transfer(governor, amount).send({from: governor});
+    const endBuybackBalance = await bond.methods
+      .balanceOf(instance._address)
+      .call();
+    const endOwnerBalance = await bond.methods.balanceOf(governor).call();
+    assert.equal(endBuybackBalance, "0", "Invalid end buyback balance");
     assert.equal(
-      endBuybackBalance.toString(),
-      "0",
-      "Invalid end buyback balance"
-    );
-    assert.equal(
-      endOwnerBalance.toString(),
-      startOwnerBalance.add(utils.toBN(amount)).toString(),
+      endOwnerBalance,
+      bn(startOwnerBalance).add(bn(amount)).toString(),
       "Invalid end owner balance"
     );
   });
 
   it("transfer: should revert tx if sender not owner", async () => {
-    const instance = await Buyback.deployed();
-    const notOwner = accounts[1];
+    const instance = await artifacts.require("Buyback");
+    const notOwner = (await web3.eth.getAccounts())[1];
 
     await assertions.reverts(
-      instance.transfer(governor, '1', {
+      instance.methods.transfer(governor, "1").send({
         from: notOwner,
       }),
       "Ownable: caller is not the owner"

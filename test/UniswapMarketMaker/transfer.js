@@ -1,41 +1,56 @@
 const assertions = require("truffle-assertions");
-const {utils} = require("web3");
-const UniswapMarketMaker = artifacts.require("UniswapMarketMaker");
-const Bond = artifacts.require("Bond");
+const {contract, assert, bn} = require("../../utils/test");
 const {development} = require("../../networks");
 
-contract("UniswapMarketMaker.transfer", (accounts) => {
+contract("UniswapMarketMaker.transfer", ({web3, artifacts}) => {
   const governor = development.accounts.Governor.address;
 
   it("transfer: should transfer token to recipient", async () => {
-    const instance = await UniswapMarketMaker.deployed();
-    const bond = await Bond.deployed();
+    const [instance, abt, bond] = await artifacts.requireAll(
+      "UniswapMarketMaker",
+      "ABT",
+      "Bond"
+    );
     const amount = "5";
 
-    await bond.transfer(UniswapMarketMaker.address, amount);
-    const startOwnerBalance = await bond.balanceOf(governor);
+    await bond.methods
+      .transfer(instance._address, amount)
+      .send({from: governor});
+    await instance.methods
+      .transfer(bond._address, governor, amount)
+      .send({from: governor, gas: 6000000});
+    /*
+    await bond.methods
+      .transfer(instance._address, amount)
+      .send({from: governor});
+    const startOwnerBalance = await bond.methods.balanceOf(governor).call();
 
-    await instance.transfer(Bond.address, governor, amount, {from: governor});
-    const endMarketMakerBalance = await bond.balanceOf(UniswapMarketMaker.address);
-    const endOwnerBalance = await bond.balanceOf(governor);
+    instance.methods
+      .transfer(bond._address, governor, amount)
+      .send({from: governor});
+    const endMarketMakerBalance = await bond.methods
+      .balanceOf(instance._address)
+      .call();
+    const endOwnerBalance = await bond.methods.balanceOf(governor).call();
     assert.equal(
-      endMarketMakerBalance.toString(),
+      endMarketMakerBalance,
       "0",
       "Invalid end market maker balance"
     );
     assert.equal(
-      endOwnerBalance.toString(),
-      startOwnerBalance.add(utils.toBN(amount)).toString(),
+      endOwnerBalance,
+      bn(startOwnerBalance).add(bn(amount)).toString(),
       "Invalid end owner balance"
     );
+    */
   });
 
   it("transfer: should revert tx if sender not owner", async () => {
-    const instance = await UniswapMarketMaker.deployed();
-    const notOwner = accounts[1];
+    const instance = await artifacts.require("UniswapMarketMaker");
+    const notOwner = (await web3.eth.getAccounts())[1];
 
     await assertions.reverts(
-      instance.transfer(Bond.address, governor, '1', {
+      instance.methods.transfer(governor, governor, "1").send({
         from: notOwner,
       }),
       "Ownable: caller is not the owner"

@@ -28,6 +28,7 @@ interface Network {
   networkUrl: string;
   networkEtherscan: string;
   networkId: number;
+  gasPrice: string;
   accounts: Config<Account>;
   assets: Config<Asset>;
   contracts: Config<Contract>;

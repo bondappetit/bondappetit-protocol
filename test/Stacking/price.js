@@ -1,23 +1,23 @@
-const {utils} = require("web3");
-const Bond = artifacts.require("Bond");
-const Stacking = artifacts.require("Stacking");
+const {contract, assert, bn} = require("../../utils/test");
+const {development} = require("../../networks");
 
-contract("Stacking.price", (accounts) => {
+contract("Stacking.price", ({web3, artifacts}) => {
+  const {Bond} = development.contracts;
+
   it("price: should get current price", async () => {
-    const instance = await Stacking.deployed();
+    const instance = await artifacts.require("Stacking");
 
-    const currentReward = await instance.rewards(Bond.address);
-    const currentDelta = currentReward.delta.toString();
+    const currentReward = await instance.methods.rewards(Bond.address).call();
+    const currentDelta = currentReward.delta;
     assert.notEqual(currentDelta, "0", "Start delta invalid");
-    const lastBlockNumber = currentReward.blockAt.toString();
+    const lastBlockNumber = currentReward.blockAt;
     const currentBlockNumber = await web3.eth.getBlockNumber();
-    const currentPrice = await instance.price(Bond.address);
+    const currentPrice = await instance.methods.price(Bond.address).call();
     assert.equal(
       currentPrice,
-      utils
-        .toBN(currentBlockNumber)
-        .sub(utils.toBN(lastBlockNumber))
-        .mul(utils.toBN(currentDelta))
+      bn(currentBlockNumber)
+        .sub(bn(lastBlockNumber))
+        .mul(bn(currentDelta))
         .toString(),
       "Current price invalid"
     );

@@ -1,20 +1,47 @@
-const Bond = artifacts.require("Bond");
-const ABT = artifacts.require("ABT");
-const Market = artifacts.require("Market");
+const hardhat = require("hardhat");
 const {development} = require("../networks");
 
-const governor = development.accounts.Governor.address;
-module.exports = async (callback) => {
-  try {
-    const bond = await Bond.deployed();
-    const abt = await ABT.deployed();
-    const amount = "1000000000000000000000";
+async function main() {
+  const governor = development.accounts.Governor.address;
+  const amount = "1000000000000000000000";
+  const {address: marketAddress} = await hardhat.deployments.get("Market");
 
-    await bond.mint(Market.address, amount, {from: governor});
-    await abt.mint(Market.address, amount, {from: governor});
+  await hardhat.deployments.execute(
+    "Bond",
+    {from: governor},
+    "mint",
+    marketAddress,
+    amount
+  );
+  await hardhat.deployments.execute(
+    "ABT",
+    {from: governor},
+    "mint",
+    marketAddress,
+    amount
+  );
 
-    callback();
-  } catch (e) {
-    callback(e);
-  }
-};
+  const [bondBalance, abtBalance] = await Promise.all([
+    hardhat.deployments.read(
+      "Bond",
+      {from: governor},
+      "balanceOf",
+      marketAddress
+    ),
+    hardhat.deployments.read(
+      "ABT",
+      {from: governor},
+      "balanceOf",
+      marketAddress
+    ),
+  ]);
+
+  console.log(`Bond balance: ${bondBalance}`, `ABT balance: ${abtBalance}`);
+}
+
+main()
+  .then(() => process.exit(0))
+  .catch((error) => {
+    console.error(error);
+    process.exit(1);
+  });

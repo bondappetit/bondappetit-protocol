@@ -1,48 +1,60 @@
 const {utils} = require("web3");
-const Budget = artifacts.require("Budget");
-const Treasury = artifacts.require("Treasury");
-const Timelock = artifacts.require("Timelock");
+const {contract, assert, bn} = require("../../utils/test");
 const {development} = require("../../networks");
 
-contract("Budget.deficit", (accounts) => {
+contract("Budget.deficit", ({web3, artifacts}) => {
   const governor = development.accounts.Governor.address;
   const expenditures = {
-    [Treasury.address]: {
-        min: "5",
-        target: "10",
+    [development.contracts.Treasury.address]: {
+      min: "5",
+      target: "10",
     },
-    [Timelock.address]: {
-        min: "2",
-        target: "4",
+    [development.contracts.Timelock.address]: {
+      min: "2",
+      target: "4",
     },
   };
 
   it("deficit: should return eth balance deficit to all expenditures addresses", async () => {
-    const instance = await Budget.deployed();
-    const contractA = Treasury.address;
-    const contractB = Timelock.address;
+    const instance = await artifacts.require("Budget");
+    const contractA = development.contracts.Treasury.address;
+    const contractB = development.contracts.Timelock.address;
 
     await web3.eth.sendTransaction({
-        from: governor,
-        to: Budget.address,
-        value: utils.toBN(expenditures[contractA].target).add(utils.toBN(expenditures[contractB].target)).toString()
+      from: governor,
+      to: instance._address,
+      value: bn(expenditures[contractA].target)
+        .add(bn(expenditures[contractB].target))
+        .toString(),
     });
-    await instance.changeExpenditure(contractA, expenditures[contractA].min, expenditures[contractA].target, {from: governor});
-    await instance.changeExpenditure(contractB, expenditures[contractB].min, expenditures[contractB].target, {from: governor});
+    await instance.methods
+      .changeExpenditure(
+        contractA,
+        expenditures[contractA].min,
+        expenditures[contractA].target
+      )
+      .send({from: governor});
+    await instance.methods
+      .changeExpenditure(
+        contractB,
+        expenditures[contractB].min,
+        expenditures[contractB].target
+      )
+      .send({from: governor});
 
-    await instance.pay();
+    await instance.methods.pay().send({from: governor});
 
     const endBalanceContractA = await web3.eth.getBalance(contractA);
     const endBalanceContractB = await web3.eth.getBalance(contractB);
     assert.equal(
-        endBalanceContractA.toString(),
-        expenditures[contractA].target,
-        "Invalid end balance to contract A"
+      endBalanceContractA,
+      expenditures[contractA].target,
+      "Invalid end balance to contract A"
     );
     assert.equal(
-        endBalanceContractB.toString(),
-        expenditures[contractB].target,
-        "Invalid end balance to contract B"
+      endBalanceContractB,
+      expenditures[contractB].target,
+      "Invalid end balance to contract B"
     );
   });
 });

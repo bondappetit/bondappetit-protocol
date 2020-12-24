@@ -22,7 +22,7 @@ contract UniswapMarketMaker is OwnablePausable {
     IUniswapV2Router02 public uniswapRouter;
 
     /// @notice An event thats emitted when an token transferred to recipient.
-    event Transfer(address token, address recipient, uint256 amount);
+    event TokenTransfer(address token, address recipient, uint256 amount);
 
     /// @notice An event thats emitted when an uniswap router contract address changed.
     event UniswapRouterChanged(address newUniswapRouter);
@@ -31,10 +31,10 @@ contract UniswapMarketMaker is OwnablePausable {
     event IncomingChanged(address newIncoming);
 
     /// @notice An event thats emitted when an liquidity added.
-    event LiquidityAdded(uint256 incoming, uint256 support);
+    event LiquidityIncreased(uint256 incoming, uint256 support);
 
     /// @notice An event thats emitted when an liquidity removed.
-    event LiquidityRemoved(uint256 lp, uint256 incoming, uint256 support);
+    event LiquidityReduced(uint256 lp, uint256 incoming, uint256 support);
 
     /**
      * @param _incoming Address of incoming token.
@@ -65,7 +65,7 @@ contract UniswapMarketMaker is OwnablePausable {
         require(recipient != address(0), "UniswapMarketMaker::transfer: cannot transfer to the zero address");
 
         ERC20(token).safeTransfer(recipient, amount);
-        emit Transfer(token, recipient, amount);
+        emit TokenTransfer(token, recipient, amount);
     }
 
     /**
@@ -124,7 +124,7 @@ contract UniswapMarketMaker is OwnablePausable {
         incoming.safeApprove(address(uniswapRouter), incomingBalance);
         support.safeApprove(address(uniswapRouter), supportBalance);
         (uint256 amountA, uint256 amountB, ) = uniswapRouter.addLiquidity(address(incoming), address(support), incomingBalance, supportBalance, 0, 0, address(this), block.timestamp);
-        emit LiquidityAdded(amountA, amountB);
+        emit LiquidityIncreased(amountA, amountB);
 
         incoming.safeApprove(address(uniswapRouter), 0);
         support.safeApprove(address(uniswapRouter), 0);
@@ -151,7 +151,7 @@ contract UniswapMarketMaker is OwnablePausable {
         incoming.safeApprove(address(uniswapRouter), incomingBalance);
         support.safeApprove(address(uniswapRouter), supportBalance);
         (uint256 amountA, uint256 amountB, ) = uniswapRouter.addLiquidity(address(incoming), address(support), incomingBalance, supportBalance, 0, 0, address(this), block.timestamp);
-        emit LiquidityAdded(amountA, amountB);
+        emit LiquidityIncreased(amountA, amountB);
 
         incoming.safeApprove(address(uniswapRouter), 0);
         support.safeApprove(address(uniswapRouter), 0);
@@ -180,6 +180,6 @@ contract UniswapMarketMaker is OwnablePausable {
 
         ERC20(pair).safeApprove(address(uniswapRouter), amount);
         (uint256 incomingAmount, uint256 supportAmount) = uniswapRouter.removeLiquidity(address(incoming), address(support), amount, 0, 0, address(this), block.timestamp);
-        emit LiquidityRemoved(amount, incomingAmount, supportAmount);
+        emit LiquidityReduced(amount, incomingAmount, supportAmount);
     }
 }

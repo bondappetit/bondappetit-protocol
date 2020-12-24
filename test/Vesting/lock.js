@@ -1,24 +1,24 @@
 const assertions = require("truffle-assertions");
-const Bond = artifacts.require("Bond");
-const Vesting = artifacts.require("Vesting");
+const {contract, assert, bn} = require("../../utils/test");
 const {development} = require("../../networks");
 
-contract("Vesting.lock", (accounts) => {
+contract("Vesting.lock", ({web3, artifacts}) => {
   const governor = development.accounts.Governor.address;
-  const recipient = accounts[1];
   const amount = "100";
   const date = "0";
 
   it("lock: should lock period", async () => {
-    const instance = await Vesting.deployed();
-    const bond = await Bond.deployed();
+    const [instance, bond] = await artifacts.requireAll("Vesting", "Bond");
+    const recipient = (await web3.eth.getAccounts())[1];
 
-    const startPeriods = await instance.info(recipient);
+    const startPeriods = await instance.methods.info(recipient).call();
 
-    await bond.approve(Vesting.address, amount, {from: governor});
-    await instance.lock(recipient, amount, date, {from: governor});
+    await bond.methods
+      .approve(instance._address, amount)
+      .send({from: governor});
+    await instance.methods.lock(recipient, amount, date).send({from: governor, gas: 6000000});
 
-    const endPeriods = await instance.info(recipient);
+    const endPeriods = await instance.methods.info(recipient).call();
     assert.equal(
       endPeriods.length,
       startPeriods.length + 1,
@@ -31,38 +31,45 @@ contract("Vesting.lock", (accounts) => {
   });
 
   it("lock: should rever tx if amount not approved", async () => {
-    const instance = await Vesting.deployed();
+    const instance = await artifacts.require("Vesting");
 
     await assertions.reverts(
-      instance.lock(recipient, amount, date, {from: governor}),
+      instance.methods.lock(governor, amount, date).send({from: governor, gas: 6000000}),
       "Bond::transferFrom: transfer amount exceeds spender allowance"
     );
   });
 
   it("lock: should revert tx if called is not the owner", async () => {
-    const instance = await Vesting.deployed();
+    const instance = await artifacts.require("Vesting");
+    const notOwner = (await web3.eth.getAccounts())[1];
 
     await assertions.reverts(
-      instance.lock(recipient, amount, date, {from: recipient}),
-      "Ownable: caller is not the owner."
+      instance.methods.lock(governor, amount, date).send({from: notOwner, gas: 6000000}),
+      "Ownable: caller is not the owner"
     );
   });
 
   it("lock: should revert tx if overflows", async () => {
-    const instance = await Vesting.deployed();
-    const bond = await Bond.deployed();
+    const [instance, bond] = await artifacts.requireAll("Vesting", "Bond");
+    const recipient = (await web3.eth.getAccounts())[1];
 
-    const startPeriods = await instance.info(recipient);
-    const maxPeriods = await instance.maxPeriodsPerRecipient();
+    const startPeriods = await instance.methods.info(recipient).call();
+    const maxPeriods = await instance.methods.maxPeriodsPerRecipient().call();
 
     for (let i = 0; i < maxPeriods - startPeriods.length; i++) {
-      await bond.approve(Vesting.address, amount, {from: governor});
-      await instance.lock(recipient, amount, date, {from: governor});
+      await bond.methods
+        .approve(instance._address, amount)
+        .send({from: governor});
+      await instance.methods
+        .lock(recipient, amount, date)
+        .send({from: governor, gas: 6000000});
     }
 
-    await bond.approve(Vesting.address, amount, {from: governor});
+    await bond.methods
+      .approve(instance._address, amount)
+      .send({from: governor});
     await assertions.reverts(
-      instance.lock(recipient, amount, date, {from: governor}),
+      instance.methods.lock(recipient, amount, date).send({from: governor, gas: 6000000}),
       "Vesting::lock: too many periods"
     );
   });

@@ -1,31 +1,31 @@
-const DepositaryOracle = artifacts.require("oracle/DepositaryOracle");
+const {contract, assert} = require("../../../utils/test");
 const {development} = require("../../../networks");
 
-contract("DepositaryOracle.all", () => {
+contract("DepositaryOracle.all", ({artifacts}) => {
   const governor = development.accounts.Governor.address;
 
   it("all: get all securities of depositary", async () => {
-    const instance = await DepositaryOracle.deployed();
+    const instance = await artifacts.require("DepositaryOracle");
 
-    const startList = await instance.all();
-    assert.equal(0, startList.length, "Start security list length invalid");
+    const startList = await instance.methods.all().call();
+    assert.equal(startList.length, 0, "Start security list length invalid");
 
     const bondA = {
       isin: "A",
-      amount: 10,
+      amount: "10",
     };
     const bondB = {
       isin: "B",
-      amount: 0,
+      amount: "0",
     };
-    await instance.put(bondA.isin, bondA.amount, {
+    await instance.methods.put(bondA.isin, bondA.amount).send({
       from: governor,
     });
-    await instance.put(bondB.isin, bondB.amount, {
+    await instance.methods.put(bondB.isin, bondB.amount).send({
       from: governor,
     });
 
-    const endList = await instance.all();
+    const endList = await instance.methods.all().call();
     assert.equal(endList.length, 2, "End security list length invalid");
     assert.equal(
       endList[0].isin,
