@@ -35,11 +35,11 @@ jobs:
           MNENOMIC: ${{secrets.MNENOMIC}}
           INFURA_API_KEY: ${{secrets.INFURA_API_KEY}}
 
-#      - name: npm config-gen
-#        run: npm run config-gen -- --network ropsten
-#        env:
-#          MNENOMIC: ${{secrets.MNENOMIC}}
-#          INFURA_API_KEY: ${{secrets.INFURA_API_KEY}}
+      - name: npm config-gen
+        run: npm run config-gen -- --network ropsten
+        env:
+          MNENOMIC: ${{secrets.MNENOMIC}}
+          INFURA_API_KEY: ${{secrets.INFURA_API_KEY}}
 
       - name: npm docs
         run: npm run docs
@@ -66,10 +66,10 @@ jobs:
     steps:
       - name: Extract branch name
         shell: bash
-        run: echo "##[set-output name=branch;]$(echo ${GITHUB_REF#refs/heads/})"
+        run: echo "##[set-output name=branch;]$(echo ${GITHUB_REF##*/})"
         id: extract_branch
 
-      - name: Clone ${GITHUB_REF} branch
+      - name: Clone ${{ steps.extract_branch.outputs.branch }} branch
         run: |
           git config --global user.name "${GITHUB_ACTOR}"
           git config --global user.email "${GITHUB_ACTOR}@https://users.noreply.github.com/"
@@ -81,7 +81,7 @@ jobs:
           name: build-${{ github.head_ref }}-${{ github.sha }}
           path: ./output
 
-      - name: Publish ${GITHUB_REF} branch
+      - name: Publish ${{ steps.extract_branch.outputs.branch }} branch
         run: |
           COMMIT_MESSAGE="new build ${{ github.event.release.tag_name }} on $(date +'%Y-%m-%d %H:%M:%S')"
           git add --all
@@ -151,7 +151,11 @@ jobs:
         uses: actions/download-artifact@v2
         with:
           name: build-${{ github.head_ref }}-${{ github.sha }}
-          path: ./output
+          path: ./artifacts
+
+      - name: Move artifacts
+        run: |
+          cp -rf artifacts/networks/* ./output/
 
       - name: Publish to npm
         run: |
@@ -223,7 +227,12 @@ jobs:
         uses: actions/download-artifact@v2
         with:
           name: build-${{ github.head_ref }}-${{ github.sha }}
-          path: ./output
+          path: ./artifacts
+
+      - name: Move artifacts
+        run: |
+          rm -rf ./output/api
+          mv artifacts/docs/api ./output/
 
       - name: Publish to npm
         run: |
