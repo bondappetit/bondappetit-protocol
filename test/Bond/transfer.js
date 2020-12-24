@@ -1,33 +1,31 @@
-const Bond = artifacts.require("Bond");
-const {utils} = require("web3");
+const {contract, assert, bn} = require("../../utils/test");
 
-contract("Bond.transfer", (accounts) => {
-  const [accA, accB] = accounts;
-
+contract("Bond.transfer", ({web3, artifacts}) => {
   it("transfer: should transfer token", async () => {
-    const instance = await Bond.deployed();
-    const amount = 10;
+    const instance = await artifacts.require("Bond");
+    const [accA, accB] = await web3.eth.getAccounts();
+    const amount = "10";
 
     const [startBalanceA, startBalanceB] = await Promise.all([
-      instance.balanceOf.call(accA),
-      instance.balanceOf.call(accB),
+      instance.methods.balanceOf(accA).call(),
+      instance.methods.balanceOf(accB).call(),
     ]);
 
-    await instance.transfer(accB, amount, {from: accA});
+    await instance.methods.transfer(accB, amount).send({from: accA});
 
     const [endBalanceA, endBalanceB] = await Promise.all([
-      instance.balanceOf.call(accA),
-      instance.balanceOf.call(accB),
+      instance.methods.balanceOf(accA).call(),
+      instance.methods.balanceOf(accB).call(),
     ]);
 
     assert.equal(
-      endBalanceA.toString(),
-      startBalanceA.sub(utils.toBN(amount)).toString(),
+      endBalanceA,
+      bn(startBalanceA).sub(bn(amount)).toString(),
       "Amount wasn't correctly taken from the sender"
     );
     assert.equal(
-      endBalanceB.toString(),
-      startBalanceB.add(utils.toBN(amount)).toString(),
+      endBalanceB,
+      bn(startBalanceB).add(bn(amount)).toString(),
       "Amount wasn't correctly taken from the recipient"
     );
   });

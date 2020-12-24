@@ -1,41 +1,42 @@
 const assertions = require("truffle-assertions");
-const ProfitSplitter = artifacts.require("ProfitSplitter");
-const Bond = artifacts.require("Bond");
+const {contract, assert, bn} = require("../../utils/test");
 const {development} = require("../../networks");
 
-contract("ProfitSplitter.recipients", (accounts) => {
+contract("ProfitSplitter.recipients", ({web3, artifacts}) => {
   const governor = development.accounts.Governor.address;
-  const recipient = Bond.address;
+  const recipient = development.contracts.Bond.address;
 
   it("addRecipient: should add recipient", async () => {
-    const instance = await ProfitSplitter.deployed();
-    const share = 0;
+    const instance = await artifacts.require("ProfitSplitter");
+    const share = "0";
 
-    const startRecipients = await instance.getRecipients();
+    const startRecipients = await instance.methods.getRecipients().call();
     assert.equal(
       startRecipients.includes(recipient),
       false,
       "Invalid start recipients"
     );
 
-    await instance.addRecipient(recipient, share, {from: governor});
+    await instance.methods
+      .addRecipient(recipient, share)
+      .send({from: governor});
 
-    const endRecipients = await instance.getRecipients();
-    const endShare = await instance.shares(recipient);
+    const endRecipients = await instance.methods.getRecipients().call();
+    const endShare = await instance.methods.shares(recipient).call();
     assert.equal(
       endRecipients.includes(recipient),
       true,
       "Invalid end recipients"
     );
-    assert.equal(endShare.toString(), share, "Invalid end share");
+    assert.equal(endShare, share, "Invalid end share");
   });
 
   it("addRecipient: should revert tx if sender not owner", async () => {
-    const instance = await ProfitSplitter.deployed();
-    const notOwner = accounts[1];
+    const instance = await artifacts.require("ProfitSplitter");
+    const notOwner = (await web3.eth.getAccounts())[1];
 
     await assertions.reverts(
-      instance.addRecipient(recipient, 0, {
+      instance.methods.addRecipient(recipient, 0).send({
         from: notOwner,
       }),
       "Ownable: caller is not the owner"
@@ -43,18 +44,18 @@ contract("ProfitSplitter.recipients", (accounts) => {
   });
 
   it("removeRecipient: should remove recipient", async () => {
-    const instance = await ProfitSplitter.deployed();
+    const instance = await artifacts.require("ProfitSplitter");
 
-    const startRecipients = await instance.getRecipients();
+    const startRecipients = await instance.methods.getRecipients().call();
     assert.equal(
       startRecipients.includes(recipient),
       true,
       "Invalid start recipients"
     );
 
-    await instance.removeRecipient(recipient, {from: governor});
+    await instance.methods.removeRecipient(recipient).send({from: governor});
 
-    const endRecipients = await instance.getRecipients();
+    const endRecipients = await instance.methods.getRecipients().call();
     assert.equal(
       endRecipients.includes(recipient),
       false,
@@ -63,11 +64,11 @@ contract("ProfitSplitter.recipients", (accounts) => {
   });
 
   it("removeRecipient: should revert tx if sender not owner", async () => {
-    const instance = await ProfitSplitter.deployed();
-    const notOwner = accounts[1];
+    const instance = await artifacts.require("ProfitSplitter");
+    const notOwner = (await web3.eth.getAccounts())[1];
 
     await assertions.reverts(
-      instance.removeRecipient(recipient, {
+      instance.methods.removeRecipient(recipient).send({
         from: notOwner,
       }),
       "Ownable: caller is not the owner"

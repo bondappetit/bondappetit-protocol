@@ -1,38 +1,29 @@
 const assertions = require("truffle-assertions");
-const UniswapMarketMaker = artifacts.require("UniswapMarketMaker");
-const Bond = artifacts.require("Bond");
+const {contract, assert, bn} = require("../../utils/test");
 const {development} = require("../../networks");
 
-contract("UniswapMarketMaker.changeUniswapRouter", (accounts) => {
+contract("UniswapMarketMaker.changeUniswapRouter", ({web3, artifacts}) => {
   const governor = development.accounts.Governor.address;
 
   it("changeUniswapRouter: should change uniswap router address", async () => {
-    const instance = await UniswapMarketMaker.deployed();
-    const contract = Bond.address;
+    const instance = await artifacts.require("UniswapMarketMaker");
+    const contract = development.contracts.Bond.address;
 
-    const startRouter = await instance.uniswapRouter();
-    assert.equal(
-        startRouter != contract,
-        true,
-        "Invalid start router"
-    );
+    const startRouter = await instance.methods.uniswapRouter().call();
+    assert.equal(startRouter != contract, true, "Invalid start router");
 
-    await instance.changeUniswapRouter(contract, {from: governor});
+    await instance.methods.changeUniswapRouter(contract).send({from: governor});
 
-    const endRouter = await instance.uniswapRouter();
-    assert.equal(
-        endRouter == contract,
-        true,
-        "Invalid end router"
-    );
+    const endRouter = await instance.methods.uniswapRouter().call();
+    assert.equal(endRouter == contract, true, "Invalid end router");
   });
 
   it("changeUniswapRouter: should revert tx if sender not owner", async () => {
-    const instance = await UniswapMarketMaker.deployed();
-    const notOwner = accounts[1];
+    const instance = await artifacts.require("UniswapMarketMaker");
+    const notOwner = (await web3.eth.getAccounts())[1];
 
     await assertions.reverts(
-      instance.changeUniswapRouter(governor, {
+      instance.methods.changeUniswapRouter(governor).send({
         from: notOwner,
       }),
       "Ownable: caller is not the owner"

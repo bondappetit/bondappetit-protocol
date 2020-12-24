@@ -18,7 +18,7 @@ contract DepositaryOracle is IDepositaryOracle, Ownable {
     }
 
     function put(
-        string memory isin,
+        string calldata isin,
         uint256 amount
     ) external override onlyOwner {
         require(keys.length < maxSize(), "DepositaryOracle::put: too many securities");
@@ -28,7 +28,7 @@ contract DepositaryOracle is IDepositaryOracle, Ownable {
         emit Update(isin, amount);
     }
 
-    function get(string memory isin) external view override returns (Security memory) {
+    function get(string calldata isin) external view override returns (Security memory) {
         return bonds[isin];
     }
 

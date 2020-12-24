@@ -3,6 +3,7 @@ module.exports = {
   networkUrl: 'http://localhost:8545',
   networkEtherscan: '',
   networkId: 999,
+  gasPrice: '20000000000',
   accounts: {
     ...require("./accounts"),
   },

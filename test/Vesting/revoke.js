@@ -1,65 +1,82 @@
-
 const assertions = require("truffle-assertions");
-const Bond = artifacts.require("Bond");
-const Vesting = artifacts.require("Vesting");
+const {contract, assert, bn} = require("../../utils/test");
 const {development} = require("../../networks");
 
-contract("Vesting.revoke", (accounts) => {
+contract("Vesting.revoke", ({web3, artifacts}) => {
   const governor = development.accounts.Governor.address;
-  const recipient = accounts[1];
   const amount = "100";
   const date = "0";
 
   it("revoke: should revoke period", async () => {
-    const instance = await Vesting.deployed();
-    const bond = await Bond.deployed();
+    const [instance, bond] = await artifacts.requireAll("Vesting", "Bond");
+    const recipient = (await web3.eth.getAccounts())[1];
 
-    const startBalance = await bond.balanceOf(governor, {from: governor});
-    await bond.approve(Vesting.address, amount, {from: governor});
-    await instance.lock(recipient, amount, date, {from: governor});
+    const startBalance = await bond.methods.balanceOf(governor).call();
+    await bond.methods
+      .approve(instance._address, amount)
+      .send({from: governor});
+    await instance.methods
+      .lock(recipient, amount, date)
+      .send({from: governor, gas: 6000000});
 
-    const startPeriods = await instance.info(recipient);
+    const startPeriods = await instance.methods.info(recipient).call();
     const addedPeriod = startPeriods[startPeriods.length - 1];
     assert.equal(addedPeriod.amount, amount, "Invalid amount");
 
-    await instance.revoke(recipient, addedPeriod.id, {from: governor});
+    await instance.methods
+      .revoke(recipient, addedPeriod.id)
+      .send({from: governor, gas: 6000000});
 
-    const endBalance = await bond.balanceOf(governor, {from: governor});
-    const endPeriods = await instance.info(recipient);
+    const endBalance = await bond.methods.balanceOf(governor).call();
+    const endPeriods = await instance.methods.info(recipient).call();
     const revokedPeriod = endPeriods[endPeriods.length - 1];
-    assert.equal(endBalance.toString(), startBalance.toString(), "Reward not returned");
-    assert.equal(revokedPeriod.amount, '0', "Reward not reset");
+    assert.equal(endBalance, startBalance, "Reward not returned");
+    assert.equal(revokedPeriod.amount, "0", "Reward not reset");
   });
 
   it("revoke: should revert tx if called is not the owner", async () => {
-    const instance = await Vesting.deployed();
-    const bond = await Bond.deployed();
+    const [instance, bond] = await artifacts.requireAll("Vesting", "Bond");
+    const recipient = (await web3.eth.getAccounts())[1];
 
-    await bond.approve(Vesting.address, amount, {from: governor});
-    await instance.lock(recipient, amount, date, {from: governor});
+    await bond.methods
+      .approve(instance._address, amount)
+      .send({from: governor});
+    await instance.methods
+      .lock(recipient, amount, date)
+      .send({from: governor, gas: 6000000});
 
-    const periods = await instance.info(recipient);
+    const periods = await instance.methods.info(recipient).call();
     const addedPeriod = periods[periods.length - 1];
 
     await assertions.reverts(
-      instance.revoke(recipient, addedPeriod.id, {from: recipient}),
-      "Ownable: caller is not the owner."
+      instance.methods
+        .revoke(recipient, addedPeriod.id)
+        .send({from: recipient, gas: 6000000}),
+      "Ownable: caller is not the owner"
     );
   });
 
   it("revoke: should revert tx if period already withdrawal", async () => {
-    const instance = await Vesting.deployed();
-    const bond = await Bond.deployed();
+    const [instance, bond] = await artifacts.requireAll("Vesting", "Bond");
+    const recipient = (await web3.eth.getAccounts())[1];
 
-    await bond.approve(Vesting.address, amount, {from: governor});
-    await instance.lock(recipient, amount, date, {from: governor});
-    const periods = await instance.info(recipient);
+    await bond.methods
+      .approve(instance._address, amount)
+      .send({from: governor});
+    await instance.methods
+      .lock(recipient, amount, date)
+      .send({from: governor, gas: 6000000});
+    const periods = await instance.methods.info(recipient).call();
     const addedPeriod = periods[periods.length - 1];
 
-    await instance.withdraw(addedPeriod.id, {from: recipient});
+    await instance.methods
+      .withdraw(addedPeriod.id)
+      .send({from: recipient, gas: 6000000});
 
     await assertions.reverts(
-      instance.revoke(recipient, addedPeriod.id, {from: governor}),
+      instance.methods
+        .revoke(recipient, addedPeriod.id)
+        .send({from: governor, gas: 6000000}),
       "Vesting::revoke: already withdraw"
     );
   });

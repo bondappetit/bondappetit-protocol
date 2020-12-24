@@ -1,109 +1,151 @@
 const assertions = require("truffle-assertions");
-const {utils} = require("web3");
-const networks = require("../../networks");
-const Investment = artifacts.require("Investment");
-const IERC20 = artifacts.require("IERC20");
-const Uniswap2Router = artifacts.require("IUniswapV2Router02");
-const Bond = artifacts.require("Bond");
+const {contract, assert, bn} = require("../../utils/test");
+const {development} = require("../../networks");
 
-contract("Investment.invest", (accounts) => {
-  const {USDT, USDC, WETH} = networks.development.assets;
+contract("Investment.invest", ({web3, artifacts}) => {
+  const {USDT, USDC, WETH} = development.assets;
+  const governor = development.accounts.Governor.address;
   const investor = "0x876A207aD9f6f0fA2C58A7902B2E7568a41c299f";
   const uniswap = new web3.eth.Contract(
-    Uniswap2Router.abi,
-    networks.development.contracts.UniswapV2Router02.address
+    development.contracts.UniswapV2Router02.abi,
+    development.contracts.UniswapV2Router02.address
   );
-  const usdtContract = new web3.eth.Contract(IERC20.abi, USDT.address);
-  const usdcContract = new web3.eth.Contract(IERC20.abi, USDC.address);
-  const notInvestableToken = accounts[1];
+  const usdtContract = new web3.eth.Contract(
+    development.contracts.ABT.abi,
+    USDT.address
+  );
+  const usdcContract = new web3.eth.Contract(
+    development.contracts.ABT.abi,
+    USDC.address
+  );
 
   it("invest: should get other tokens with swap", async () => {
+    const [instance, bondContract] = await artifacts.requireAll(
+      "Investment",
+      "Bond"
+    );
+
+    await bondContract.methods
+      .mint(
+        instance._address,
+        bn("10000000000")
+          .mul(bn("10").pow(bn("18")))
+          .toString()
+      )
+      .send({from: governor});
     const amountIn = "1000000";
-    const instance = await Investment.deployed();
-    const bondContract = await Bond.deployed();
-    const usdtInvestorBalanceStart = await usdtContract.methods.balanceOf(investor).call();
-    const usdcInvestmentBalanceStart = await usdcContract.methods.balanceOf(Investment.address).call();
-    const bondInvestorBalanceStart = await bondContract.balanceOf(investor);
+    const usdtInvestorBalanceStart = await usdtContract.methods
+      .balanceOf(investor)
+      .call();
+    const usdcInvestmentBalanceStart = await usdcContract.methods
+      .balanceOf(instance._address)
+      .call();
+    const bondInvestorBalanceStart = await bondContract.methods
+      .balanceOf(investor)
+      .call();
     const amountOut = await uniswap.methods
-        .getAmountsOut(amountIn, [USDT.address, WETH.address, USDC.address])
-        .call();
-    const reward = await instance.price(USDT.address, amountIn);
+      .getAmountsOut(amountIn, [USDT.address, WETH.address, USDC.address])
+      .call();
+    const reward = await instance.methods.price(USDT.address, amountIn).call();
 
     await usdtContract.methods
-      .approve(Investment.address, amountIn)
+      .approve(instance._address, amountIn)
       .send({from: investor, gas: 2000000});
-    await instance.invest(USDT.address, amountIn, {
+    await instance.methods.invest(USDT.address, amountIn).send({
       from: investor,
-      gas: 2000000,
+      gas: 6000000,
     });
 
-    const usdtInvestorBalanceEnd = await usdtContract.methods.balanceOf(investor).call();
-    const usdcInvestmentBalanceEnd = await usdcContract.methods.balanceOf(Investment.address).call();
-    const bondInvestorBalanceEnd = await bondContract.balanceOf(investor);
+    const usdtInvestorBalanceEnd = await usdtContract.methods
+      .balanceOf(investor)
+      .call();
+    const usdcInvestmentBalanceEnd = await usdcContract.methods
+      .balanceOf(instance._address)
+      .call();
+    const bondInvestorBalanceEnd = await bondContract.methods
+      .balanceOf(investor)
+      .call();
     assert.equal(
       usdtInvestorBalanceEnd,
-      utils.toBN(usdtInvestorBalanceStart).sub(utils.toBN(amountIn)).toString(),
+      bn(usdtInvestorBalanceStart).sub(bn(amountIn)).toString(),
       "Invest tokens should sub"
     );
     assert.equal(
-      bondInvestorBalanceEnd.toString(),
-      utils.toBN(bondInvestorBalanceStart).add(utils.toBN(reward)).toString(),
+      bondInvestorBalanceEnd,
+      bn(bondInvestorBalanceStart).add(bn(reward)).toString(),
       "Bond tokens should add"
     );
     assert.equal(
       usdcInvestmentBalanceEnd,
-      utils.toBN(usdcInvestmentBalanceStart).add(utils.toBN(amountOut[2])).toString(),
+      bn(usdcInvestmentBalanceStart).add(bn(amountOut[2])).toString(),
       "Cumulative tokens should add"
     );
   });
 
   it("invest: should revert tx if token is not investable", async () => {
-    const instance = await Investment.deployed();
-    
+    const instance = await artifacts.require("Investment");
+    const notInvestableToken = (await web3.eth.getAccounts())[1];
+
     await assertions.reverts(
-      instance.invest(notInvestableToken, 1, {from: investor}),
+      instance.methods.invest(notInvestableToken, 1).send({from: investor}),
       "Investment::invest: invalid investable token"
     );
   });
 
   it("invest: should get cumulative tokens without swap", async () => {
+    const [instance, bondContract] = await artifacts.requireAll(
+      "Investment",
+      "Bond"
+    );
     const amountIn = "1000000";
-    const instance = await Investment.deployed();
-    const bondContract = await Bond.deployed();
-    const usdcInvestorBalanceStart = await usdcContract.methods.balanceOf(investor).call();
-    const usdcInvestmentBalanceStart = await usdcContract.methods.balanceOf(Investment.address).call();
-    const bondInvestorBalanceStart = await bondContract.balanceOf(investor);
-    const reward = await instance.price(USDC.address, amountIn);
+    const usdcInvestorBalanceStart = await usdcContract.methods
+      .balanceOf(investor)
+      .call();
+    const usdcInvestmentBalanceStart = await usdcContract.methods
+      .balanceOf(instance._address)
+      .call();
+    const bondInvestorBalanceStart = await bondContract.methods
+      .balanceOf(investor)
+      .call();
+    const reward = await instance.methods.price(USDC.address, amountIn).call();
     assert.equal(
-      reward.toString(),
-      utils.toBN(amountIn).mul(utils.toBN('10').pow(utils.toBN('12'))),
+      reward,
+      bn(amountIn)
+        .mul(bn("10").pow(bn("12")))
+        .toString(),
       "Invalid reward"
     );
 
     await usdcContract.methods
-      .approve(Investment.address, amountIn)
+      .approve(instance._address, amountIn)
       .send({from: investor, gas: 2000000});
-    await instance.invest(USDC.address, amountIn, {
+    await instance.methods.invest(USDC.address, amountIn).send({
       from: investor,
       gas: 2000000,
     });
 
-    const usdcInvestorBalanceEnd = await usdcContract.methods.balanceOf(investor).call();
-    const usdcInvestmentBalanceEnd = await usdcContract.methods.balanceOf(Investment.address).call();
-    const bondInvestorBalanceEnd = await bondContract.balanceOf(investor);
+    const usdcInvestorBalanceEnd = await usdcContract.methods
+      .balanceOf(investor)
+      .call();
+    const usdcInvestmentBalanceEnd = await usdcContract.methods
+      .balanceOf(instance._address)
+      .call();
+    const bondInvestorBalanceEnd = await bondContract.methods
+      .balanceOf(investor)
+      .call();
     assert.equal(
       usdcInvestorBalanceEnd,
-      utils.toBN(usdcInvestorBalanceStart).sub(utils.toBN(amountIn)).toString(),
+      bn(usdcInvestorBalanceStart).sub(bn(amountIn)).toString(),
       "Invest tokens should sub"
     );
     assert.equal(
-      bondInvestorBalanceEnd.toString(),
-      utils.toBN(bondInvestorBalanceStart).add(utils.toBN(reward)).toString(),
+      bondInvestorBalanceEnd,
+      bn(bondInvestorBalanceStart).add(bn(reward)).toString(),
       "Bond tokens should add"
     );
     assert.equal(
       usdcInvestmentBalanceEnd,
-      utils.toBN(usdcInvestmentBalanceStart).add(utils.toBN(amountIn)).toString(),
+      bn(usdcInvestmentBalanceStart).add(bn(amountIn)).toString(),
       "Cumulative tokens should add"
     );
   });

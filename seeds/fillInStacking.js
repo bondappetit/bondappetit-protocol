@@ -1,17 +1,34 @@
-const Bond = artifacts.require("Bond");
-const Stacking = artifacts.require("Stacking");
+const hardhat = require("hardhat");
 const {development} = require("../networks");
 
-const governor = development.accounts.Governor.address;
-module.exports = async (callback) => {
-  try {
-    const bond = await Bond.deployed();
-    const amount = "1000000000000000000000";
+async function main() {
+  const governor = development.accounts.Governor.address;
+  const amount = "1000000000000000000000";
+  const {address: stackingAddress} = await hardhat.deployments.get("Stacking");
 
-    await bond.mint(Stacking.address, amount, {from: governor});
+  await hardhat.deployments.execute(
+    "Bond",
+    {from: governor},
+    "mint",
+    stackingAddress,
+    amount
+  );
 
-    callback();
-  } catch (e) {
-    callback(e);
-  }
-};
+  const [bondBalance] = await Promise.all([
+    hardhat.deployments.read(
+      "Bond",
+      {from: governor},
+      "balanceOf",
+      stackingAddress
+    ),
+  ]);
+
+  console.log(`Bond balance: ${bondBalance}`);
+}
+
+main()
+  .then(() => process.exit(0))
+  .catch((error) => {
+    console.error(error);
+    process.exit(1);
+  });

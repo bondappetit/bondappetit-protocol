@@ -1,43 +1,41 @@
 const assertions = require("truffle-assertions");
-const {utils} = require("web3");
-const ABT = artifacts.require("ABT");
+const {contract, assert, bn} = require("../../utils/test");
 const {development} = require("../../networks");
 
-contract("ABT.mint", (accounts) => {
+contract("ABT.mint", ({web3, artifacts}) => {
   const governor = development.accounts.Governor.address;
 
   it("mint: should mint tokens", async () => {
-    const instance = await ABT.deployed();
+    const instance = await artifacts.require("ABT");
+    const mintAmount = "100";
 
-    const startSupply = await instance.totalSupply();
-    const startBalance = await instance.balanceOf(governor);
+    const startSupply = await instance.methods.totalSupply().call();
+    const startBalance = await instance.methods.balanceOf(governor).call();
 
-    const mintAmount = utils.toBN("100");
-    await instance.mint(governor, mintAmount, {
+    await instance.methods.mint(governor, mintAmount).send({
       from: governor,
     });
+    const endSuppty = await instance.methods.totalSupply().call();
+    const endBalance = await instance.methods.balanceOf(governor).call();
 
-    const endSuppty = await instance.totalSupply();
-    const endBalance = await instance.balanceOf(governor);
     assert.equal(
       endSuppty,
-      startSupply.add(mintAmount).toString(),
+      bn(startSupply).add(bn(mintAmount)).toString(),
       "Total supply update after minted failed"
     );
     assert.equal(
       endBalance,
-      startBalance.add(mintAmount).toString(),
+      bn(startBalance).add(bn(mintAmount)).toString(),
       "Balance update after minted failed"
     );
   });
 
   it("mint: should revert tx if sender not owner", async () => {
-    const instance = await ABT.deployed();
+    const instance = await artifacts.require("ABT");
+    const notOwner = (await web3.eth.getAccounts())[1];
 
-    const notOwner = accounts[1];
-    const mintAmount = utils.toBN("100");
     await assertions.reverts(
-      instance.mint(governor, mintAmount, {
+      instance.methods.mint(governor, "100").send({
         from: notOwner,
       }),
       "Ownable: caller is not the owner"

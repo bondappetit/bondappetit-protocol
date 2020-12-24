@@ -1,30 +1,30 @@
 const assertions = require("truffle-assertions");
-const DepositaryOracle = artifacts.require("oracle/DepositaryOracle");
+const {contract, assert} = require("../../../utils/test");
 const {development} = require("../../../networks");
 
-contract("DepositaryOracle.put", (accounts) => {
+contract("DepositaryOracle.put", ({web3, artifacts}) => {
   const governor = development.accounts.Governor.address;
 
   it("put: should add security to depositary", async () => {
-    const instance = await DepositaryOracle.deployed();
-    const amount = 10;
+    const instance = await artifacts.require("DepositaryOracle");
+    const amount = "10";
 
-    const startSecurity = await instance.get("test bond");
+    const startSecurity = await instance.methods.get("test bond").call();
     assert.equal(startSecurity.amount, "0", "Start security amount invalid");
 
-    await instance.put("test bond", amount, {
+    await instance.methods.put("test bond", amount).send({
       from: governor,
     });
-    const endSecurity = await instance.get("test bond");
+    const endSecurity = await instance.methods.get("test bond").call();
     assert.equal(endSecurity.amount, amount, "End security amount invalid");
   });
 
   it("put: should revert tx if sender not owner", async () => {
-    const instance = await DepositaryOracle.deployed();
-    const notOwner = accounts[1];
+    const instance = await artifacts.require("DepositaryOracle");
+    const notOwner = (await web3.eth.getAccounts())[1];
 
     await assertions.reverts(
-      instance.put("test bond", 10, {
+      instance.methods.put("test bond", 10).send({
         from: notOwner,
       }),
       "Ownable: caller is not the owner"

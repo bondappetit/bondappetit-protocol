@@ -1,20 +1,18 @@
-const DepositaryOracle = artifacts.require("oracle/DepositaryOracle");
-const SecurityOracle = artifacts.require("oracle/SecurityOracle");
-const BondDepositaryBalanceView = artifacts.require(
-  "oracle/BondDepositaryBalanceView"
-);
+const {contract, assert} = require("../../../utils/test");
 const {development} = require("../../../networks");
 
-contract("BondDepositaryBalanceView.balance", () => {
+contract("BondDepositaryBalanceView.balance", ({web3, artifacts}) => {
   const governor = development.accounts.Governor.address;
 
   it("balance: get bond depositary balance", async () => {
-    const depositaryOracle = await DepositaryOracle.deployed();
-    const securityOracle = await SecurityOracle.deployed();
-    const instance = await BondDepositaryBalanceView.deployed();
+    const [depositaryOracle, securityOracle, instance] = await artifacts.requireAll(
+      "DepositaryOracle",
+      "SecurityOracle",
+      "BondDepositaryBalanceView"
+    );
 
-    const startBalance = await instance.balance();
-    assert.equal(0, startBalance, "Start balance invalid");
+    const startBalance = await instance.methods.balance().call();
+    assert.equal(startBalance, "0", "Start balance invalid");
 
     const bonds = [
       {
@@ -40,7 +38,7 @@ contract("BondDepositaryBalanceView.balance", () => {
     await Promise.all(
       bonds.map(async ({isin, amount, nominalValue}) => {
         if (amount !== undefined) {
-          await depositaryOracle.put(isin, amount, {
+          await depositaryOracle.methods.put(isin, amount).send({
             from: governor,
           });
         }
@@ -49,14 +47,16 @@ contract("BondDepositaryBalanceView.balance", () => {
             ["uint256"],
             [nominalValue]
           );
-          await securityOracle.put(isin, "nominalValue", nominalValueBytes, {
-            from: governor,
-          });
+          await securityOracle.methods
+            .put(isin, "nominalValue", nominalValueBytes)
+            .send({
+              from: governor,
+            });
         }
       })
     );
 
-    const endBalance = await instance.balance();
-    assert.equal(endBalance, 45, "End balance invalid");
+    const endBalance = await instance.methods.balance().call();
+    assert.equal(endBalance, "45", "End balance invalid");
   });
 });

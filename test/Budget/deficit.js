@@ -1,93 +1,112 @@
 const assertions = require("truffle-assertions");
-const {utils} = require("web3");
-const Budget = artifacts.require("Budget");
-const Treasury = artifacts.require("Treasury");
-const Timelock = artifacts.require("Timelock");
+const {contract, assert, bn} = require("../../utils/test");
 const {development} = require("../../networks");
 
-contract("Budget.deficit", (accounts) => {
+contract("Budget.deficit", ({web3, artifacts}) => {
   const governor = development.accounts.Governor.address;
   const expenditures = {
-    [Treasury.address]: {
-        min: "5",
-        target: "10",
+    [development.contracts.Treasury.address]: {
+      min: "5",
+      target: "10",
     },
-    [Timelock.address]: {
-        min: "2",
-        target: "4",
+    [development.contracts.Timelock.address]: {
+      min: "2",
+      target: "4",
     },
   };
 
   it("deficitTo: should return eth balance deficit to target address", async () => {
-    const instance = await Budget.deployed();
-    const contract = Treasury.address;
-    const contractInstance = await Treasury.deployed();
-    const {min, target} = expenditures[contract];
+    const instance = await artifacts.require("Budget");
+    const contract = await artifacts.require("Treasury");
+    const contractAddress = development.contracts.Treasury.address;
+    const {min, target} = expenditures[contractAddress];
 
-    const contractBalance = await web3.eth.getBalance(contract);
+    const contractBalance = await web3.eth.getBalance(contractAddress);
     if (contractBalance > 0) {
-        await contractInstance.transferETH(Budget.address, contractBalance);
+      await contract.methods
+        .transferETH(instance._address, contractBalance)
+        .send({from: governor});
     }
 
-    await instance.changeExpenditure(contract, min, target, {from: governor});
+    await instance.methods
+      .changeExpenditure(contractAddress, min, target)
+      .send({from: governor});
 
-    const startContractDeficit = await instance.deficitTo(contract);
+    const startContractDeficit = await instance.methods
+      .deficitTo(contractAddress)
+      .call();
     assert.equal(
-      startContractDeficit.toString(),
+      startContractDeficit,
       target,
       "Invalid start contract deficit"
     );
 
     await web3.eth.sendTransaction({
-        from: governor,
-        to: contract,
-        value: min
+      from: governor,
+      to: contractAddress,
+      value: min,
     });
-    const secondContractDeficit = await instance.deficitTo(contract);
-    assert.equal(
-      secondContractDeficit.toString(),
-      '5',
-      "Invalid second contract deficit"
-    );
+    const secondContractDeficit = await instance.methods
+      .deficitTo(contractAddress)
+      .call();
+    assert.equal(secondContractDeficit, min, "Invalid second contract deficit");
 
     await web3.eth.sendTransaction({
-        from: governor,
-        to: contract,
-        value: utils.toBN(min).add(utils.toBN('1')).toString()
+      from: governor,
+      to: contractAddress,
+      value: bn(min).add(bn("1")).toString(),
     });
-    const thirdContractDeficit = await instance.deficitTo(contract);
+    const thirdContractDeficit = await instance.methods
+      .deficitTo(contractAddress)
+      .call();
     assert.equal(
       thirdContractDeficit.toString(),
-      '0',
+      "0",
       "Invalid third contract deficit"
     );
 
-    const endContractBalance = await web3.eth.getBalance(contract);
-    await contractInstance.transferETH(Budget.address, endContractBalance);
+    const endContractBalance = await web3.eth.getBalance(contractAddress);
+    await contract.methods
+      .transferETH(instance._address, endContractBalance)
+      .send({from: governor});
   });
 
   it("deficit: should return eth balance deficit to all expenditures addresses", async () => {
-    const instance = await Budget.deployed();
-    const contractA = Treasury.address;
-    const contractB = Timelock.address;
+    const instance = await artifacts.require("Budget");
+    const contractA = development.contracts.Treasury.address;
+    const contractB = development.contracts.Timelock.address;
 
-    await instance.changeExpenditure(contractA, expenditures[contractA].min, expenditures[contractA].target, {from: governor});
-    await instance.changeExpenditure(contractB, expenditures[contractB].min, expenditures[contractB].target, {from: governor});
+    await instance.methods
+      .changeExpenditure(
+        contractA,
+        expenditures[contractA].min,
+        expenditures[contractA].target
+      )
+      .send({from: governor});
+    await instance.methods
+      .changeExpenditure(
+        contractB,
+        expenditures[contractB].min,
+        expenditures[contractB].target
+      )
+      .send({from: governor});
 
-    const deficit = await instance.deficit();
+    const deficit = await instance.methods.deficit().call();
     assert.equal(
       deficit.toString(),
-      utils.toBN(expenditures[contractA].target).add(utils.toBN(expenditures[contractB].target)).toString(),
+      bn(expenditures[contractA].target)
+        .add(bn(expenditures[contractB].target))
+        .toString(),
       "Invalid deficit"
     );
   });
 
   it("deficitTo: should revert tx if target is not expenditure item", async () => {
-    const instance = await Budget.deployed();
-    const notExpenditureItem = accounts[1];
+    const instance = await artifacts.require("Budget");
+    const notExpenditureItem = (await web3.eth.getAccounts())[1];
 
     await assertions.reverts(
-      instance.deficitTo(notExpenditureItem),
+      instance.methods.deficitTo(notExpenditureItem).call(),
       "Budget::deficitTo: recipient not in expenditure item"
     );
   });

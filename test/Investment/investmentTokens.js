@@ -1,28 +1,29 @@
-const networks = require("../../networks");
-const Investment = artifacts.require("Investment");
+const {contract, assert} = require("../../utils/test");
+const {development} = require("../../networks");
 
-contract("Investment.investmentTokens", (accounts) => {
-  const {USDC} = networks.development.assets;
+contract("Investment.investmentTokens", ({artifacts}) => {
+  const governor = development.accounts.Governor.address;
+  const {USDC} = development.assets;
 
   it("should allow invest tokens", async () => {
-    const instance = await Investment.deployed();
+    const instance = await artifacts.require("Investment");
 
     assert.equal(
-      await instance.investmentTokens(USDC.address),
+      await instance.methods.investmentTokens(USDC.address).call(),
       true,
       "USDC allowed by default"
     );
 
-    await instance.denyToken(USDC.address);
+    await instance.methods.denyToken(USDC.address).send({from: governor});
     assert.equal(
-      await instance.investmentTokens(USDC.address),
+      await instance.methods.investmentTokens(USDC.address).call(),
       false,
       "USDC should be denied"
     );
 
-    await instance.allowToken(USDC.address);
+    await instance.methods.allowToken(USDC.address).send({from: governor});
     assert.equal(
-      await instance.investmentTokens(USDC.address),
+      await instance.methods.investmentTokens(USDC.address).call(),
       true,
       "USDC should be allowed"
     );
