@@ -50,7 +50,7 @@
                     "type": "uint256"
                 }
             ],
-            "name": "LiquidityAdded",
+            "name": "LiquidityIncreased",
             "type": "event"
         },
         {
@@ -75,7 +75,7 @@
                     "type": "uint256"
                 }
             ],
-            "name": "LiquidityRemoved",
+            "name": "LiquidityReduced",
             "type": "event"
         },
         {
@@ -145,7 +145,7 @@
                     "type": "uint256"
                 }
             ],
-            "name": "Transfer",
+            "name": "TokenTransfer",
             "type": "event"
         },
         {
@@ -177,12 +177,74 @@
         {
             "inputs": [
                 {
+                    "internalType": "uint256",
+                    "name": "incomingAmount",
+                    "type": "uint256"
+                },
+                {
+                    "internalType": "uint256",
+                    "name": "supportAmount",
+                    "type": "uint256"
+                }
+            ],
+            "name": "addLiquidity",
+            "outputs": [],
+            "stateMutability": "nonpayable",
+            "type": "function"
+        },
+        {
+            "inputs": [
+                {
+                    "internalType": "uint256",
+                    "name": "amount",
+                    "type": "uint256"
+                }
+            ],
+            "name": "buyLiquidity",
+            "outputs": [],
+            "stateMutability": "nonpayable",
+            "type": "function"
+        },
+        {
+            "inputs": [
+                {
+                    "internalType": "address",
+                    "name": "_incoming",
+                    "type": "address"
+                },
+                {
+                    "internalType": "address",
+                    "name": "_recipient",
+                    "type": "address"
+                }
+            ],
+            "name": "changeIncoming",
+            "outputs": [],
+            "stateMutability": "nonpayable",
+            "type": "function"
+        },
+        {
+            "inputs": [
+                {
                     "internalType": "address",
                     "name": "newPauser",
                     "type": "address"
                 }
             ],
             "name": "changePauser",
+            "outputs": [],
+            "stateMutability": "nonpayable",
+            "type": "function"
+        },
+        {
+            "inputs": [
+                {
+                    "internalType": "address",
+                    "name": "_uniswapRouter",
+                    "type": "address"
+                }
+            ],
+            "name": "changeUniswapRouter",
             "outputs": [],
             "stateMutability": "nonpayable",
             "type": "function"
@@ -198,8 +260,20 @@
                 }
             ],
             "stateMutability": "view",
-            "type": "function",
-            "constant": true
+            "type": "function"
+        },
+        {
+            "inputs": [],
+            "name": "liquidityPair",
+            "outputs": [
+                {
+                    "internalType": "address",
+                    "name": "",
+                    "type": "address"
+                }
+            ],
+            "stateMutability": "view",
+            "type": "function"
         },
         {
             "inputs": [],
@@ -212,8 +286,7 @@
                 }
             ],
             "stateMutability": "view",
-            "type": "function",
-            "constant": true
+            "type": "function"
         },
         {
             "inputs": [],
@@ -233,8 +306,7 @@
                 }
             ],
             "stateMutability": "view",
-            "type": "function",
-            "constant": true
+            "type": "function"
         },
         {
             "inputs": [],
@@ -247,8 +319,20 @@
                 }
             ],
             "stateMutability": "view",
-            "type": "function",
-            "constant": true
+            "type": "function"
+        },
+        {
+            "inputs": [
+                {
+                    "internalType": "uint256",
+                    "name": "amount",
+                    "type": "uint256"
+                }
+            ],
+            "name": "removeLiquidity",
+            "outputs": [],
+            "stateMutability": "nonpayable",
+            "type": "function"
         },
         {
             "inputs": [],
@@ -268,41 +352,6 @@
                 }
             ],
             "stateMutability": "view",
-            "type": "function",
-            "constant": true
-        },
-        {
-            "inputs": [
-                {
-                    "internalType": "address",
-                    "name": "newOwner",
-                    "type": "address"
-                }
-            ],
-            "name": "transferOwnership",
-            "outputs": [],
-            "stateMutability": "nonpayable",
-            "type": "function"
-        },
-        {
-            "inputs": [],
-            "name": "uniswapRouter",
-            "outputs": [
-                {
-                    "internalType": "contract IUniswapV2Router02",
-                    "name": "",
-                    "type": "address"
-                }
-            ],
-            "stateMutability": "view",
-            "type": "function",
-            "constant": true
-        },
-        {
-            "inputs": [],
-            "name": "unpause",
-            "outputs": [],
-            "stateMutability": "nonpayable",
             "type": "function"
         },
         {
@@ -332,87 +381,31 @@
             "inputs": [
                 {
                     "internalType": "address",
-                    "name": "_uniswapRouter",
+                    "name": "newOwner",
                     "type": "address"
                 }
             ],
-            "name": "changeUniswapRouter",
-            "outputs": [],
-            "stateMutability": "nonpayable",
-            "type": "function"
-        },
-        {
-            "inputs": [
-                {
-                    "internalType": "address",
-                    "name": "_incoming",
-                    "type": "address"
-                },
-                {
-                    "internalType": "address",
-                    "name": "_recipient",
-                    "type": "address"
-                }
-            ],
-            "name": "changeIncoming",
-            "outputs": [],
-            "stateMutability": "nonpayable",
-            "type": "function"
-        },
-        {
-            "inputs": [
-                {
-                    "internalType": "uint256",
-                    "name": "amount",
-                    "type": "uint256"
-                }
-            ],
-            "name": "buyLiquidity",
-            "outputs": [],
-            "stateMutability": "nonpayable",
-            "type": "function"
-        },
-        {
-            "inputs": [
-                {
-                    "internalType": "uint256",
-                    "name": "incomingAmount",
-                    "type": "uint256"
-                },
-                {
-                    "internalType": "uint256",
-                    "name": "supportAmount",
-                    "type": "uint256"
-                }
-            ],
-            "name": "addLiquidity",
+            "name": "transferOwnership",
             "outputs": [],
             "stateMutability": "nonpayable",
             "type": "function"
         },
         {
             "inputs": [],
-            "name": "liquidityPair",
+            "name": "uniswapRouter",
             "outputs": [
                 {
-                    "internalType": "address",
+                    "internalType": "contract IUniswapV2Router02",
                     "name": "",
                     "type": "address"
                 }
             ],
             "stateMutability": "view",
-            "type": "function",
-            "constant": true
+            "type": "function"
         },
         {
-            "inputs": [
-                {
-                    "internalType": "uint256",
-                    "name": "amount",
-                    "type": "uint256"
-                }
-            ],
-            "name": "removeLiquidity",
+            "inputs": [],
+            "name": "unpause",
             "outputs": [],
             "stateMutability": "nonpayable",
             "type": "function"

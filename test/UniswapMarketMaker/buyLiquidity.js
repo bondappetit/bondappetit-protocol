@@ -1,17 +1,16 @@
-const {utils} = require("web3");
-const UniswapMarketMaker = artifacts.require("UniswapMarketMaker");
-const ABT = artifacts.require("ABT");
-const Bond = artifacts.require("Bond");
+const {contract, assert, bn} = require("../../utils/test");
 const {development} = require("../../networks");
 
-contract("UniswapMarketMaker.buyLiquidity", (accounts) => {
+contract("UniswapMarketMaker.buyLiquidity", ({web3, artifacts}) => {
   const governor = development.accounts.Governor.address;
   const UniswapRouter = development.contracts.UniswapV2Router02;
 
   it("buyLiquidity: should buy support token and add liquidity to pool", async () => {
-    const instance = await UniswapMarketMaker.deployed();
-    const abt = await ABT.deployed();
-    const bond = await Bond.deployed();
+    const [instance, abt, bond] = await artifacts.requireAll(
+      "UniswapMarketMaker",
+      "ABT",
+      "Bond"
+    );
     const uniswapRouter = new web3.eth.Contract(
       UniswapRouter.abi,
       UniswapRouter.address
@@ -19,23 +18,21 @@ contract("UniswapMarketMaker.buyLiquidity", (accounts) => {
     const abtAmount = "5000";
     const bondAmount = "10000";
 
-    await abt.mint(
-      governor,
-      utils.toBN(abtAmount).mul(utils.toBN(2)).toString(),
-      {from: governor}
-    );
-    await abt.approve(UniswapRouter.address, abtAmount, {
+    await abt.methods
+      .mint(governor, bn(abtAmount).mul(bn(2)).toString())
+      .send({from: governor});
+    await abt.methods.approve(UniswapRouter.address, abtAmount).send({
       from: governor,
       gas: 2000000,
     });
-    await bond.approve(UniswapRouter.address, bondAmount, {
+    await bond.methods.approve(UniswapRouter.address, bondAmount).send({
       from: governor,
       gas: 2000000,
     });
     await uniswapRouter.methods
       .addLiquidity(
-        ABT.address,
-        Bond.address,
+        abt._address,
+        bond._address,
         abtAmount,
         bondAmount,
         "0",
@@ -44,16 +41,26 @@ contract("UniswapMarketMaker.buyLiquidity", (accounts) => {
         Date.now()
       )
       .send({from: governor, gas: 6000000});
-    const startAmountsOut = await uniswapRouter.methods.getAmountsOut(abtAmount, [ABT.address, Bond.address]).call();
+    const startAmountsOut = await uniswapRouter.methods
+      .getAmountsOut(abtAmount, [abt._address, bond._address])
+      .call();
 
-    await instance.changeIncoming(ABT.address, governor, {from: governor});
-    await abt.approve(UniswapMarketMaker.address, abtAmount, {
+    await instance.methods
+      .changeIncoming(abt._address, governor)
+      .send({from: governor});
+    await abt.methods.approve(instance._address, abtAmount).send({
       from: governor,
       gas: 2000000,
     });
 
-    await instance.buyLiquidity(abtAmount, {from: governor, gas: 6000000});
-    const endAmountsOut = await uniswapRouter.methods.getAmountsOut(abtAmount, [ABT.address, Bond.address]).call();
-    assert.equal(startAmountsOut[1] > endAmountsOut[1], true, "Invalid support token price");
+    await instance.methods.buyLiquidity(abtAmount).send({from: governor, gas: 6000000});
+    const endAmountsOut = await uniswapRouter.methods
+      .getAmountsOut(abtAmount, [abt._address, bond._address])
+      .call();
+    assert.equal(
+      startAmountsOut[1] > endAmountsOut[1],
+      true,
+      "Invalid support token price"
+    );
   });
 });

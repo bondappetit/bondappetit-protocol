@@ -1,70 +1,59 @@
 const assertions = require("truffle-assertions");
-const {utils} = require("web3");
-const IUniswapAnchoredView = artifacts.require("uniswap/IUniswapAnchoredView");
-const Market = artifacts.require("Market");
+const {contract, assert, bn} = require("../../utils/test");
 const {development} = require("../../networks");
 
-contract("Market.priceABT", (accounts) => {
-  const {
-    UniswapAnchoredView: {address: priceOracleAddress},
-  } = development.contracts;
+contract("Market.priceABT", ({web3, artifacts}) => {
+  const {UniswapAnchoredView} = development.contracts;
   const priceOracle = new web3.eth.Contract(
-    IUniswapAnchoredView.abi,
-    priceOracleAddress
+    UniswapAnchoredView.abi,
+    UniswapAnchoredView.address
   );
   const {USDC, DAI} = development.assets;
 
   it("priceABT: should get abt token price for cumulative token", async () => {
-    const instance = await Market.deployed();
-    const amount = utils
-      .toBN(1)
-      .mul(utils.toBN(10).pow(utils.toBN(6)))
+    const instance = await artifacts.require("Market");
+    const amount = bn(1)
+      .mul(bn(10).pow(bn(6)))
       .toString();
 
     const usdcPrice = await priceOracle.methods.price(USDC.symbol).call();
 
-    const price = await instance.priceABT(USDC.address, amount);
+    const price = await instance.methods.priceABT(USDC.address, amount).call();
     assert.equal(
       price.toString(),
-      utils
-        .toBN(usdcPrice)
-        .mul(utils.toBN(10).pow(utils.toBN(12)))
+      bn(usdcPrice)
+        .mul(bn(10).pow(bn(12)))
         .toString(),
       "Invalid cumulative token price"
     );
   });
 
   it("priceABT: should get abt token price for other token", async () => {
-    const instance = await Market.deployed();
-    const amount = utils
-      .toBN(1)
-      .mul(utils.toBN(10).pow(utils.toBN(6)))
+    const instance = await artifacts.require("Market");
+    const amount = bn(1)
+      .mul(bn(10).pow(bn(6)))
       .toString();
 
     const usdcPrice = await priceOracle.methods.price(USDC.symbol).call();
     const daiPrice = await priceOracle.methods.price(DAI.symbol).call();
-    const priceAccuracy = utils.toBN("1000000");
-    const expectedPrice = utils
-      .toBN(daiPrice)
+    const priceAccuracy = bn("1000000");
+    const expectedPrice = bn(daiPrice)
       .mul(priceAccuracy)
-      .div(utils.toBN(usdcPrice))
-      .mul(utils.toBN(amount))
-      .div(priceAccuracy);
+      .div(bn(usdcPrice))
+      .mul(bn(amount))
+      .div(priceAccuracy)
+      .toString();
 
-    const price = await instance.priceABT(DAI.address, amount);
-    assert.equal(
-      price.toString(),
-      expectedPrice.toString(),
-      "Invalid token price"
-    );
+    const price = await instance.methods.priceABT(DAI.address, amount).call();
+    assert.equal(price, expectedPrice, "Invalid token price");
   });
 
   it("priceABT: should revert tx if token is not allowed", async () => {
-    const instance = await Market.deployed();
-    const notAllowedToken = accounts[1];
+    const instance = await artifacts.require("Market");
+    const notAllowedToken = (await web3.eth.getAccounts())[1];
 
     await assertions.reverts(
-      instance.priceABT(notAllowedToken, 1),
+      instance.methods.priceABT(notAllowedToken, 1).call(),
       "Market::price: invalid token"
     );
   });

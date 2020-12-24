@@ -45,6 +45,30 @@
             "type": "event"
         },
         {
+            "inputs": [
+                {
+                    "internalType": "string",
+                    "name": "isin",
+                    "type": "string"
+                },
+                {
+                    "internalType": "string",
+                    "name": "prop",
+                    "type": "string"
+                }
+            ],
+            "name": "get",
+            "outputs": [
+                {
+                    "internalType": "bytes",
+                    "name": "",
+                    "type": "bytes"
+                }
+            ],
+            "stateMutability": "view",
+            "type": "function"
+        },
+        {
             "inputs": [],
             "name": "owner",
             "outputs": [
@@ -55,27 +79,6 @@
                 }
             ],
             "stateMutability": "view",
-            "type": "function",
-            "constant": true
-        },
-        {
-            "inputs": [],
-            "name": "renounceOwnership",
-            "outputs": [],
-            "stateMutability": "nonpayable",
-            "type": "function"
-        },
-        {
-            "inputs": [
-                {
-                    "internalType": "address",
-                    "name": "newOwner",
-                    "type": "address"
-                }
-            ],
-            "name": "transferOwnership",
-            "outputs": [],
-            "stateMutability": "nonpayable",
             "type": "function"
         },
         {
@@ -102,29 +105,24 @@
             "type": "function"
         },
         {
+            "inputs": [],
+            "name": "renounceOwnership",
+            "outputs": [],
+            "stateMutability": "nonpayable",
+            "type": "function"
+        },
+        {
             "inputs": [
                 {
-                    "internalType": "string",
-                    "name": "isin",
-                    "type": "string"
-                },
-                {
-                    "internalType": "string",
-                    "name": "prop",
-                    "type": "string"
+                    "internalType": "address",
+                    "name": "newOwner",
+                    "type": "address"
                 }
             ],
-            "name": "get",
-            "outputs": [
-                {
-                    "internalType": "bytes",
-                    "name": "",
-                    "type": "bytes"
-                }
-            ],
-            "stateMutability": "view",
-            "type": "function",
-            "constant": true
+            "name": "transferOwnership",
+            "outputs": [],
+            "stateMutability": "nonpayable",
+            "type": "function"
         }
     ]
 }

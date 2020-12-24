@@ -4,11 +4,6 @@
   "sourceName": "contracts/utils/OwnablePausable.sol",
   "abi": [
     {
-      "inputs": [],
-      "stateMutability": "nonpayable",
-      "type": "constructor"
-    },
-    {
       "anonymous": false,
       "inputs": [
         {

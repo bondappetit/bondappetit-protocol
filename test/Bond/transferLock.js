@@ -1,79 +1,88 @@
 const assertions = require("truffle-assertions");
-const Bond = artifacts.require("Bond");
+const {contract, assert, bn} = require("../../utils/test");
 const {development} = require("../../networks");
 const dayjs = require("dayjs");
 
-contract("Bond.transferLock", (accounts) => {
+contract("Bond.transferLock", ({web3, artifacts}) => {
   const governor = development.accounts.Governor.address;
-  const lockedAcc = accounts[1];
-  const lockedAmount = 10;
+  const lockedAmount = "10";
 
   it("transferLock: should access control", async () => {
-    const instance = await Bond.deployed();
+    const instance = await artifacts.require("Bond");
+    const lockedAcc = (await web3.eth.getAccounts())[1];
 
     await assertions.reverts(
-      instance.transferLock(
-        lockedAcc,
-        lockedAmount,
-        dayjs().add(1, "day").unix(),
-        {from: governor}
-      ),
+      instance.methods
+        .transferLock(lockedAcc, lockedAmount, dayjs().add(1, "day").unix())
+        .send({from: governor}),
       "Bond::transferLock: access is denied"
     );
   });
 
   it("transferLock: should locked tokens", async () => {
-    const instance = await Bond.deployed();
+    const instance = await artifacts.require("Bond");
+    const lockedAcc = (await web3.eth.getAccounts())[1];
 
-    await instance.allowTransferLock(governor, {from: governor});
-    await instance.transferLock(
-      lockedAcc,
-      lockedAmount,
-      dayjs().add(1, "day").unix(),
-      {from: governor}
-    );
+    await instance.methods.allowTransferLock(governor).send({from: governor});
+    await instance.methods
+      .transferLock(lockedAcc, lockedAmount, dayjs().add(1, "day").unix())
+      .send({from: governor});
 
     await assertions.reverts(
-      instance.transfer(governor, lockedAmount, {from: lockedAcc}),
+      instance.methods.transfer(governor, lockedAmount).send({from: lockedAcc}),
       "Bond::_transferTokens: amount are locked"
     );
   });
 
   it("transferLock: should transfer free tokens", async () => {
-    const instance = await Bond.deployed();
+    const instance = await artifacts.require("Bond");
+    const lockedAcc = (await web3.eth.getAccounts())[1];
 
-    await instance.transfer(lockedAcc, 5, {from: governor});
-    await instance.transfer(governor, 3, {from: lockedAcc});
+    await instance.methods.transfer(lockedAcc, 5).send({from: governor});
+    await instance.methods.transfer(governor, 3).send({from: lockedAcc});
     await assertions.reverts(
-      instance.transfer(governor, 5, {from: lockedAcc}),
+      instance.methods.transfer(governor, 5).send({from: lockedAcc}),
       "Bond::_transferTokens: amount are locked"
     );
-    await instance.transfer(governor, 2, {from: lockedAcc});
+    await instance.methods.transfer(governor, 2).send({from: lockedAcc});
   });
 
   it("transferLocK: should revert tx if change lock date", async () => {
-    const instance = await Bond.deployed();
+    const instance = await artifacts.require("Bond");
+    const lockedAcc = (await web3.eth.getAccounts())[1];
 
-    await instance.allowTransferLock(governor, {from: governor});
+    await instance.methods.allowTransferLock(governor).send({from: governor});
     await assertions.reverts(
-      instance.transferLock(lockedAcc, lockedAmount, 0, {from: governor}),
+      instance.methods
+        .transferLock(lockedAcc, lockedAmount, 0)
+        .send({from: governor}),
       "Bond::transferLock: lock date cannot be changed"
     );
   });
 
   it("transferLock: should transfer after locking date", async () => {
-    const unlockedAcc = accounts[2];
-    const unlockedAmount = 10;
-    const lockSeconds = 2;
-    const instance = await Bond.deployed();
+    const instance = await artifacts.require("Bond");
+    const [, , unlockedAcc] = await web3.eth.getAccounts();
+    const unlockedAmount = "10";
+    const lockSeconds = "2";
 
-    await instance.allowTransferLock(governor, {from: governor});
-    await instance.transferLock(unlockedAcc, unlockedAmount, dayjs().add(lockSeconds, 'second').unix(), {from: governor});
+    await instance.methods.allowTransferLock(governor).send({from: governor});
+    await instance.methods
+      .transferLock(
+        unlockedAcc,
+        unlockedAmount,
+        dayjs().add(lockSeconds, "second").unix()
+      )
+      .send({from: governor});
     await assertions.reverts(
-      instance.transfer(governor, unlockedAmount, {from: unlockedAcc}),
+      instance.methods
+        .transfer(governor, unlockedAmount)
+        .send({from: unlockedAcc}),
       "Bond::_transferTokens: amount are locked"
     );
-    await new Promise(resolve => setTimeout(resolve, lockSeconds * 1000));
-    await instance.transfer(governor, unlockedAmount, {from: unlockedAcc});
+    await new Promise((resolve) => setTimeout(resolve, lockSeconds * 1000));
+    await instance.methods
+      .transfer(governor, unlockedAmount)
+      .send({from: unlockedAcc});
   });
 });

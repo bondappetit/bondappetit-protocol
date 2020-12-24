@@ -20,6 +20,35 @@
             "type": "event"
         },
         {
+            "inputs": [
+                {
+                    "internalType": "address",
+                    "name": "token",
+                    "type": "address"
+                },
+                {
+                    "internalType": "address",
+                    "name": "recipient",
+                    "type": "address"
+                },
+                {
+                    "internalType": "uint256",
+                    "name": "amount",
+                    "type": "uint256"
+                }
+            ],
+            "name": "approve",
+            "outputs": [
+                {
+                    "internalType": "bool",
+                    "name": "",
+                    "type": "bool"
+                }
+            ],
+            "stateMutability": "nonpayable",
+            "type": "function"
+        },
+        {
             "inputs": [],
             "name": "owner",
             "outputs": [
@@ -30,8 +59,7 @@
                 }
             ],
             "stateMutability": "view",
-            "type": "function",
-            "constant": true
+            "type": "function"
         },
         {
             "inputs": [],
@@ -39,24 +67,6 @@
             "outputs": [],
             "stateMutability": "nonpayable",
             "type": "function"
-        },
-        {
-            "inputs": [
-                {
-                    "internalType": "address",
-                    "name": "newOwner",
-                    "type": "address"
-                }
-            ],
-            "name": "transferOwnership",
-            "outputs": [],
-            "stateMutability": "nonpayable",
-            "type": "function"
-        },
-        {
-            "stateMutability": "payable",
-            "type": "receive",
-            "payable": true
         },
         {
             "inputs": [
@@ -115,30 +125,18 @@
             "inputs": [
                 {
                     "internalType": "address",
-                    "name": "token",
+                    "name": "newOwner",
                     "type": "address"
-                },
-                {
-                    "internalType": "address",
-                    "name": "recipient",
-                    "type": "address"
-                },
-                {
-                    "internalType": "uint256",
-                    "name": "amount",
-                    "type": "uint256"
                 }
             ],
-            "name": "approve",
-            "outputs": [
-                {
-                    "internalType": "bool",
-                    "name": "",
-                    "type": "bool"
-                }
-            ],
+            "name": "transferOwnership",
+            "outputs": [],
             "stateMutability": "nonpayable",
             "type": "function"
+        },
+        {
+            "stateMutability": "payable",
+            "type": "receive"
         }
     ]
 }

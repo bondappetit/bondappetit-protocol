@@ -1,89 +1,114 @@
 const assertions = require("truffle-assertions");
-const {utils} = require("web3");
-const Bond = artifacts.require("Bond");
-const Vesting = artifacts.require("Vesting");
+const {contract, assert, bn} = require("../../utils/test");
 const {development} = require("../../networks");
-const dayjs = require('dayjs');
+const dayjs = require("dayjs");
 
-contract("Vesting.withdraw", (accounts) => {
+contract("Vesting.withdraw", ({web3, artifacts}) => {
   const governor = development.accounts.Governor.address;
-  const recipient = accounts[1];
   const amount = "100";
   const date = "0";
 
   it("withdraw: should withdraw reward", async () => {
-    const instance = await Vesting.deployed();
-    const bond = await Bond.deployed();
+    const [instance, bond] = await artifacts.requireAll("Vesting", "Bond");
+    const recipient = (await web3.eth.getAccounts())[1];
 
-    const startBalance = await bond.balanceOf(recipient);
-    await bond.approve(Vesting.address, amount, {from: governor});
-    await instance.lock(recipient, amount, date, {from: governor});
+    const startBalance = await bond.methods.balanceOf(recipient).call();
+    await bond.methods
+      .approve(instance._address, amount)
+      .send({from: governor});
+    await instance.methods
+      .lock(recipient, amount, date)
+      .send({from: governor, gas: 6000000});
 
-    const startPeriods = await instance.info(recipient);
+    const startPeriods = await instance.methods.info(recipient).call();
     const addedPeriod = startPeriods[startPeriods.length - 1];
 
-    await instance.withdraw(addedPeriod.id, {from: recipient});
+    await instance.methods
+      .withdraw(addedPeriod.id)
+      .send({from: recipient, gas: 6000000});
 
-    const endBalance = await bond.balanceOf(recipient);
-    const endPeriods = await instance.info(recipient);
+    const endBalance = await bond.methods.balanceOf(recipient).call();
+    const endPeriods = await instance.methods.info(recipient).call();
     const withdrawalPeriod = endPeriods[endPeriods.length - 1];
     assert.equal(
-      endBalance.toString(),
-      startBalance.add(utils.toBN(amount)).toString(),
+      endBalance,
+      bn(startBalance).add(bn(amount)).toString(),
       "Invalid balance"
     );
     assert.equal(withdrawalPeriod.withdrawal, true, "Invalid withdrawal flag");
   });
 
   it("withdraw: should revert tx if period is empty", async () => {
-    const instance = await Vesting.deployed();
-    const bond = await Bond.deployed();
+    const [instance, bond] = await artifacts.requireAll("Vesting", "Bond");
+    const recipient = (await web3.eth.getAccounts())[1];
 
-    await bond.approve(Vesting.address, amount, {from: governor});
-    await instance.lock(recipient, amount, date, {from: governor});
+    await bond.methods
+      .approve(instance._address, amount)
+      .send({from: governor});
+    await instance.methods
+      .lock(recipient, amount, date)
+      .send({from: governor, gas: 6000000});
 
-    const periods = await instance.info(recipient);
+    const periods = await instance.methods.info(recipient).call();
     const addedPeriod = periods[periods.length - 1];
 
-    await instance.revoke(recipient, addedPeriod.id, {from: governor});
+    await instance.methods
+      .revoke(recipient, addedPeriod.id)
+      .send({from: governor, gas: 6000000});
 
     await assertions.reverts(
-      instance.withdraw(addedPeriod.id, {from: recipient}),
+      instance.methods
+        .withdraw(addedPeriod.id)
+        .send({from: recipient, gas: 6000000}),
       "Vesting::withdraw: period is empty"
     );
   });
 
   it("withdraw: should revert tx if period is withdrawal", async () => {
-    const instance = await Vesting.deployed();
-    const bond = await Bond.deployed();
+    const [instance, bond] = await artifacts.requireAll("Vesting", "Bond");
+    const recipient = (await web3.eth.getAccounts())[1];
 
-    await bond.approve(Vesting.address, amount, {from: governor});
-    await instance.lock(recipient, amount, date, {from: governor});
+    await bond.methods
+      .approve(instance._address, amount)
+      .send({from: governor});
+    await instance.methods
+      .lock(recipient, amount, date)
+      .send({from: governor, gas: 6000000});
 
-    const periods = await instance.info(recipient);
+    const periods = await instance.methods.info(recipient).call();
     const addedPeriod = periods[periods.length - 1];
 
-    await instance.withdraw(addedPeriod.id, {from: recipient});
+    await instance.methods
+      .withdraw(addedPeriod.id)
+      .send({from: recipient, gas: 6000000});
 
     await assertions.reverts(
-      instance.withdraw(addedPeriod.id, {from: recipient}),
+      instance.methods
+        .withdraw(addedPeriod.id)
+        .send({from: recipient, gas: 6000000}),
       "Vesting::withdraw: already withdraw"
     );
   });
 
   it("withdraw: should revert tx if period has not come", async () => {
-    const instance = await Vesting.deployed();
-    const bond = await Bond.deployed();
-    const distantFuture = dayjs().add(1, 'year').unix();
+    const [instance, bond] = await artifacts.requireAll("Vesting", "Bond");
+    const recipient = (await web3.eth.getAccounts())[1];
+    const distantFuture = dayjs().add(1, "year").unix();
 
-    await bond.approve(Vesting.address, amount, {from: governor});
-    await instance.lock(recipient, amount, distantFuture, {from: governor});
+    await bond.methods
+      .approve(instance._address, amount)
+      .send({from: governor});
+    await instance.methods
+      .lock(recipient, amount, distantFuture)
+      .send({from: governor, gas: 6000000});
 
-    const periods = await instance.info(recipient);
+    const periods = await instance.methods.info(recipient).call();
     const addedPeriod = periods[periods.length - 1];
 
     await assertions.reverts(
-      instance.withdraw(addedPeriod.id, {from: recipient}),
+      instance.methods
+        .withdraw(addedPeriod.id)
+        .send({from: recipient, gas: 6000000}),
       "Vesting::withdraw: access denied"
     );
   });

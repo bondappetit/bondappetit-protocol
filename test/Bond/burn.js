@@ -1,43 +1,41 @@
 const assertions = require("truffle-assertions");
-const {utils} = require("web3");
-const Bond = artifacts.require("Bond");
+const {contract, assert, bn} = require("../../utils/test");
 const {development} = require("../../networks");
 
-contract("Bond.burn", (accounts) => {
+contract("Bond.burn", ({web3, artifacts}) => {
   const governor = development.accounts.Governor.address;
 
   it("burn: should burn tokens", async () => {
-    const instance = await Bond.deployed();
+    const instance = await artifacts.require("Bond");
+    const burnAmount = "100";
 
-    const startSupply = await instance.totalSupply();
-    const startBalance = await instance.balanceOf(governor);
+    const startSupply = await instance.methods.totalSupply().call();
+    const startBalance = await instance.methods.balanceOf(governor).call();
 
-    const burnAmount = utils.toBN("100");
-    await instance.burn(governor, burnAmount, {
+    await instance.methods.burn(governor, burnAmount).send({
       from: governor,
     });
+    const endSuppty = await instance.methods.totalSupply().call();
+    const endBalance = await instance.methods.balanceOf(governor).call();
 
-    const endSuppty = await instance.totalSupply();
-    const endBalance = await instance.balanceOf(governor);
     assert.equal(
       endSuppty,
-      startSupply.sub(burnAmount).toString(),
+      bn(startSupply).sub(bn(burnAmount)).toString(),
       "Total supply update after burned failed"
     );
     assert.equal(
       endBalance,
-      startBalance.sub(burnAmount).toString(),
+      bn(startBalance).sub(bn(burnAmount)).toString(),
       "Balance update after burned failed"
     );
   });
 
   it("burn: should revert tx if sender not owner", async () => {
-    const instance = await Bond.deployed();
+    const instance = await artifacts.require("Bond");
+    const notOwner = (await web3.eth.getAccounts())[1];
 
-    const notOwner = accounts[1];
-    const burnAmount = utils.toBN("100");
     await assertions.reverts(
-      instance.burn(governor, burnAmount, {
+      instance.methods.burn(governor, "100").send({
         from: notOwner,
       }),
       "Ownable: caller is not the owner"

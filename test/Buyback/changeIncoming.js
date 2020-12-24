@@ -1,46 +1,47 @@
 const assertions = require("truffle-assertions");
-const {utils} = require("web3");
-const Buyback = artifacts.require("Buyback");
-const Bond = artifacts.require("Bond");
-const ABT = artifacts.require("ABT");
+const {contract, assert, bn} = require("../../utils/test");
 const {development} = require("../../networks");
 
-contract("Buyback.changeIncoming", (accounts) => {
+contract("Buyback.changeIncoming", ({web3, artifacts}) => {
   const governor = development.accounts.Governor.address;
 
   it("changeIncoming: should change incoming token address", async () => {
-    const instance = await Buyback.deployed();
-    const bond = await Bond.deployed();
+    const [instance, bond] = await artifacts.requireAll("Buyback", "Bond");
+    const abtAddress = development.contracts.ABT.address;
     const amount = "5";
 
-    await instance.changeIncoming(Bond.address, governor, {from: governor});
+    await instance.methods
+      .changeIncoming(bond._address, governor)
+      .send({from: governor});
 
-    await bond.transfer(Buyback.address, amount);
-    const startOwnerBalance = await bond.balanceOf(governor);
+    await bond.methods
+      .transfer(instance._address, amount)
+      .send({from: governor});
+    const startOwnerBalance = await bond.methods.balanceOf(governor).call();
 
-    await instance.changeIncoming(ABT.address, governor, {from: governor});
-    const endBuybackBalance = await bond.balanceOf(Buyback.address);
-    const endOwnerBalance = await bond.balanceOf(governor);
-    const incoming = await instance.incoming();
-    assert.equal(incoming, ABT.address, "Invalid end incoming token address");
+    await instance.methods
+      .changeIncoming(abtAddress, governor)
+      .send({from: governor});
+    const endBuybackBalance = await bond.methods
+      .balanceOf(instance._address)
+      .call();
+    const endOwnerBalance = await bond.methods.balanceOf(governor).call();
+    const incoming = await instance.methods.incoming().call();
+    assert.equal(incoming, abtAddress, "Invalid end incoming token address");
+    assert.equal(endBuybackBalance, "0", "Invalid end buyback balance");
     assert.equal(
-      endBuybackBalance.toString(),
-      "0",
-      "Invalid end buyback balance"
-    );
-    assert.equal(
-      endOwnerBalance.toString(),
-      startOwnerBalance.add(utils.toBN(amount)).toString(),
+      endOwnerBalance,
+      bn(startOwnerBalance).add(bn(amount)).toString(),
       "Invalid end owner balance"
     );
   });
 
   it("changeIncoming: should revert tx if sender not owner", async () => {
-    const instance = await Buyback.deployed();
-    const notOwner = accounts[1];
+    const [instance, bond] = await artifacts.requireAll("Buyback", "Bond");
+    const notOwner = (await web3.eth.getAccounts())[1];
 
     await assertions.reverts(
-      instance.changeUniswapRouter(Bond.address, {
+      instance.methods.changeUniswapRouter(bond._address).send({
         from: notOwner,
       }),
       "Ownable: caller is not the owner"

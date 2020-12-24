@@ -1,54 +1,53 @@
 const assertions = require("truffle-assertions");
-const {utils} = require("web3");
-const Budget = artifacts.require("Budget");
-const Treasury = artifacts.require("Treasury");
+const {contract, assert, bn} = require("../../utils/test");
 const {development} = require("../../networks");
 
-contract("Budget.transferETH", (accounts) => {
+contract("Budget.transferETH", ({web3, artifacts}) => {
   const governor = development.accounts.Governor.address;
 
   it("transferETH: should transfer eth to recipient", async () => {
-    const instance = await Budget.deployed();
-    const contract = Treasury.address;
+    const instance = await artifacts.require("Budget");
+    const contract = development.contracts.Treasury.address;
     const amount = "10";
 
-    const startBudgetBalance = await web3.eth.getBalance(Budget.address);
+    const startBudgetBalance = await web3.eth.getBalance(instance._address);
     const startContractBalance = await web3.eth.getBalance(contract);
 
     await web3.eth.sendTransaction({
       from: governor,
-      to: Budget.address,
+      to: instance._address,
       value: amount,
     });
 
-    const secondBudgetBalance = await web3.eth.getBalance(Budget.address);
+    const secondBudgetBalance = await web3.eth.getBalance(instance._address);
     assert.equal(
-      secondBudgetBalance.toString(),
-      utils.toBN(startBudgetBalance).add(utils.toBN(amount)).toString(),
+      secondBudgetBalance,
+      bn(startBudgetBalance).add(bn(amount)).toString(),
       "Invalid second budget balance"
     );
 
-    await instance.transferETH(contract, amount, {from: governor});
-    const endBudgetBalance = await web3.eth.getBalance(Budget.address);
+    await instance.methods.transferETH(contract, amount).send({from: governor});
+    const endBudgetBalance = await web3.eth.getBalance(instance._address);
     const endContractBalance = await web3.eth.getBalance(contract);
     assert.equal(
-      endBudgetBalance.toString(),
-      utils.toBN(secondBudgetBalance).sub(utils.toBN(amount)).toString(),
+      endBudgetBalance,
+      bn(secondBudgetBalance).sub(bn(amount)).toString(),
       "Invalid end budget balance"
     );
     assert.equal(
-      endContractBalance.toString(),
-      utils.toBN(startContractBalance).add(utils.toBN(amount)).toString(),
+      endContractBalance,
+      bn(startContractBalance).add(bn(amount)).toString(),
       "Invalid end contract balance"
     );
   });
 
   it("transferETH: should revert tx if sender not owner", async () => {
-    const instance = await Budget.deployed();
-    const notOwner = accounts[1];
+    const instance = await artifacts.require("Budget");
+    const notOwner = (await web3.eth.getAccounts())[1];
+    const contract = development.contracts.Treasury.address;
 
     await assertions.reverts(
-      instance.transferETH(Treasury.address, "10", {
+      instance.methods.transferETH(contract, "10").send({
         from: notOwner,
       }),
       "Ownable: caller is not the owner"

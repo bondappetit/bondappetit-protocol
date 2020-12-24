@@ -1,37 +1,39 @@
-const Market = artifacts.require("Market");
+const {contract, assert} = require("../../utils/test");
+const {development} = require("../../networks");
 
-contract("Market.allowedToken", (accounts) => {
-  const token = accounts[1];
+contract("Market.allowedToken", ({web3, artifacts}) => {
+  const governor = development.accounts.Governor.address;
+  const token = governor;
 
   it("allowToken: should allow tokens", async () => {
-    const instance = await Market.deployed();
+    const instance = await artifacts.require("Market");
 
     assert.equal(
-      await instance.isAllowedToken(token),
+      await instance.methods.isAllowedToken(token).call(),
       false,
       "Invalid allowed token by default"
     );
 
-    await instance.allowToken(token, 'test');
+    await instance.methods.allowToken(token, "test").send({from: governor});
     assert.equal(
-      await instance.isAllowedToken(token),
+      await instance.methods.isAllowedToken(token).call(),
       true,
       "Invalid allowed token"
     );
   });
 
   it("denyToken: should deny tokens", async () => {
-    const instance = await Market.deployed();
+    const instance = await artifacts.require("Market");
 
     assert.equal(
-      await instance.isAllowedToken(token),
+      await instance.methods.isAllowedToken(token).call(),
       true,
       "Invalid denied token by default"
     );
 
-    await instance.denyToken(token);
+    await instance.methods.denyToken(token).send({from: governor});
     assert.equal(
-      await instance.isAllowedToken(token),
+      await instance.methods.isAllowedToken(token).call(),
       false,
       "Invalid denied token"
     );
