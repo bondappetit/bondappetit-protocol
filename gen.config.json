@@ -20,15 +20,17 @@
   "assets": [
     {
       "path": "deployments/%network%/Bond.json",
-      "name": "Bond",
-      "symbol": "BOND",
+      "key": "Bond",
+      "name": "BondAppetit Governance",
+      "symbol": "BAG",
       "decimals": 18,
       "investing": false
     },
     {
       "path": "deployments/%network%/ABT.json",
-      "name": "ABT",
-      "symbol": "ABT",
+      "key": "ABT",
+      "name": "Appetite USD",
+      "symbol": "USDp",
       "decimals": 18,
       "investing": false
     }

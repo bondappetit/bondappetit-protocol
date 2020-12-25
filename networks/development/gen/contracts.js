@@ -1,6 +1,6 @@
 module.exports = {
     "Bond": {
-        "address": "0x2E46586D9E940453df79A9C647bd1b7b01F05F14",
+        "address": "0x1EE5253D796C3C70A6cec8C3DFb332D3b7c49eb5",
         "name": "Bond",
         "voting": true,
         "abi": [
@@ -675,7 +675,7 @@ module.exports = {
         ]
     },
     "Timelock": {
-        "address": "0x21c04422a9B5c3a6bB92486d8C03fAD9eEbC7C2c",
+        "address": "0x7328E284B07306008207C37E83bb6b107Dac69f6",
         "name": "Timelock",
         "voting": true,
         "abi": [
@@ -1124,7 +1124,7 @@ module.exports = {
         ]
     },
     "GovernorAlpha": {
-        "address": "0xDe71E667EC5bdC71e599d3d26FA263a36D6198e4",
+        "address": "0xA26d3ab54a64ff76Eb7f6C516141CEEd936E7031",
         "name": "GovernorAlpha",
         "voting": false,
         "abi": [
@@ -1796,7 +1796,7 @@ module.exports = {
         ]
     },
     "Investment": {
-        "address": "0x392437E7dd5a1f71bF633A23a246870A2b5Ea6e1",
+        "address": "0x2Ca20620c6D4B38608A4B003430664743E6b9871",
         "name": "Investment",
         "voting": true,
         "abi": [
@@ -2278,7 +2278,7 @@ module.exports = {
         ]
     },
     "Vesting": {
-        "address": "0xe216Fc3F34a1360d552A7a54402eaA261Fb7eedf",
+        "address": "0x521513aCE381b896b1cbBf811B6545dc607Df86B",
         "name": "Vesting",
         "voting": true,
         "abi": [
@@ -2625,7 +2625,7 @@ module.exports = {
         ]
     },
     "ABT": {
-        "address": "0xB7C478FF8ae43eaAEf84293E38ABFDbd27D52cBd",
+        "address": "0x1f365bFb824fd4153A764fdc492Fbf666DE5e00a",
         "name": "ABT",
         "voting": true,
         "abi": [
@@ -3001,7 +3001,7 @@ module.exports = {
         ]
     },
     "Treasury": {
-        "address": "0x754d40d3C619C3Ff7F37C7eC2b25B0a1e1dC3105",
+        "address": "0x9caE3D73719Bc129cCdD098F58EDAA84D94f2c90",
         "name": "Treasury",
         "voting": true,
         "abi": [
@@ -3146,7 +3146,7 @@ module.exports = {
         ]
     },
     "SecurityOracle": {
-        "address": "0x3E2D57de90CF68B6a68590B6e88220a4Fd840848",
+        "address": "0xbaE768916C2764EAD3A0622261bF56C944B05CBF",
         "name": "SecurityOracle",
         "voting": false,
         "abi": [
@@ -3277,7 +3277,7 @@ module.exports = {
         ]
     },
     "DepositaryOracle": {
-        "address": "0xadf3524072841a55d2226A2acC522b8B3bE49Bb8",
+        "address": "0x37f677d3298ba5b5988f98C4D80610A3170db687",
         "name": "DepositaryOracle",
         "voting": false,
         "abi": [
@@ -3442,7 +3442,7 @@ module.exports = {
         ]
     },
     "Issuer": {
-        "address": "0x595dD85301BadF1E3f76fB8C4DDb693dE99f3619",
+        "address": "0x1ded4E339c450fC8055758af299436D7A3a74B94",
         "name": "Issuer",
         "voting": true,
         "abi": [
@@ -3797,7 +3797,7 @@ module.exports = {
         ]
     },
     "Market": {
-        "address": "0xce98d502D7F95b24112b66Be7cB5539B76775f5A",
+        "address": "0x179d04dFd5c36D0e8aFd4132BB7c912027f82EA5",
         "name": "Market",
         "voting": true,
         "abi": [
@@ -4494,7 +4494,7 @@ module.exports = {
         ]
     },
     "Stacking": {
-        "address": "0x9db31c4d5a782b98030B7A662B1860AF4408Ffd8",
+        "address": "0x2c4E2Ecae53C66739E7F20AE39e4f75F8801C3F9",
         "name": "Stacking",
         "voting": true,
         "abi": [
@@ -4883,7 +4883,7 @@ module.exports = {
         ]
     },
     "Budget": {
-        "address": "0x44B593968BcbB8d63a4161912cAbAF797941AcA1",
+        "address": "0xc68D19b8a809E5b547Ee7977649320e333Bc8159",
         "name": "Budget",
         "voting": true,
         "abi": [
@@ -5210,7 +5210,7 @@ module.exports = {
         ]
     },
     "Buyback": {
-        "address": "0x51cB5D31aFe51dB7aaFbdc77818D985654093628",
+        "address": "0x980EFE97Ae32c195D790aD50a8dd3cdFd50be2BA",
         "name": "Buyback",
         "voting": true,
         "abi": [
@@ -5591,7 +5591,7 @@ module.exports = {
         ]
     },
     "UniswapMarketMaker": {
-        "address": "0xb8776E89085A101000DB0B469fd8dD5C79F80962",
+        "address": "0x405D96e61FabbEe6c3df4b63C2a74CA9b22EB34A",
         "name": "UniswapMarketMaker",
         "voting": true,
         "abi": [
@@ -6008,7 +6008,7 @@ module.exports = {
         ]
     },
     "ProfitSplitter": {
-        "address": "0x9DcEdEA5677722173667499981A22d97c2B8652a",
+        "address": "0xE72Ac0080c038C1C062990238177cCb63CfC3610",
         "name": "ProfitSplitter",
         "voting": true,
         "abi": [

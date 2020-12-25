@@ -8,7 +8,7 @@ contract ABT is ERC20, Ownable {
     /**
      * @param initialSupply Total supply.
      */
-    constructor(uint256 initialSupply) public ERC20("Appetit Bond Token", "ABT") {
+    constructor(uint256 initialSupply) public ERC20("Appetite USD", "USDp") {
         _mint(msg.sender, initialSupply);
     }
 
