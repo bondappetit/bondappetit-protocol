@@ -15,7 +15,8 @@ async function main() {
   const bond = new web3.eth.Contract(ABT.abi, Bond.address);
   const usdc = new web3.eth.Contract(ABT.abi, USDC.address);
   const amount = "1000000000000000000000";
-  const lpAmount = "10000000";
+  const lpUsdcAmount = "1000000";
+  const lpBondAmount = "1000000000000000000";
 
   await bond.methods.mint(stackingAddress, amount).send({from: governor});
   const bondBalance = await bond.methods.balanceOf(stackingAddress).call();
@@ -26,26 +27,26 @@ async function main() {
     UniswapRouter.address
   );
 
-  await bond.methods.transfer(investor, lpAmount).send({from: governor});
+  await bond.methods.transfer(investor, lpBondAmount).send({from: governor});
   await bond.methods
-    .approve(UniswapRouter.address, lpAmount)
+    .approve(UniswapRouter.address, lpBondAmount)
     .send({from: investor});
   await usdc.methods
-    .approve(UniswapRouter.address, lpAmount)
+    .approve(UniswapRouter.address, lpUsdcAmount)
     .send({from: investor});
   await uniswapRouter.methods
     .addLiquidity(
       usdc._address,
       bond._address,
-      lpAmount,
-      lpAmount,
+      lpUsdcAmount,
+      lpBondAmount,
       "0",
       "0",
       investor,
       Date.now()
     )
     .send({from: investor, gas: 6000000});
-  const [, bondPrice] = await uniswapRouter.methods.getAmountsOut("1000000", [
+  const [, bondPrice] = await uniswapRouter.methods.getAmountsOut(lpBondAmount, [
     bond._address,
     usdc._address,
   ]).call();
