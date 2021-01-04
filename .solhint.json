@@ -5,8 +5,13 @@
   ],
   "rules": {
     "prettier/prettier": "error",
+    "compiler-version": ["error","^0.6.0"],
     "quotes": ["error", "double"],
     "reason-string": "off",
-    "imports-on-top": "error"
+    "imports-on-top": "error",
+    "no-empty-blocks": "off",
+    "not-rely-on-time": "off",
+    "no-inline-assembly": "off",
+    "avoid-low-level-calls": "off"
   }
 }

@@ -13,44 +13,51 @@ async function main() {
   } = development;
   const {address: stackingAddress} = await hardhat.deployments.get("Stacking");
   const bond = new web3.eth.Contract(ABT.abi, Bond.address);
+  const abt = new web3.eth.Contract(ABT.abi, ABT.address);
   const usdc = new web3.eth.Contract(ABT.abi, USDC.address);
   const amount = "1000000000000000000000";
-  const lpUsdcAmount = "1000000";
-  const lpBondAmount = "1000000000000000000";
+
+  async function addLiquidity(token, amount) {
+    await token.methods.transfer(investor, amount).send({from: governor});
+    await token.methods
+      .approve(UniswapRouter.address, amount)
+      .send({from: investor});
+    await usdc.methods
+      .approve(UniswapRouter.address, "1000000")
+      .send({from: investor});
+    await uniswapRouter.methods
+      .addLiquidity(
+        usdc._address,
+        token._address,
+        "1000000",
+        amount,
+        "0",
+        "0",
+        investor,
+        Date.now()
+      )
+      .send({from: investor, gas: 6000000});
+
+    const tokenSymbol = await token.methods.symbol().call();
+    const [, price] = await uniswapRouter.methods
+      .getAmountsOut('1000000000000000000', [token._address, usdc._address])
+      .call();
+    console.log(`Price for ${tokenSymbol}: ${price}`);
+  }
 
   await bond.methods.mint(stackingAddress, amount).send({from: governor});
   const bondBalance = await bond.methods.balanceOf(stackingAddress).call();
   console.log(`Bond balance: ${bondBalance}`);
+
+  await abt.methods.mint(governor, amount).send({from: governor});
 
   const uniswapRouter = new web3.eth.Contract(
     UniswapRouter.abi,
     UniswapRouter.address
   );
 
-  await bond.methods.transfer(investor, lpBondAmount).send({from: governor});
-  await bond.methods
-    .approve(UniswapRouter.address, lpBondAmount)
-    .send({from: investor});
-  await usdc.methods
-    .approve(UniswapRouter.address, lpUsdcAmount)
-    .send({from: investor});
-  await uniswapRouter.methods
-    .addLiquidity(
-      usdc._address,
-      bond._address,
-      lpUsdcAmount,
-      lpBondAmount,
-      "0",
-      "0",
-      investor,
-      Date.now()
-    )
-    .send({from: investor, gas: 6000000});
-  const [, bondPrice] = await uniswapRouter.methods.getAmountsOut(lpBondAmount, [
-    bond._address,
-    usdc._address,
-  ]).call();
-  console.log(`Bond price: ${bondPrice}`);
+  await addLiquidity(bond, "2000000000000000000");
+  await addLiquidity(abt, "1000000000000000000");
 }
 
 main()
