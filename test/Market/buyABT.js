@@ -15,7 +15,7 @@ contract("Market.buyABT", ({web3, artifacts}) => {
   it("buyABT: should buy abt token for cumulative token", async () => {
     const [instance, abt] = await artifacts.requireAll("Market", "ABT");
     const usdc = new web3.eth.Contract(
-      development.contracts.ABT.abi,
+      development.contracts.Stable.abi,
       USDC.address
     );
     const startABT = bn(10).pow(bn(18)).toString();
@@ -85,11 +85,11 @@ contract("Market.buyABT", ({web3, artifacts}) => {
   it("buyABT: should buy abt token for other token", async () => {
     const [instance, abt] = await artifacts.requireAll("Market", "ABT");
     const wbtc = new web3.eth.Contract(
-      development.contracts.ABT.abi,
+      development.contracts.Stable.abi,
       WBTC.address
     );
     const usdc = new web3.eth.Contract(
-      development.contracts.ABT.abi,
+      development.contracts.Stable.abi,
       USDC.address
     );
     const startABT = bn(1000)

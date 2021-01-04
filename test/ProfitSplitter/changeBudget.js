@@ -7,7 +7,7 @@ contract("ProfitSplitter.changeBudget", ({web3, artifacts}) => {
 
   it("changeBudget: should change budget address", async () => {
     const instance = await artifacts.require("ProfitSplitter");
-    const contract = development.contracts.Bond.address;
+    const contract = development.contracts.Governance.address;
     const balance = "99";
 
     const startBudgetAddress = await instance.methods.budget().call();

@@ -10,7 +10,7 @@ contract("Investment.investETH", ({web3, artifacts}) => {
     development.contracts.UniswapV2Router02.address
   );
   const usdcContract = new web3.eth.Contract(
-    development.contracts.ABT.abi,
+    development.contracts.Stable.abi,
     USDC.address
   );
 

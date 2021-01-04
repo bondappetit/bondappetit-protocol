@@ -7,7 +7,7 @@ contract("Buyback.changeIncoming", ({web3, artifacts}) => {
 
   it("changeIncoming: should change incoming token address", async () => {
     const [instance, bond] = await artifacts.requireAll("Buyback", "Bond");
-    const abtAddress = development.contracts.ABT.address;
+    const abtAddress = development.contracts.Stable.address;
     const amount = "5";
 
     await instance.methods

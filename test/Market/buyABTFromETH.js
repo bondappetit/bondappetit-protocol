@@ -15,7 +15,7 @@ contract("Market.buyABTFromETH", ({web3, artifacts}) => {
   it("buyABTFromETH: should buy abt token", async () => {
     const [instance, abt] = await artifacts.requireAll("Market", "ABT");
     const usdc = new web3.eth.Contract(
-      development.contracts.ABT.abi,
+      development.contracts.Stable.abi,
       USDC.address
     );
     const startABT = bn("1000")

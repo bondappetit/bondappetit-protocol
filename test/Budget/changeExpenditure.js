@@ -4,7 +4,7 @@ const {development} = require("../../networks");
 
 contract("Budget.changeExpenditure", ({web3, artifacts}) => {
   const governor = development.accounts.Governor.address;
-  const contract = development.contracts.Bond.address;
+  const contract = development.contracts.Governance.address;
 
   it("changeExpenditure: should change expenditure item", async () => {
     const instance = await artifacts.require("Budget");

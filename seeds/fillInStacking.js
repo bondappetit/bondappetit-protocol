@@ -1,20 +1,19 @@
 const hardhat = require("hardhat");
 const Web3 = require("web3");
 const {development} = require("../networks");
-const bn = Web3.utils.toBN.bind(Web3.utils);
 
 async function main() {
   const web3 = new Web3(hardhat.network.config.url);
   const governor = development.accounts.Governor.address;
   const investor = "0x876A207aD9f6f0fA2C58A7902B2E7568a41c299f";
   const {
-    contracts: {UniswapV2Router02: UniswapRouter, ABT},
-    assets: {USDC, Bond},
+    contracts: {UniswapV2Router02: UniswapRouter, Stable},
+    assets: {USDC, Governance},
   } = development;
   const {address: stackingAddress} = await hardhat.deployments.get("Stacking");
-  const bond = new web3.eth.Contract(ABT.abi, Bond.address);
-  const abt = new web3.eth.Contract(ABT.abi, ABT.address);
-  const usdc = new web3.eth.Contract(ABT.abi, USDC.address);
+  const governance = new web3.eth.Contract(Stable.abi, Governance.address);
+  const stable = new web3.eth.Contract(Stable.abi, Stable.address);
+  const usdc = new web3.eth.Contract(Stable.abi, USDC.address);
   const amount = "1000000000000000000000";
 
   async function addLiquidity(token, amount) {
@@ -45,19 +44,19 @@ async function main() {
     console.log(`Price for ${tokenSymbol}: ${price}`);
   }
 
-  await bond.methods.mint(stackingAddress, amount).send({from: governor});
-  const bondBalance = await bond.methods.balanceOf(stackingAddress).call();
+  await governance.methods.mint(stackingAddress, amount).send({from: governor});
+  const bondBalance = await governance.methods.balanceOf(stackingAddress).call();
   console.log(`Bond balance: ${bondBalance}`);
 
-  await abt.methods.mint(governor, amount).send({from: governor});
+  await stable.methods.mint(governor, amount).send({from: governor});
 
   const uniswapRouter = new web3.eth.Contract(
     UniswapRouter.abi,
     UniswapRouter.address
   );
 
-  await addLiquidity(bond, "2000000000000000000");
-  await addLiquidity(abt, "1000000000000000000");
+  await addLiquidity(governance, "2000000000000000000");
+  await addLiquidity(stable, "1000000000000000000");
 }
 
 main()

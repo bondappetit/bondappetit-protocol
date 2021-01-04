@@ -1,26 +1,92 @@
 {
   "contracts": [
-    {"path": "deployments/%network%/Bond.json", "name": "Bond", "voting": true},
-    {"path": "deployments/%network%/Timelock.json", "name": "Timelock", "voting": true},
-    {"path": "deployments/%network%/GovernorAlpha.json", "name": "GovernorAlpha", "voting": false},
-    {"path": "deployments/%network%/Investment.json", "name": "Investment", "voting": true},
-    {"path": "deployments/%network%/Vesting.json", "name": "Vesting", "voting": true},
-    {"path": "deployments/%network%/ABT.json", "name": "ABT", "voting": true},
-    {"path": "deployments/%network%/Treasury.json", "name": "Treasury", "voting": true},
-    {"path": "deployments/%network%/SecurityOracle.json", "name": "SecurityOracle", "voting": false},
-    {"path": "deployments/%network%/DepositaryOracle.json", "name": "DepositaryOracle", "voting": false},
-    {"path": "deployments/%network%/Issuer.json", "name": "Issuer", "voting": true},
-    {"path": "deployments/%network%/Market.json", "name": "Market", "voting": true},
-    {"path": "deployments/%network%/Stacking.json", "name": "Stacking", "voting": true},
-    {"path": "deployments/%network%/Budget.json", "name": "Budget", "voting": true},
-    {"path": "deployments/%network%/Buyback.json", "name": "Buyback", "voting": true},
-    {"path": "deployments/%network%/UniswapMarketMaker.json", "name": "UniswapMarketMaker", "voting": true},
-    {"path": "deployments/%network%/ProfitSplitter.json", "name": "ProfitSplitter", "voting": true}
+    {
+      "path": "deployments/%network%/Bond.json",
+      "key": "Governance",
+      "name": "Bond",
+      "voting": true
+    },
+    {
+      "path": "deployments/%network%/Timelock.json",
+      "name": "Timelock",
+      "voting": true
+    },
+    {
+      "path": "deployments/%network%/GovernorAlpha.json",
+      "name": "GovernorAlpha",
+      "voting": false
+    },
+    {
+      "path": "deployments/%network%/Investment.json",
+      "name": "Investment",
+      "voting": true
+    },
+    {
+      "path": "deployments/%network%/Vesting.json",
+      "name": "Vesting",
+      "voting": true
+    },
+    {
+      "path": "deployments/%network%/ABT.json",
+      "key": "Stable",
+      "name": "ABT",
+      "voting": true
+    },
+    {
+      "path": "deployments/%network%/Treasury.json",
+      "name": "Treasury",
+      "voting": true
+    },
+    {
+      "path": "deployments/%network%/SecurityOracle.json",
+      "name": "SecurityOracle",
+      "voting": false
+    },
+    {
+      "path": "deployments/%network%/DepositaryOracle.json",
+      "name": "DepositaryOracle",
+      "voting": false
+    },
+    {
+      "path": "deployments/%network%/Issuer.json",
+      "name": "Issuer",
+      "voting": true
+    },
+    {
+      "path": "deployments/%network%/Market.json",
+      "name": "Market",
+      "voting": true
+    },
+    {
+      "path": "deployments/%network%/Stacking.json",
+      "name": "Stacking",
+      "voting": true
+    },
+    {
+      "path": "deployments/%network%/Budget.json",
+      "name": "Budget",
+      "voting": true
+    },
+    {
+      "path": "deployments/%network%/Buyback.json",
+      "name": "Buyback",
+      "voting": true
+    },
+    {
+      "path": "deployments/%network%/UniswapMarketMaker.json",
+      "name": "UniswapMarketMaker",
+      "voting": true
+    },
+    {
+      "path": "deployments/%network%/ProfitSplitter.json",
+      "name": "ProfitSplitter",
+      "voting": true
+    }
   ],
   "assets": [
     {
       "path": "deployments/%network%/Bond.json",
-      "key": "Bond",
+      "key": "Governance",
       "name": "BondAppetit Governance",
       "symbol": "BAG",
       "decimals": 18,
@@ -28,7 +94,7 @@
     },
     {
       "path": "deployments/%network%/ABT.json",
-      "key": "ABT",
+      "key": "Stable",
       "name": "Appetite USD",
       "symbol": "USDp",
       "decimals": 18,
@@ -36,9 +102,15 @@
     }
   ],
   "abi": [
-    {"path": "artifacts/@openzeppelin/contracts/token/ERC20/IERC20.sol/IERC20.json"},
-    {"path": "artifacts/contracts/uniswap/IUniswapAnchoredView.sol/IUniswapAnchoredView.json"},
-    {"path": "artifacts/contracts/uniswap/IUniswapV2Router02.sol/IUniswapV2Router02.json"},
+    {
+      "path": "artifacts/@openzeppelin/contracts/token/ERC20/IERC20.sol/IERC20.json"
+    },
+    {
+      "path": "artifacts/contracts/uniswap/IUniswapAnchoredView.sol/IUniswapAnchoredView.json"
+    },
+    {
+      "path": "artifacts/contracts/uniswap/IUniswapV2Router02.sol/IUniswapV2Router02.json"
+    },
     {"path": "artifacts/contracts/Timelock.sol/Timelock.json"},
     {"path": "artifacts/contracts/Bond.sol/Bond.json"},
     {"path": "artifacts/contracts/ABT.sol/ABT.json"},
@@ -46,14 +118,22 @@
     {"path": "artifacts/contracts/Investment.sol/Investment.json"},
     {"path": "artifacts/contracts/Vesting.sol/Vesting.json"},
     {"path": "artifacts/contracts/Treasury.sol/Treasury.json"},
-    {"path": "artifacts/contracts/oracle/SecurityOracle.sol/SecurityOracle.json"},
-    {"path": "artifacts/contracts/oracle/DepositaryOracle.sol/DepositaryOracle.json"},
+    {
+      "path": "artifacts/contracts/oracle/SecurityOracle.sol/SecurityOracle.json"
+    },
+    {
+      "path": "artifacts/contracts/oracle/DepositaryOracle.sol/DepositaryOracle.json"
+    },
     {"path": "artifacts/contracts/Issuer.sol/Issuer.json"},
     {"path": "artifacts/contracts/Market.sol/Market.json"},
     {"path": "artifacts/contracts/Stacking.sol/Stacking.json"},
     {"path": "artifacts/contracts/Budget.sol/Budget.json"},
     {"path": "artifacts/contracts/profit/Buyback.sol/Buyback.json"},
-    {"path": "artifacts/contracts/profit/UniswapMarketMaker.sol/UniswapMarketMaker.json"},
-    {"path": "artifacts/contracts/profit/ProfitSplitter.sol/ProfitSplitter.json"}
+    {
+      "path": "artifacts/contracts/profit/UniswapMarketMaker.sol/UniswapMarketMaker.json"
+    },
+    {
+      "path": "artifacts/contracts/profit/ProfitSplitter.sol/ProfitSplitter.json"
+    }
   ]
 }

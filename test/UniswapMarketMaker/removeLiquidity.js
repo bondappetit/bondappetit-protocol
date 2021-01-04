@@ -32,7 +32,7 @@ contract("UniswapMarketMaker.removeLiquidity", ({web3, artifacts}) => {
       .addLiquidity(0, 0)
       .send({from: governor, gas: 6000000});
     const lpAddress = await instance.methods.liquidityPair().call();
-    const lp = new web3.eth.Contract(development.contracts.ABT.abi, lpAddress);
+    const lp = new web3.eth.Contract(development.contracts.Stable.abi, lpAddress);
     const startLpBalance = await lp.methods.balanceOf(instance._address).call();
 
     const tx = await instance.methods.removeLiquidity(startLpBalance).send({

@@ -15,7 +15,7 @@ contract("Market.buyBond", ({web3, artifacts}) => {
   it("buyBond: should buy bond token for cumulative token", async () => {
     const [instance, bond] = await artifacts.requireAll("Market", "Bond");
     const usdc = new web3.eth.Contract(
-      development.contracts.ABT.abi,
+      development.contracts.Stable.abi,
       USDC.address
     );
     const startBond = bn(10).pow(bn(18)).toString();
@@ -91,11 +91,11 @@ contract("Market.buyBond", ({web3, artifacts}) => {
   it("buyBond: should buy bond token for other token", async () => {
     const [instance, bond] = await artifacts.requireAll("Market", "Bond");
     const wbtc = new web3.eth.Contract(
-      development.contracts.ABT.abi,
+      development.contracts.Stable.abi,
       WBTC.address
     );
     const usdc = new web3.eth.Contract(
-      development.contracts.ABT.abi,
+      development.contracts.Stable.abi,
       USDC.address
     );
     const startBond = bn(1000)
@@ -186,7 +186,7 @@ contract("Market.buyBond", ({web3, artifacts}) => {
     const instance = await artifacts.require("Market");
     const notTokenholder = (await web3.eth.getAccounts())[1];
     const usdc = new web3.eth.Contract(
-      development.contracts.ABT.abi,
+      development.contracts.Stable.abi,
       USDC.address
     );
     const amount = "1";

@@ -6,7 +6,7 @@ contract("Budget.getRecipients", ({artifacts}) => {
 
   it("getRecipients: should get all recipients addresses", async () => {
     const instance = await artifacts.require("Budget");
-    const contract = development.contracts.Bond.address;
+    const contract = development.contracts.Governance.address;
 
     const firstRecipients = await instance.methods.getRecipients().call();
     assert.equal(

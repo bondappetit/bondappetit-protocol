@@ -11,11 +11,11 @@ contract("Investment.withdraw", ({web3, artifacts}) => {
     development.contracts.UniswapV2Router02.address
   );
   const usdtContract = new web3.eth.Contract(
-    development.contracts.ABT.abi,
+    development.contracts.Stable.abi,
     USDT.address
   );
   const usdcContract = new web3.eth.Contract(
-    development.contracts.ABT.abi,
+    development.contracts.Stable.abi,
     USDC.address
   );
 

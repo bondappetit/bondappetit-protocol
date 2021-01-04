@@ -7,7 +7,7 @@ contract("Buyback.changeUniswapRouter", ({web3, artifacts}) => {
 
   it("changeUniswapRouter: should change uniswap router address", async () => {
     const instance = await artifacts.require("Buyback");
-    const contract = development.contracts.Bond.address;
+    const contract = development.contracts.Governance.address;
 
     const startRouter = await instance.methods.uniswapRouter().call();
     assert.equal(startRouter != contract, true, "Invalid start router");
