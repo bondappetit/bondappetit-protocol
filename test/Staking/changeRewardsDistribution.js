@@ -1,0 +1,34 @@
+const assertions = require("truffle-assertions");
+const {contract, assert} = require("../../utils/test");
+const {development} = require("../../networks");
+
+contract("Staking.changeRewardsDistribution", ({web3, artifacts}) => {
+  const governor = development.accounts.Governor.address;
+
+  it("changeRewardsDistribution: should change reward distribution address", async () => {
+    const instance = await artifacts.require("GovStaking");
+    const newDistributor = (await web3.eth.getAccounts())[1];
+
+    const startDistributor = await instance.methods.rewardsDistribution().call();
+    await instance.methods
+      .changeRewardsDistribution(newDistributor)
+      .send({from: governor});
+
+    const endDistributor = await instance.methods.rewardsDistribution().call();
+    assert.equal(
+      endDistributor !== startDistributor,
+      true,
+      "Change distributor failed"
+    );
+  });
+
+  it("changeRewardsDistribution: should revert tx if called is not the owner", async () => {
+    const instance = await artifacts.require("GovStaking");
+    const notOwner = (await web3.eth.getAccounts())[1];
+
+    await assertions.reverts(
+      instance.methods.changeRewardsDistribution(governor).send({from: notOwner}),
+      "Ownable: caller is not the owner"
+    );
+  });
+});

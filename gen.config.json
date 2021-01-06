@@ -58,8 +58,13 @@
       "voting": true
     },
     {
-      "path": "deployments/%network%/Stacking.json",
-      "name": "Stacking",
+      "path": "deployments/%network%/StableStaking.json",
+      "name": "StableStaking",
+      "voting": true
+    },
+    {
+      "path": "deployments/%network%/GovStaking.json",
+      "name": "GovStaking",
       "voting": true
     },
     {
@@ -126,7 +131,7 @@
     },
     {"path": "artifacts/contracts/Issuer.sol/Issuer.json"},
     {"path": "artifacts/contracts/Market.sol/Market.json"},
-    {"path": "artifacts/contracts/Stacking.sol/Stacking.json"},
+    {"path": "artifacts/contracts/Staking.sol/Staking.json"},
     {"path": "artifacts/contracts/Budget.sol/Budget.json"},
     {"path": "artifacts/contracts/profit/Buyback.sol/Buyback.json"},
     {
