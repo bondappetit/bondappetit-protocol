@@ -62,6 +62,9 @@ contract Staking is OwnablePausable, ReentrancyGuard {
     /// @notice An event thats emitted when an rewards distribution address changed.
     event RewardsDistributionChanged(address newRewardsDistribution);
 
+    /// @notice An event thats emitted when an rewards tokens transfered to recipient.
+    event RewardsTransfered(address recipient, uint256 amount);
+
     /**
      * @param _rewardsDistribution Rewards distribution address.
      * @param _rewardsDuration Duration of distribution.
@@ -192,6 +195,18 @@ contract Staking is OwnablePausable, ReentrancyGuard {
     function changeRewardsDistribution(address _rewardDistribution) external onlyOwner {
         rewardsDistribution = _rewardDistribution;
         emit RewardsDistributionChanged(rewardsDistribution);
+    }
+
+    /**
+     * @notice Transfer rewards token to recipient if distribution not start.
+     * @param recipient Recipient.
+     * @param amount Amount transfered rewards token.
+     */
+    function transfer(address recipient, uint256 amount) external onlyOwner {
+        require(block.number >= periodFinish, "Staking::transfer: distribution not ended");
+
+        rewardsToken.safeTransfer(recipient, amount);
+        emit RewardsTransfered(recipient, amount);
     }
 
     /**
