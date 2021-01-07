@@ -7,25 +7,31 @@ async function main() {
   const governor = development.accounts.Governor.address;
   const investor = "0x876A207aD9f6f0fA2C58A7902B2E7568a41c299f";
   const {
-    contracts: {UniswapV2Router02: UniswapRouter, Stable, GovStaking},
+    contracts: {UniswapV2Router02: UniswapRouter, Stable, GovStaking, StableStaking},
     assets: {USDC, Governance},
   } = development;
-  const govStaking = new web3.eth.Contract(GovStaking.abi, GovStaking.address);
   const governance = new web3.eth.Contract(Stable.abi, Governance.address);
   const stable = new web3.eth.Contract(Stable.abi, Stable.address);
   const usdc = new web3.eth.Contract(Stable.abi, USDC.address);
   const amount = "1000000000000000000000";
 
-  await governance.methods
-    .mint(govStaking._address, amount)
-    .send({from: governor});
-  await govStaking.methods
-    .notifyRewardAmount(amount)
-    .send({from: governor, gas: 6000000});
-  console.log(
-    "Staking reward for duration:",
-    await govStaking.methods.getRewardForDuration().call()
-  );
+  async function addStakingReward({name, address, abi}, amount) {
+    const staking = new web3.eth.Contract(abi, address);
+
+    await governance.methods
+      .mint(staking._address, amount)
+      .send({from: governor});
+    await staking.methods
+      .notifyRewardAmount(amount)
+      .send({from: governor, gas: 6000000});
+    console.log(
+      `${name} reward for duration:`,
+      await staking.methods.getRewardForDuration().call()
+    );
+  }
+
+  await addStakingReward(GovStaking, amount);
+  await addStakingReward(StableStaking, amount);
 
   const uniswapRouter = new web3.eth.Contract(
     UniswapRouter.abi,

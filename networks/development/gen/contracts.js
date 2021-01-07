@@ -4618,6 +4618,25 @@ module.exports = {
                 "anonymous": false,
                 "inputs": [
                     {
+                        "indexed": false,
+                        "internalType": "address",
+                        "name": "recipient",
+                        "type": "address"
+                    },
+                    {
+                        "indexed": false,
+                        "internalType": "uint256",
+                        "name": "amount",
+                        "type": "uint256"
+                    }
+                ],
+                "name": "RewardsTransfered",
+                "type": "event"
+            },
+            {
+                "anonymous": false,
+                "inputs": [
+                    {
                         "indexed": true,
                         "internalType": "address",
                         "name": "user",
@@ -4995,6 +5014,24 @@ module.exports = {
                     }
                 ],
                 "stateMutability": "view",
+                "type": "function"
+            },
+            {
+                "inputs": [
+                    {
+                        "internalType": "address",
+                        "name": "recipient",
+                        "type": "address"
+                    },
+                    {
+                        "internalType": "uint256",
+                        "name": "amount",
+                        "type": "uint256"
+                    }
+                ],
+                "name": "transfer",
+                "outputs": [],
+                "stateMutability": "nonpayable",
                 "type": "function"
             },
             {
@@ -5176,6 +5213,25 @@ module.exports = {
                 "anonymous": false,
                 "inputs": [
                     {
+                        "indexed": false,
+                        "internalType": "address",
+                        "name": "recipient",
+                        "type": "address"
+                    },
+                    {
+                        "indexed": false,
+                        "internalType": "uint256",
+                        "name": "amount",
+                        "type": "uint256"
+                    }
+                ],
+                "name": "RewardsTransfered",
+                "type": "event"
+            },
+            {
+                "anonymous": false,
+                "inputs": [
+                    {
                         "indexed": true,
                         "internalType": "address",
                         "name": "user",
@@ -5553,6 +5609,24 @@ module.exports = {
                     }
                 ],
                 "stateMutability": "view",
+                "type": "function"
+            },
+            {
+                "inputs": [
+                    {
+                        "internalType": "address",
+                        "name": "recipient",
+                        "type": "address"
+                    },
+                    {
+                        "internalType": "uint256",
+                        "name": "amount",
+                        "type": "uint256"
+                    }
+                ],
+                "name": "transfer",
+                "outputs": [],
+                "stateMutability": "nonpayable",
                 "type": "function"
             },
             {
