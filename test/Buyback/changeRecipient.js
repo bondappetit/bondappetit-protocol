@@ -7,7 +7,7 @@ contract("Buyback.changeRecipient", ({web3, artifacts}) => {
 
   it("changeRecipient: should change recipient address", async () => {
     const instance = await artifacts.require("Buyback");
-    const contract = development.contracts.Bond.address;
+    const contract = development.contracts.Governance.address;
 
     const startRecipient = await instance.methods.recipient().call();
     assert.equal(startRecipient != contract, true, "Invalid start recipient");

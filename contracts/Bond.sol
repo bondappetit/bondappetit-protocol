@@ -11,10 +11,10 @@ contract Bond is IERC20, Ownable {
     using EnumerableSet for EnumerableSet.AddressSet;
 
     /// @notice EIP-20 token name for this token
-    string public name = "Bond";
+    string public name = "BondAppetit Governance";
 
     /// @notice EIP-20 token symbol for this token
-    string public symbol = "BOND";
+    string public symbol = "BAG";
 
     /// @notice EIP-20 token decimals for this token
     uint8 public decimals = 18;

@@ -4,7 +4,7 @@ const {development} = require("../../networks");
 
 contract("ProfitSplitter.recipients", ({web3, artifacts}) => {
   const governor = development.accounts.Governor.address;
-  const recipient = development.contracts.Bond.address;
+  const recipient = development.contracts.Governance.address;
 
   it("addRecipient: should add recipient", async () => {
     const instance = await artifacts.require("ProfitSplitter");

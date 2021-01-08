@@ -29,10 +29,11 @@ async function writeJson(path, data) {
   const [assets, contracts, abiContracts] = await Promise.all([
     Promise.all(
       (config.assets || []).map(
-        async ({path, name, symbol, decimals, investing}) => {
+        async ({path, key, name, symbol, decimals, investing}) => {
           const {address} = await loadJson(path.replace("%network%", network));
 
           return {
+            key,
             name,
             address,
             symbol,
@@ -43,12 +44,13 @@ async function writeJson(path, data) {
       )
     ),
     Promise.all(
-      (config.contracts || []).map(async ({path, name, voting}) => {
+      (config.contracts || []).map(async ({path, key, name, voting}) => {
         const {address, abi} = await loadJson(
           path.replace("%network%", network)
         );
 
         return {
+          key,
           address,
           name,
           abi,
@@ -69,9 +71,9 @@ async function writeJson(path, data) {
     writeJs(
       `${out}/contracts.js`,
       contracts.reduce(
-        (result, {address, name, abi, voting}) => ({
+        (result, {address, key, name, abi, voting}) => ({
           ...result,
-          [name]: {
+          [key || name]: {
             address,
             name,
             voting,
@@ -87,9 +89,9 @@ async function writeJson(path, data) {
     writeJs(
       `${out}/assets.js`,
       assets.reduce(
-        (result, {address, name, symbol, decimals, investing}) => ({
+        (result, {address, key, name, symbol, decimals, investing}) => ({
           ...result,
-          [name]: {
+          [key || symbol]: {
             address,
             name,
             symbol,

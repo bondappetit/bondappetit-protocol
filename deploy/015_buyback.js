@@ -6,13 +6,13 @@ module.exports = migration("Buyback", async (d) => {
     contracts: {UniswapV2Router02},
   } = d.getNetwork();
 
-  const [bond, stacking] = await d.deployed("Bond", "Stacking");
+  const [bond, treasury] = await d.deployed("Bond", "Treasury");
 
   await d.deploy("Buyback", {
     args: [
       USDC.address,
       bond.address,
-      stacking.address,
+      treasury.address,
       UniswapV2Router02.address,
     ],
   });

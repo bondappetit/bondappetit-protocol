@@ -1,25 +1,43 @@
 const {migration} = require("../utils/deploy");
 
-module.exports = migration("Stacking", async (d) => {
+module.exports = migration("Staking", async (d) => {
+  const governor = d.getGovernor().address;
   const [abt, bond] = await d.deployed("ABT", "Bond");
+  const blocksPerMinute = 4;
   const rewardingTokens = [
-    {address: bond.address, delta: "70000000000"},
-    {address: abt.address, delta: "70000000000"},
+    {
+      name: "GovStaking",
+      distributor: governor,
+      reward: bond.address,
+      staking: bond.address,
+      duration: blocksPerMinute * 60 * 24 * 60, // 2 months
+    },
+    {
+      name: "StableStaking",
+      distributor: governor,
+      reward: bond.address,
+      staking: abt.address,
+      duration: blocksPerMinute * 60 * 24 * 60, // 2 months
+    },
   ];
 
-  await d.deploy("Stacking", {
-    args: [bond.address],
-  });
-
-  await rewardingTokens.reduce(async (tx, {address, delta}) => {
-    await tx;
-    await d.send("Stacking", "changeReward", [address, delta]);
-  }, Promise.resolve());
-
   const {networkName} = d.getNetwork();
-  if (networkName === "development") return;
-
   const [timelock, issuer] = await d.deployed("Timelock", "Issuer");
+
+  await rewardingTokens.reduce(
+    async (tx, {name, distributor, reward, staking, duration}) => {
+      await tx;
+      await d.deploy(name, {
+        contract: "Staking",
+        args: [distributor, duration, reward, staking],
+      });
+      if (networkName === "development") return;
+      await d.send(name, "transferOwnership", [timelock.address]);
+    },
+    Promise.resolve()
+  );
+
+  if (networkName === "development") return;
 
   await d.send("Bond", "transferOwnership", [timelock.address]);
   await d.send("Investment", "transferOwnership", [timelock.address]);
@@ -28,5 +46,5 @@ module.exports = migration("Stacking", async (d) => {
   await d.send("Issuer", "transferOwnership", [timelock.address]);
   await d.send("ABT", "transferOwnership", [issuer.address]);
   await d.send("Market", "transferOwnership", [timelock.address]);
-  await d.send("Stacking", "transferOwnership", [timelock.address]);
+  await d.send("Staking", "transferOwnership", [timelock.address]);
 });

@@ -10,7 +10,7 @@ contract("Market.changeCumulativeToken", ({web3, artifacts}) => {
   it("changeCumulativeToken: should change cumulative token", async () => {
     const instance = await artifacts.require("Market");
     const usdc = new web3.eth.Contract(
-      development.contracts.ABT.abi,
+      development.contracts.Stable.abi,
       USDC.address
     );
     const newToken = USDT.address.toLowerCase();
