@@ -46,5 +46,4 @@ module.exports = migration("Staking", async (d) => {
   await d.send("Issuer", "transferOwnership", [timelock.address]);
   await d.send("ABT", "transferOwnership", [issuer.address]);
   await d.send("Market", "transferOwnership", [timelock.address]);
-  await d.send("Staking", "transferOwnership", [timelock.address]);
 });
