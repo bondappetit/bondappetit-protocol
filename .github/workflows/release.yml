@@ -84,6 +84,7 @@ jobs:
       - name: Publish master branch
         run: |
           COMMIT_MESSAGE="new build ${{ github.event.release.tag_name }} on $(date +'%Y-%m-%d %H:%M:%S')"
+          git remote rm origin
           git remote add origin https://${{ secrets.ACCESS_TOKEN }}@github.com/$GITHUB_REPOSITORY.git
           git add --all
           git diff-index --quiet --cached HEAD -- && echo "No changes!" && exit 0 || echo $COMMIT_MESSAGE
