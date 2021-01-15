@@ -7,36 +7,36 @@ async function main() {
   const {address: marketAddress} = await hardhat.deployments.get("Market");
 
   await hardhat.deployments.execute(
-    "Bond",
+    "GovernanceToken",
     {from: governor},
     "mint",
     marketAddress,
     amount
   );
   await hardhat.deployments.execute(
-    "ABT",
+    "StableToken",
     {from: governor},
     "mint",
     marketAddress,
     amount
   );
 
-  const [bondBalance, abtBalance] = await Promise.all([
+  const [govBalance, stableBalance] = await Promise.all([
     hardhat.deployments.read(
-      "Bond",
+      "GovernanceToken",
       {from: governor},
       "balanceOf",
       marketAddress
     ),
     hardhat.deployments.read(
-      "ABT",
+      "StableToken",
       {from: governor},
       "balanceOf",
       marketAddress
     ),
   ]);
 
-  console.log(`Bond balance: ${bondBalance}`, `ABT balance: ${abtBalance}`);
+  console.log(`Governance token balance: ${govBalance}`, `Stable token balance: ${stableBalance}`);
 }
 
 main()

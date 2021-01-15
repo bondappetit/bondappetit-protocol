@@ -4,11 +4,13 @@ pragma experimental ABIEncoderV2;
 
 import "@openzeppelin/contracts/math/SafeMath.sol";
 import "@openzeppelin/contracts/utils/EnumerableSet.sol";
+import "@openzeppelin/contracts/token/ERC20/ERC20.sol";
+import "@openzeppelin/contracts/token/ERC20/SafeERC20.sol";
 import "./utils/OwnablePausable.sol";
-import "./Bond.sol";
 
 contract Vesting is OwnablePausable {
     using SafeMath for uint256;
+    using SafeERC20 for ERC20;
     using EnumerableSet for EnumerableSet.AddressSet;
 
     /// @notice The number of periods for a per recipient.
@@ -16,8 +18,8 @@ contract Vesting is OwnablePausable {
         return 5;
     } // 5 perios per recipient.
 
-    /// @notice Address of Bond token.
-    Bond public bond;
+    /// @notice Address of vesting token.
+    ERC20 public token;
 
     struct Period {
         // Identifier.
@@ -52,10 +54,10 @@ contract Vesting is OwnablePausable {
     event Withdrawal(address recipient, uint256 periodId);
 
     /**
-     * @param _bond Address of Bond token contract.
+     * @param _token Address of vesting token contract.
      */
-    constructor(address _bond) public {
-        bond = Bond(_bond);
+    constructor(address _token) public {
+        token = ERC20(_token);
     }
 
     /**
@@ -72,7 +74,7 @@ contract Vesting is OwnablePausable {
     ) external onlyOwner returns (uint256) {
         require(periodsIndex[recipient].length < maxPeriodsPerRecipient(), "Vesting::lock: too many periods");
 
-        bond.transferFrom(_msgSender(), address(this), amount);
+        token.safeTransferFrom(_msgSender(), address(this), amount);
 
         currentPeriod += 1;
         participants.add(recipient);
@@ -95,7 +97,7 @@ contract Vesting is OwnablePausable {
         address owner = _msgSender();
         uint256 amount = period.amount;
         period.amount = 0;
-        bond.transfer(owner, amount);
+        token.safeTransfer(owner, amount);
 
         emit Revoked(periodId);
     }
@@ -143,7 +145,7 @@ contract Vesting is OwnablePausable {
         require(block.timestamp > period.date, "Vesting::withdraw: access denied");
 
         period.withdrawal = true;
-        bond.transfer(recipient, period.amount);
+        token.safeTransfer(recipient, period.amount);
         emit Withdrawal(recipient, periodId);
     }
 }

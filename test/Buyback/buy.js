@@ -7,36 +7,36 @@ contract("Buyback.buy", ({web3, artifacts}) => {
   const UniswapRouter = development.contracts.UniswapV2Router02;
 
   it("buy: should buyback outcoming token", async () => {
-    const [instance, abt, bond] = await artifacts.requireAll(
+    const [instance, stable, gov] = await artifacts.requireAll(
       "Buyback",
-      "ABT",
-      "Bond"
+      "StableToken",
+      "GovernanceToken"
     );
     const uniswapRouter = new web3.eth.Contract(
       UniswapRouter.abi,
       UniswapRouter.address
     );
-    const recipient = (await web3.eth.getAccounts())[1];
-    const abtAmount = "5000";
-    const bondAmount = "10000";
+    const [, recipient] = artifacts.accounts;
+    const stableAmount = "5000";
+    const govAmount = "10000";
 
-    await abt.methods
-      .mint(governor, utils.toBN(abtAmount).mul(utils.toBN(2)).toString())
+    await stable.methods
+      .mint(governor, utils.toBN(stableAmount).mul(utils.toBN(2)).toString())
       .send({from: governor});
-    await abt.methods.approve(UniswapRouter.address, abtAmount).send({
+    await stable.methods.approve(UniswapRouter.address, stableAmount).send({
       from: governor,
       gas: 2000000,
     });
-    await bond.methods.approve(UniswapRouter.address, bondAmount).send({
+    await gov.methods.approve(UniswapRouter.address, govAmount).send({
       from: governor,
       gas: 2000000,
     });
     await uniswapRouter.methods
       .addLiquidity(
-        abt._address,
-        bond._address,
-        abtAmount,
-        bondAmount,
+        stable._address,
+        gov._address,
+        stableAmount,
+        govAmount,
         "0",
         "0",
         governor,
@@ -45,23 +45,23 @@ contract("Buyback.buy", ({web3, artifacts}) => {
       .send({from: governor, gas: 6000000});
 
     await instance.methods
-      .changeIncoming(abt._address, governor)
+      .changeIncoming(stable._address, governor)
       .send({from: governor});
     await instance.methods.changeRecipient(recipient).send({from: governor});
     const amountsOut = await uniswapRouter.methods
-      .getAmountsOut(abtAmount, [abt._address, bond._address])
+      .getAmountsOut(stableAmount, [stable._address, gov._address])
       .call({from: governor});
-    const startBondBalance = await bond.methods.balanceOf(recipient).call();
+    const startGovBalance = await gov.methods.balanceOf(recipient).call();
 
-    await abt.methods
-      .approve(instance._address, abtAmount)
+    await stable.methods
+      .approve(instance._address, stableAmount)
       .send({from: governor});
-    await instance.methods.buy(abtAmount).send({from: governor, gas: 6000000});
-    const endBondBalance = await bond.methods.balanceOf(recipient).call();
+    await instance.methods.buy(stableAmount).send({from: governor, gas: 6000000});
+    const endGovBalance = await gov.methods.balanceOf(recipient).call();
 
     assert.equal(
-      endBondBalance,
-      bn(startBondBalance).add(bn(amountsOut[1])).toString(),
+      endGovBalance,
+      bn(startGovBalance).add(bn(amountsOut[1])).toString(),
       "Invalid end buyback balance"
     );
   });

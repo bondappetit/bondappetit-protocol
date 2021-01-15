@@ -8,11 +8,11 @@ contract("Vesting.revoke", ({web3, artifacts}) => {
   const date = "0";
 
   it("revoke: should revoke period", async () => {
-    const [instance, bond] = await artifacts.requireAll("Vesting", "Bond");
-    const recipient = (await web3.eth.getAccounts())[1];
+    const [instance, gov] = await artifacts.requireAll("Vesting", "GovernanceToken");
+    const [, recipient] = artifacts.accounts;
 
-    const startBalance = await bond.methods.balanceOf(governor).call();
-    await bond.methods
+    const startBalance = await gov.methods.balanceOf(governor).call();
+    await gov.methods
       .approve(instance._address, amount)
       .send({from: governor});
     await instance.methods
@@ -27,7 +27,7 @@ contract("Vesting.revoke", ({web3, artifacts}) => {
       .revoke(recipient, addedPeriod.id)
       .send({from: governor, gas: 6000000});
 
-    const endBalance = await bond.methods.balanceOf(governor).call();
+    const endBalance = await gov.methods.balanceOf(governor).call();
     const endPeriods = await instance.methods.info(recipient).call();
     const revokedPeriod = endPeriods[endPeriods.length - 1];
     assert.equal(endBalance, startBalance, "Reward not returned");
@@ -35,10 +35,10 @@ contract("Vesting.revoke", ({web3, artifacts}) => {
   });
 
   it("revoke: should revert tx if called is not the owner", async () => {
-    const [instance, bond] = await artifacts.requireAll("Vesting", "Bond");
-    const recipient = (await web3.eth.getAccounts())[1];
+    const [instance, gov] = await artifacts.requireAll("Vesting", "GovernanceToken");
+    const [, recipient] = artifacts.accounts;
 
-    await bond.methods
+    await gov.methods
       .approve(instance._address, amount)
       .send({from: governor});
     await instance.methods
@@ -57,10 +57,10 @@ contract("Vesting.revoke", ({web3, artifacts}) => {
   });
 
   it("revoke: should revert tx if period already withdrawal", async () => {
-    const [instance, bond] = await artifacts.requireAll("Vesting", "Bond");
-    const recipient = (await web3.eth.getAccounts())[1];
+    const [instance, gov] = await artifacts.requireAll("Vesting", "GovernanceToken");
+    const [, recipient] = artifacts.accounts;
 
-    await bond.methods
+    await gov.methods
       .approve(instance._address, amount)
       .send({from: governor});
     await instance.methods

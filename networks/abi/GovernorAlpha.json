@@ -4,17 +4,17 @@
             "inputs": [
                 {
                     "internalType": "address",
-                    "name": "timelock_",
+                    "name": "_timelock",
                     "type": "address"
                 },
                 {
                     "internalType": "address",
-                    "name": "bond_",
+                    "name": "_governanceToken",
                     "type": "address"
                 },
                 {
                     "internalType": "address",
-                    "name": "guardian_",
+                    "name": "_guardian",
                     "type": "address"
                 }
             ],
@@ -235,19 +235,6 @@
             "type": "function"
         },
         {
-            "inputs": [],
-            "name": "bond",
-            "outputs": [
-                {
-                    "internalType": "contract BondInterface",
-                    "name": "",
-                    "type": "address"
-                }
-            ],
-            "stateMutability": "view",
-            "type": "function"
-        },
-        {
             "inputs": [
                 {
                     "internalType": "uint256",
@@ -394,6 +381,19 @@
                     "internalType": "struct GovernorAlpha.Receipt",
                     "name": "",
                     "type": "tuple"
+                }
+            ],
+            "stateMutability": "view",
+            "type": "function"
+        },
+        {
+            "inputs": [],
+            "name": "governanceToken",
+            "outputs": [
+                {
+                    "internalType": "contract GovernanceTokenInterface",
+                    "name": "",
+                    "type": "address"
                 }
             ],
             "stateMutability": "view",

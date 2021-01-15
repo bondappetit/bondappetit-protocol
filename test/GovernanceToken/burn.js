@@ -2,16 +2,13 @@ const assertions = require("truffle-assertions");
 const {contract, assert, bn} = require("../../utils/test");
 const {development} = require("../../networks");
 
-contract("ABT.burn", ({web3, artifacts}) => {
+contract("GovernanceToken.burn", ({web3, artifacts}) => {
   const governor = development.accounts.Governor.address;
 
   it("burn: should burn tokens", async () => {
-    const instance = await artifacts.require("ABT");
+    const instance = await artifacts.require("GovernanceToken");
     const burnAmount = "100";
 
-    await instance.methods.mint(governor, "100".toString()).send({
-      from: governor,
-    });
     const startSupply = await instance.methods.totalSupply().call();
     const startBalance = await instance.methods.balanceOf(governor).call();
 
@@ -34,8 +31,8 @@ contract("ABT.burn", ({web3, artifacts}) => {
   });
 
   it("burn: should revert tx if sender not owner", async () => {
-    const instance = await artifacts.require("ABT");
-    const notOwner = (await web3.eth.getAccounts())[1];
+    const instance = await artifacts.require("GovernanceToken");
+    const [, notOwner] = artifacts.accounts;
 
     await assertions.reverts(
       instance.methods.burn(governor, "100").send({

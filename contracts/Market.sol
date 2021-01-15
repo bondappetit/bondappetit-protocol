@@ -5,8 +5,6 @@ import "@openzeppelin/contracts/math/SafeMath.sol";
 import "@openzeppelin/contracts/token/ERC20/ERC20.sol";
 import "@openzeppelin/contracts/token/ERC20/SafeERC20.sol";
 import "./utils/OwnablePausable.sol";
-import "./Bond.sol";
-import "./ABT.sol";
 import "./uniswap/IUniswapV2Router02.sol";
 import "./uniswap/IUniswapAnchoredView.sol";
 
@@ -19,14 +17,14 @@ contract Market is OwnablePausable {
     /// @notice Address of cumulative token.
     ERC20 public cumulative;
 
-    /// @notice Address of ABT token contract.
-    ABT public abt;
+    /// @notice Address of stable token contract.
+    ERC20 public stableToken;
 
-    /// @notice Address of Bond token contract.
-    Bond public bond;
+    /// @notice Address of governance token contract.
+    ERC20 public governanceToken;
 
-    /// @notice Price Bond token
-    uint256 public bondPrice = 1000000;
+    /// @notice Price of governance token
+    uint256 public governanceTokenPrice = 1000000;
 
     /// @dev Address of UniswapV2Router.
     IUniswapV2Router02 public uniswapRouter;
@@ -52,8 +50,8 @@ contract Market is OwnablePausable {
     /// @notice An event thats emitted when an token denied.
     event TokenDenied(address token);
 
-    /// @notice An event thats emitted when an bond token price changed.
-    event BondPriceChanged(uint256 newPrice);
+    /// @notice An event thats emitted when an governance token price changed.
+    event GovernanceTokenPriceChanged(uint256 newPrice);
 
     /// @notice An event thats emitted when an account buyed token.
     event Buy(address customer, address product, address token, uint256 amount, uint256 buy);
@@ -63,21 +61,21 @@ contract Market is OwnablePausable {
 
     /**
      * @param _cumulative Address of cumulative token.
-     * @param _abt Address of ABT token.
-     * @param _bond Address of Bond token.
+     * @param _stableToken Address of stable token.
+     * @param _governanceToken Address of governance token.
      * @param _uniswapRouter Address of Uniswap router contract.
      * @param _priceOracle Address of Price oracle contract.
      */
     constructor(
         address _cumulative,
-        address _abt,
-        address _bond,
+        address _stableToken,
+        address _governanceToken,
         address _uniswapRouter,
         address _priceOracle
     ) public {
         cumulative = ERC20(_cumulative);
-        abt = ABT(_abt);
-        bond = Bond(_bond);
+        stableToken = ERC20(_stableToken);
+        governanceToken = ERC20(_governanceToken);
         uniswapRouter = IUniswapV2Router02(_uniswapRouter);
         priceOracle = IUniswapAnchoredView(_priceOracle);
     }
@@ -138,14 +136,14 @@ contract Market is OwnablePausable {
     }
 
     /**
-     * @notice Update Bond token price
-     * @param newPrice New price of Bond token of USD (6 decimal)
+     * @notice Update price of governance token.
+     * @param newPrice New price of governance token of USD (6 decimal).
      */
-    function changeBondPrice(uint256 newPrice) external onlyOwner {
-        require(newPrice > 0, "Market::changeBondPrice: invalid new bond price");
+    function changeGovernanceTokenPrice(uint256 newPrice) external onlyOwner {
+        require(newPrice > 0, "Market::changeGovernanceTokenPrice: invalid new price of governance token");
 
-        bondPrice = newPrice;
-        emit BondPriceChanged(newPrice);
+        governanceTokenPrice = newPrice;
+        emit GovernanceTokenPriceChanged(newPrice);
     }
 
     /**
@@ -164,34 +162,34 @@ contract Market is OwnablePausable {
         uint256 currentBalance = from.balanceOf(address(this));
         require(amount <= currentBalance, "Market::transfer: not enough tokens");
 
-        from.transfer(recipient, amount);
+        from.safeTransfer(recipient, amount);
     }
 
     /**
-     * @notice Transfer ABT token to recipient.
+     * @notice Transfer stable token to recipient.
      * @param recipient Address of recipient.
      * @param amount Amount of transfered token.
      */
-    function transferABT(address recipient, uint256 amount) external onlyOwner {
-        transfer(ERC20(address(abt)), recipient, amount);
+    function transferStableToken(address recipient, uint256 amount) external onlyOwner {
+        transfer(stableToken, recipient, amount);
     }
 
     /**
-     * @notice Transfer Bond token to recipient.
+     * @notice Transfer governance token to recipient.
      * @param recipient Address of recipient.
      * @param amount Amount of transfered token.
      */
-    function transferBond(address recipient, uint256 amount) external onlyOwner {
-        transfer(ERC20(address(bond)), recipient, amount);
+    function transferGovernanceToken(address recipient, uint256 amount) external onlyOwner {
+        transfer(governanceToken, recipient, amount);
     }
 
     /**
-     * @dev Convert token amount to Bond token amount.
+     * @dev Convert token amount to governance token amount.
      * @param amount Target token amount.
-     * @return Bond token amount.
+     * @return Governance token amount.
      */
-    function _bondPrice(uint256 amount) internal view returns (uint256) {
-        return amount.mul(10**PRICE_DECIMALS).div(bondPrice);
+    function _governanceTokenPrice(uint256 amount) internal view returns (uint256) {
+        return amount.mul(10**PRICE_DECIMALS).div(governanceTokenPrice);
     }
 
     /**
@@ -217,31 +215,31 @@ contract Market is OwnablePausable {
         if (address(product) != address(token)) {
             result = tokenPrice.mul(10**PRICE_DECIMALS).div(cumulativePrice).mul(amount).div(10**PRICE_DECIMALS).mul(10**productDecimals.sub(tokenDecimals));
         }
-        if (address(product) == address(bond)) {
-            return _bondPrice(result);
+        if (address(product) == address(governanceToken)) {
+            return _governanceTokenPrice(result);
         }
 
         return result;
     }
 
     /**
-     * @dev Get ABT token price from payment token amount.
+     * @dev Get stable token price from payment token amount.
      * @param token Payment token.
      * @param amount Payment token amount.
      * @return Price of product token.
      */
-    function priceABT(address token, uint256 amount) external view returns (uint256) {
-        return price(ERC20(address(abt)), ERC20(token), amount);
+    function priceStableToken(address token, uint256 amount) external view returns (uint256) {
+        return price(stableToken, ERC20(token), amount);
     }
 
     /**
-     * @dev Get Bond token price from payment token amount.
+     * @dev Get governance token price from payment token amount.
      * @param token Payment token.
      * @param amount Payment token amount.
      * @return Price of product token.
      */
-    function priceBond(address token, uint256 amount) external view returns (uint256) {
-        return price(ERC20(address(bond)), ERC20(token), amount);
+    function priceGovernanceToken(address token, uint256 amount) external view returns (uint256) {
+        return price(governanceToken, ERC20(token), amount);
     }
 
     /**
@@ -301,32 +299,32 @@ contract Market is OwnablePausable {
             uniswapRouter.swapExactTokensForTokens(amount, amountOut, _path(address(token)), address(this), block.timestamp);
         }
 
-        product.transfer(msg.sender, reward);
+        product.safeTransfer(msg.sender, reward);
         emit Buy(msg.sender, address(product), address(token), amount, reward);
 
         return true;
     }
 
     /**
-     * @notice Buy ABT token with ERC20 payment token amount.
+     * @notice Buy stable token with ERC20 payment token amount.
      * @param token Payment token.
      * @param amount Amount of payment token.
      * @return True if success.
      */
-    function buyABT(address token, uint256 amount) external returns (bool) {
-        return buy(ERC20(address(abt)), ERC20(token), amount);
+    function buyStableToken(address token, uint256 amount) external returns (bool) {
+        return buy(stableToken, ERC20(token), amount);
     }
 
     /**
-     * @notice Buy Bond token with ERC20 payment token amount.
+     * @notice Buy governance token with ERC20 payment token amount.
      * @param token Payment token.
      * @param amount Amount of payment token.
      * @return True if success.
      */
-    function buyBond(address token, uint256 amount) external returns (bool) {
-        require(bond.balanceOf(msg.sender) > 0, "Market::buyBond: only tokenholder can buy new bond tokens");
+    function buyGovernanceToken(address token, uint256 amount) external returns (bool) {
+        require(governanceToken.balanceOf(msg.sender) > 0, "Market::buyGovernanceToken: only tokenholder can buy new governance token");
 
-        return buy(ERC20(address(bond)), ERC20(token), amount);
+        return buy(governanceToken, ERC20(token), amount);
     }
 
     /**
@@ -348,28 +346,28 @@ contract Market is OwnablePausable {
             uniswapRouter.swapExactETHForTokens{value: amount}(amountOut, _path(address(token)), address(this), block.timestamp);
         }
 
-        product.transfer(msg.sender, reward);
+        product.safeTransfer(msg.sender, reward);
         emit Buy(msg.sender, address(product), address(token), amount, reward);
 
         return true;
     }
 
     /**
-     * @notice Buy ABT token with ETH amount.
+     * @notice Buy stable token with ETH amount.
      * @return True if success.
      */
-    function buyABTFromETH() external payable returns (bool) {
-        return buyFromETH(ERC20(address(abt)));
+    function buyStableTokenFromETH() external payable returns (bool) {
+        return buyFromETH(stableToken);
     }
 
     /**
-     * @notice Buy Bond token with ETH amount.
+     * @notice Buy governance token with ETH amount.
      * @return True if success.
      */
-    function buyBondFromETH() external payable returns (bool) {
-        require(bond.balanceOf(msg.sender) > 0, "Market::buyBondFromETH: only tokenholder can buy new bond tokens");
+    function buyGovernanceTokenFromETH() external payable returns (bool) {
+        require(governanceToken.balanceOf(msg.sender) > 0, "Market::buyGovernanceTokenFromETH: only tokenholder can buy new governance token");
 
-        return buyFromETH(ERC20(address(bond)));
+        return buyFromETH(governanceToken);
     }
 
     /**

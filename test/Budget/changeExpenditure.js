@@ -28,7 +28,7 @@ contract("Budget.changeExpenditure", ({web3, artifacts}) => {
 
   it("changeExpenditure: should revert tx if sender not owner", async () => {
     const instance = await artifacts.require("Budget");
-    const notOwner = (await web3.eth.getAccounts())[1];
+    const [, notOwner] = artifacts.accounts;
 
     await assertions.reverts(
       instance.methods.changeExpenditure(contract, "0", "0").send({

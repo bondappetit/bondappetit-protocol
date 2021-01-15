@@ -14,19 +14,19 @@ module.exports = migration("Investment", async (d) => {
     WETH.address,
   ];
   const lockDate = dayjs().add(1, "year").unix();
-  const bondAmount = new bn(1200000)
+  const govAmount = new bn(1200000)
     .mul(new bn("1000000000000000000"))
     .toString();
 
-  const [bond] = await d.deployed("Bond");
+  const [gov] = await d.deployed("GovernanceToken");
   const investment = await d.deploy("Investment", {
-    args: [USDC.address, bond.address, lockDate, UniswapV2Router02.address],
+    args: [USDC.address, gov.address, lockDate, UniswapV2Router02.address],
   });
   await investmentTokens.reduce(async (tx, address) => {
     await tx;
     return d.send("Investment", "allowToken", [address]);
   }, Promise.resolve());
 
-  await d.send("Bond", "allowTransferLock", [investment.address]);
-  await d.send("Bond", "transfer", [investment.address, bondAmount]);
+  await d.send("GovernanceToken", "allowTransferLock", [investment.address]);
+  await d.send("GovernanceToken", "transfer", [investment.address, govAmount]);
 });

@@ -17,7 +17,9 @@ contract("Market.withdraw", ({web3, artifacts}) => {
       .mul(bn(10).pow(bn(6)))
       .toString();
 
-    await usdc.methods.transfer(instance._address, amount).send({from: customer});
+    await usdc.methods
+      .transfer(instance._address, amount)
+      .send({from: customer});
     const startMarketUSDCBalance = await usdc.methods
       .balanceOf(instance._address)
       .call();
@@ -28,11 +30,6 @@ contract("Market.withdraw", ({web3, artifacts}) => {
       startMarketUSDCBalance,
       amount,
       "Invalid market start balance"
-    );
-    assert.equal(
-      startGovernorUSDCBalance,
-      "0",
-      "Invalid governor start balance"
     );
 
     await instance.methods.withdraw(governor).send({from: governor});
@@ -46,14 +43,14 @@ contract("Market.withdraw", ({web3, artifacts}) => {
     assert.equal(endMarketUSDCBalance, "0", "Invalid market end balance");
     assert.equal(
       endGovernorUSDCBalance,
-      amount,
+      bn(startGovernorUSDCBalance).add(bn(amount)).toString(),
       "Invalid governor end balance"
     );
   });
 
   it("withdraw: should revert tx if called is not the owner", async () => {
     const instance = await artifacts.require("Market");
-    const notOwner = (await web3.eth.getAccounts())[1];
+    const [, notOwner] = artifacts.accounts;
 
     await assertions.reverts(
       instance.methods.withdraw(governor).send({from: notOwner}),

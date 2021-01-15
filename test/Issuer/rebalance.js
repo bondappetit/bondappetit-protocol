@@ -3,40 +3,50 @@ const {development} = require("../../networks");
 
 contract("Issuer.rebalance", ({web3, artifacts}) => {
   const governor = development.accounts.Governor.address;
+  const isin = "test bond";
+  const amount = "10";
+  const nominalValue = bn("1000").mul(bn("10").pow(bn("6")));
+  const nominalValueBytes = web3.eth.abi.encodeParameters(
+    ["uint256"],
+    [nominalValue.toString()]
+  );
+  const expectedAmount = bn(amount)
+    .mul(bn(nominalValue))
+    .mul(bn("10").pow(bn("12")))
+    .toString();
 
-  it("rebalance: should mint ABT", async () => {
+  it("rebalance: should mint stable token", async () => {
     const [
       instance,
-      abt,
+      stable,
       treasury,
       depositary,
       security,
     ] = await artifacts.requireAll(
       "Issuer",
-      "ABT",
+      "StableToken",
       "Treasury",
       "DepositaryOracle",
       "SecurityOracle"
     );
-    const isin = "test bond";
-    const amount = "10";
-    const nominalValue = bn("1000").mul(bn("10").pow(bn("6")));
-    const nominalValueBytes = web3.eth.abi.encodeParameters(
-      ["uint256"],
-      [nominalValue.toString()]
-    );
 
-    await abt.methods
+    await stable.methods
       .transferOwnership(instance._address)
       .send({from: governor});
 
-    const startABTTotalSupply = await abt.methods.totalSupply().call();
-    const startABTTreasuryBalance = await abt.methods
+    const startStableTokenTotalSupply = await stable.methods
+      .totalSupply()
+      .call();
+    const startStableTokenTreasuryBalance = await stable.methods
       .balanceOf(treasury._address)
       .call();
-    assert.equal(startABTTotalSupply, "0", "Invalid start ABT total supply");
     assert.equal(
-      startABTTreasuryBalance,
+      startStableTokenTotalSupply,
+      "0",
+      "Invalid start stable token total supply"
+    );
+    assert.equal(
+      startStableTokenTreasuryBalance,
       "0",
       "Invalid start treasury balance"
     );
@@ -47,10 +57,6 @@ contract("Issuer.rebalance", ({web3, artifacts}) => {
     });
 
     const issuerBalance = await instance.methods.balance().call();
-    const expectedAmount = bn(amount)
-      .mul(bn(nominalValue))
-      .mul(bn("10").pow(bn("12")))
-      .toString();
     assert.equal(
       issuerBalance,
       expectedAmount.toString(),
@@ -59,44 +65,56 @@ contract("Issuer.rebalance", ({web3, artifacts}) => {
 
     await instance.methods.rebalance().send({from: governor});
 
-    const middleABTTotalSupply = await abt.methods.totalSupply().call();
-    const middleABTTreasuryBalance = await abt.methods
+    const endStableTokenTotalSupply = await stable.methods.totalSupply().call();
+    const endStableTokenTreasuryBalance = await stable.methods
       .balanceOf(treasury._address)
       .call();
     assert.equal(
-      middleABTTotalSupply,
+      endStableTokenTotalSupply,
       expectedAmount.toString(),
-      "Invalid middle ABT total supply"
+      "Invalid middle stable token total supply"
     );
     assert.equal(
-      middleABTTreasuryBalance,
+      endStableTokenTreasuryBalance,
       expectedAmount.toString(),
       "Invalid middle treasury balance"
+    );
+  });
+
+  it("rebalance: should burn stable token", async () => {
+    const [instance, stable, treasury, depositary] = await artifacts.requireAll(
+      "Issuer",
+      "StableToken",
+      "Treasury",
+      "DepositaryOracle",
+      "SecurityOracle"
     );
 
     await depositary.methods.put(isin, 0).send({from: governor});
     await treasury.methods
-      .transfer(abt._address, instance._address, expectedAmount.toString())
-      .send({
-        from: governor,
-      });
+      .transfer(stable._address, instance._address, expectedAmount)
+      .send({from: governor});
     await instance.methods.rebalance().send({from: governor});
 
-    const endABTTotalSupply = await abt.methods.totalSupply().call();
-    const endABTTreasuryBalance = await abt.methods
+    const endStableTokenTotalSupply = await stable.methods.totalSupply().call();
+    const endStableTokenTreasuryBalance = await stable.methods
       .balanceOf(treasury._address)
       .call();
-    const endABTIssuerBalance = await abt.methods
+    const endStableTokenIssuerBalance = await stable.methods
       .balanceOf(instance._address)
       .call();
-    assert.equal(endABTTotalSupply, "0", "Invalid end ABT total supply");
     assert.equal(
-      endABTTreasuryBalance,
+      endStableTokenTotalSupply,
+      "0",
+      "Invalid end stable token total supply"
+    );
+    assert.equal(
+      endStableTokenTreasuryBalance,
       "0",
       "Invalid end treasury balance on treasury"
     );
     assert.equal(
-      endABTIssuerBalance,
+      endStableTokenIssuerBalance,
       "0",
       "Invalid end treasury balance on issuer"
     );

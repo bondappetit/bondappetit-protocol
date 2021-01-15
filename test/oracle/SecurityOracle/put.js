@@ -25,7 +25,7 @@ contract("SecurityOracle.put", ({web3, artifacts}) => {
 
   it("put: should revert tx if sender not owner", async () => {
     const instance = await artifacts.require("SecurityOracle");
-    const notOwner = (await web3.eth.getAccounts())[1];
+    const [, notOwner] = artifacts.accounts;
 
     await assertions.reverts(
       instance.methods.put("test bond", "nominalValue", "0x0").send({

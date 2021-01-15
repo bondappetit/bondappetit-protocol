@@ -13,12 +13,12 @@ module.exports = migration("Market", async (d) => {
     {address: WETH.address, symbol: "ETH"},
   ];
 
-  const [abt, bond] = await d.deployed("ABT", "Bond");
+  const [stable, gov] = await d.deployed("StableToken", "GovernanceToken");
   await d.deploy("Market", {
     args: [
       USDC.address,
-      abt.address,
-      bond.address,
+      stable.address,
+      gov.address,
       UniswapV2Router02.address,
       UniswapAnchoredView.address,
     ],

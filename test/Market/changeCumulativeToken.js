@@ -1,5 +1,5 @@
 const assertions = require("truffle-assertions");
-const {contract, assert} = require("../../utils/test");
+const {contract, assert, bn} = require("../../utils/test");
 const {development} = require("../../networks");
 
 contract("Market.changeCumulativeToken", ({web3, artifacts}) => {
@@ -16,6 +16,9 @@ contract("Market.changeCumulativeToken", ({web3, artifacts}) => {
     const newToken = USDT.address.toLowerCase();
     const amount = "1000000";
 
+    const startGovernorUSDCBalance = await usdc.methods
+      .balanceOf(governor)
+      .call();
     const startCumulativeToken = (await instance.methods.cumulative().call())
       .toLowercase;
     assert.equal(
@@ -34,19 +37,25 @@ contract("Market.changeCumulativeToken", ({web3, artifacts}) => {
       .changeCumulativeToken(newToken, governor)
       .send({from: governor});
     const endBalance = await usdc.methods.balanceOf(instance._address).call();
-    const governorUSDCBalance = await usdc.methods.balanceOf(governor).call();
+    const endGovernorUSDCBalance = await usdc.methods
+      .balanceOf(governor)
+      .call();
     assert.equal(
       (await instance.methods.cumulative().call()).toLowerCase(),
       newToken,
       "Invalid cumulative token"
     );
     assert.equal(endBalance, "0", "Invalid market end balance");
-    assert.equal(governorUSDCBalance, amount, "Invalid governor end balance");
+    assert.equal(
+      endGovernorUSDCBalance,
+      bn(startGovernorUSDCBalance).add(bn(amount)).toString(),
+      "Invalid governor end balance"
+    );
   });
 
   it("changeCumulativeToken: should revert tx if called is not the owner", async () => {
     const instance = await artifacts.require("Market");
-    const notOwner = (await web3.eth.getAccounts())[1];
+    const [, notOwner] = artifacts.accounts;
 
     await assertions.reverts(
       instance.methods

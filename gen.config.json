@@ -1,9 +1,9 @@
 {
   "contracts": [
     {
-      "path": "deployments/%network%/Bond.json",
+      "path": "deployments/%network%/GovernanceToken.json",
       "key": "Governance",
-      "name": "Bond",
+      "name": "GovernanceToken",
       "voting": true
     },
     {
@@ -27,9 +27,9 @@
       "voting": true
     },
     {
-      "path": "deployments/%network%/ABT.json",
+      "path": "deployments/%network%/StableToken.json",
       "key": "Stable",
-      "name": "ABT",
+      "name": "StableToken",
       "voting": true
     },
     {
@@ -90,7 +90,7 @@
   ],
   "assets": [
     {
-      "path": "deployments/%network%/Bond.json",
+      "path": "deployments/%network%/GovernanceToken.json",
       "key": "Governance",
       "name": "BondAppetit Governance",
       "symbol": "BAG",
@@ -98,7 +98,7 @@
       "investing": false
     },
     {
-      "path": "deployments/%network%/ABT.json",
+      "path": "deployments/%network%/StableToken.json",
       "key": "Stable",
       "name": "Appetite USD",
       "symbol": "USDp",
@@ -117,8 +117,8 @@
       "path": "artifacts/contracts/uniswap/IUniswapV2Router02.sol/IUniswapV2Router02.json"
     },
     {"path": "artifacts/contracts/Timelock.sol/Timelock.json"},
-    {"path": "artifacts/contracts/Bond.sol/Bond.json"},
-    {"path": "artifacts/contracts/ABT.sol/ABT.json"},
+    {"path": "artifacts/contracts/GovernanceToken.sol/GovernanceToken.json"},
+    {"path": "artifacts/contracts/StableToken.sol/StableToken.json"},
     {"path": "artifacts/contracts/GovernorAlpha.sol/GovernorAlpha.json"},
     {"path": "artifacts/contracts/Investment.sol/Investment.json"},
     {"path": "artifacts/contracts/Vesting.sol/Vesting.json"},

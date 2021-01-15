@@ -1,9 +1,9 @@
 const {contract, assert, bn} = require("../../utils/test");
 
-contract("Bond.transfer", ({web3, artifacts}) => {
+contract("GovernanceToken.transfer", ({artifacts}) => {
   it("transfer: should transfer token", async () => {
-    const instance = await artifacts.require("Bond");
-    const [accA, accB] = await web3.eth.getAccounts();
+    const instance = await artifacts.require("GovernanceToken");
+    const [accA, accB] = artifacts.accounts;
     const amount = "10";
 
     const [startBalanceA, startBalanceB] = await Promise.all([

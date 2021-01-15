@@ -16,9 +16,9 @@ module.exports = migration("Vesting", async (d) => {
     */
   ];
 
-  const [bond] = await d.deployed("Bond");
+  const [gov] = await d.deployed("GovernanceToken");
   const vesting = await d.deploy("Vesting", {
-    args: [bond.address],
+    args: [gov.address],
   });
 
   await recipients.reduce(async (tx, {wallet, periods}) => {
@@ -27,7 +27,7 @@ module.exports = migration("Vesting", async (d) => {
     await periods.reduce(async (tx, {amount, date}) => {
       await tx;
 
-      await d.send("Bond", "approve", [vesting.address, amount]);
+      await d.send("GovenanceToken", "approve", [vesting.address, amount]);
       await d.send("Vesting", "lock", [wallet, amount, date]);
     }, Promise.resolve());
   }, Promise.resolve());

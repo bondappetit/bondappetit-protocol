@@ -3,9 +3,9 @@ const {migration} = require("../utils/deploy");
 module.exports = migration("GovernorAlpha", async (d) => {
   const governor = d.getGovernor().address;
 
-  const [timelock, bond] = await d.deployed("Timelock", "Bond");
+  const [timelock, gov] = await d.deployed("Timelock", "GovernanceToken");
   const governorAlpha = await d.deploy("GovernorAlpha", {
-    args: [timelock.address, bond.address, governor],
+    args: [timelock.address, gov.address, governor],
   });
 
   await d.send("Timelock", "__transferAdmin", [governorAlpha.address]);

@@ -6,26 +6,26 @@ contract("ProfitSplitter.transfer", ({web3, artifacts}) => {
   const governor = development.accounts.Governor.address;
 
   it("transfer: should transfer incoming token to recipient", async () => {
-    const [instance, bond] = await artifacts.requireAll(
+    const [instance, gov] = await artifacts.requireAll(
       "ProfitSplitter",
-      "Bond"
+      "GovernanceToken"
     );
     const amount = "5";
 
     await instance.methods
-      .changeIncoming(bond._address, governor)
+      .changeIncoming(gov._address, governor)
       .send({from: governor});
 
-    await bond.methods
+    await gov.methods
       .transfer(instance._address, amount)
       .send({from: governor});
-    const startOwnerBalance = await bond.methods.balanceOf(governor).call();
+    const startOwnerBalance = await gov.methods.balanceOf(governor).call();
 
     await instance.methods.transfer(governor, amount).send({from: governor});
-    const endSplitterBalance = await bond.methods
+    const endSplitterBalance = await gov.methods
       .balanceOf(instance._address)
       .call();
-    const endOwnerBalance = await bond.methods.balanceOf(governor).call();
+    const endOwnerBalance = await gov.methods.balanceOf(governor).call();
     assert.equal(endSplitterBalance, "0", "Invalid end splitter balance");
     assert.equal(
       endOwnerBalance,
@@ -36,7 +36,7 @@ contract("ProfitSplitter.transfer", ({web3, artifacts}) => {
 
   it("transfer: should revert tx if sender not owner", async () => {
     const instance = await artifacts.require("ProfitSplitter");
-    const notOwner = (await web3.eth.getAccounts())[1];
+    const [, notOwner] = artifacts.accounts;
 
     await assertions.reverts(
       instance.methods.transfer(governor, "1").send({

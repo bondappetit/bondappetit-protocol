@@ -4,7 +4,7 @@ pragma solidity ^0.6.0;
 import "@openzeppelin/contracts/token/ERC20/ERC20.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
 
-contract ABT is ERC20, Ownable {
+contract StableToken is ERC20, Ownable {
     /**
      * @param initialSupply Total supply.
      */

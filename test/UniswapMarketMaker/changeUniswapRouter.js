@@ -20,7 +20,7 @@ contract("UniswapMarketMaker.changeUniswapRouter", ({web3, artifacts}) => {
 
   it("changeUniswapRouter: should revert tx if sender not owner", async () => {
     const instance = await artifacts.require("UniswapMarketMaker");
-    const notOwner = (await web3.eth.getAccounts())[1];
+    const [, notOwner] = artifacts.accounts;
 
     await assertions.reverts(
       instance.methods.changeUniswapRouter(governor).send({

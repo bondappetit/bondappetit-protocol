@@ -33,7 +33,7 @@ contract("ProfitSplitter.recipients", ({web3, artifacts}) => {
 
   it("addRecipient: should revert tx if sender not owner", async () => {
     const instance = await artifacts.require("ProfitSplitter");
-    const notOwner = (await web3.eth.getAccounts())[1];
+    const [, notOwner] = artifacts.accounts;
 
     await assertions.reverts(
       instance.methods.addRecipient(recipient, 0).send({
@@ -65,7 +65,7 @@ contract("ProfitSplitter.recipients", ({web3, artifacts}) => {
 
   it("removeRecipient: should revert tx if sender not owner", async () => {
     const instance = await artifacts.require("ProfitSplitter");
-    const notOwner = (await web3.eth.getAccounts())[1];
+    const [, notOwner] = artifacts.accounts;
 
     await assertions.reverts(
       instance.methods.removeRecipient(recipient).send({

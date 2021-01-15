@@ -1,7 +1,7 @@
 module.exports = {
     "Governance": {
-        "address": "0x1EE5253D796C3C70A6cec8C3DFb332D3b7c49eb5",
-        "name": "Bond",
+        "address": "0x780086577C7A94eb907174e17D6Ef84cb223b861",
+        "name": "GovernanceToken",
         "voting": true,
         "abi": [
             {
@@ -675,7 +675,7 @@ module.exports = {
         ]
     },
     "Timelock": {
-        "address": "0x7328E284B07306008207C37E83bb6b107Dac69f6",
+        "address": "0x37C28b997550a7123C30d9A95a71e5ACD1B5db8b",
         "name": "Timelock",
         "voting": true,
         "abi": [
@@ -1124,7 +1124,7 @@ module.exports = {
         ]
     },
     "GovernorAlpha": {
-        "address": "0xA26d3ab54a64ff76Eb7f6C516141CEEd936E7031",
+        "address": "0xDd6a01bF591cA7850b3A498319818F8638d24f8a",
         "name": "GovernorAlpha",
         "voting": false,
         "abi": [
@@ -1132,17 +1132,17 @@ module.exports = {
                 "inputs": [
                     {
                         "internalType": "address",
-                        "name": "timelock_",
+                        "name": "_timelock",
                         "type": "address"
                     },
                     {
                         "internalType": "address",
-                        "name": "bond_",
+                        "name": "_governanceToken",
                         "type": "address"
                     },
                     {
                         "internalType": "address",
-                        "name": "guardian_",
+                        "name": "_guardian",
                         "type": "address"
                     }
                 ],
@@ -1363,19 +1363,6 @@ module.exports = {
                 "type": "function"
             },
             {
-                "inputs": [],
-                "name": "bond",
-                "outputs": [
-                    {
-                        "internalType": "contract BondInterface",
-                        "name": "",
-                        "type": "address"
-                    }
-                ],
-                "stateMutability": "view",
-                "type": "function"
-            },
-            {
                 "inputs": [
                     {
                         "internalType": "uint256",
@@ -1522,6 +1509,19 @@ module.exports = {
                         "internalType": "struct GovernorAlpha.Receipt",
                         "name": "",
                         "type": "tuple"
+                    }
+                ],
+                "stateMutability": "view",
+                "type": "function"
+            },
+            {
+                "inputs": [],
+                "name": "governanceToken",
+                "outputs": [
+                    {
+                        "internalType": "contract GovernanceTokenInterface",
+                        "name": "",
+                        "type": "address"
                     }
                 ],
                 "stateMutability": "view",
@@ -1796,7 +1796,7 @@ module.exports = {
         ]
     },
     "Investment": {
-        "address": "0x2Ca20620c6D4B38608A4B003430664743E6b9871",
+        "address": "0x962b1DAB6c7936FaF250495aD86D932f2E289597",
         "name": "Investment",
         "voting": true,
         "abi": [
@@ -1809,12 +1809,12 @@ module.exports = {
                     },
                     {
                         "internalType": "address",
-                        "name": "_bond",
+                        "name": "_governanceToken",
                         "type": "address"
                     },
                     {
                         "internalType": "uint256",
-                        "name": "_bondTokenLockDate",
+                        "name": "_governanceTokenLockDate",
                         "type": "uint256"
                     },
                     {
@@ -1836,7 +1836,7 @@ module.exports = {
                         "type": "uint256"
                     }
                 ],
-                "name": "BondPriceChanged",
+                "name": "GovernanceTokenPriceChanged",
                 "type": "event"
             },
             {
@@ -2006,45 +2006,6 @@ module.exports = {
                 "type": "function"
             },
             {
-                "inputs": [],
-                "name": "bond",
-                "outputs": [
-                    {
-                        "internalType": "contract Bond",
-                        "name": "",
-                        "type": "address"
-                    }
-                ],
-                "stateMutability": "view",
-                "type": "function"
-            },
-            {
-                "inputs": [],
-                "name": "bondPrice",
-                "outputs": [
-                    {
-                        "internalType": "uint256",
-                        "name": "",
-                        "type": "uint256"
-                    }
-                ],
-                "stateMutability": "view",
-                "type": "function"
-            },
-            {
-                "inputs": [],
-                "name": "bondTokenLockDate",
-                "outputs": [
-                    {
-                        "internalType": "uint256",
-                        "name": "",
-                        "type": "uint256"
-                    }
-                ],
-                "stateMutability": "view",
-                "type": "function"
-            },
-            {
                 "inputs": [
                     {
                         "internalType": "uint256",
@@ -2052,7 +2013,7 @@ module.exports = {
                         "type": "uint256"
                     }
                 ],
-                "name": "changeBondPrice",
+                "name": "changeGovernanceTokenPrice",
                 "outputs": [],
                 "stateMutability": "nonpayable",
                 "type": "function"
@@ -2107,6 +2068,45 @@ module.exports = {
                 "name": "denyToken",
                 "outputs": [],
                 "stateMutability": "nonpayable",
+                "type": "function"
+            },
+            {
+                "inputs": [],
+                "name": "governanceToken",
+                "outputs": [
+                    {
+                        "internalType": "contract GovernanceToken",
+                        "name": "",
+                        "type": "address"
+                    }
+                ],
+                "stateMutability": "view",
+                "type": "function"
+            },
+            {
+                "inputs": [],
+                "name": "governanceTokenLockDate",
+                "outputs": [
+                    {
+                        "internalType": "uint256",
+                        "name": "",
+                        "type": "uint256"
+                    }
+                ],
+                "stateMutability": "view",
+                "type": "function"
+            },
+            {
+                "inputs": [],
+                "name": "governanceTokenPrice",
+                "outputs": [
+                    {
+                        "internalType": "uint256",
+                        "name": "",
+                        "type": "uint256"
+                    }
+                ],
+                "stateMutability": "view",
                 "type": "function"
             },
             {
@@ -2278,7 +2278,7 @@ module.exports = {
         ]
     },
     "Vesting": {
-        "address": "0x521513aCE381b896b1cbBf811B6545dc607Df86B",
+        "address": "0xCED7D2D1804c66B9bF5d060661AC9f10353d6cB9",
         "name": "Vesting",
         "voting": true,
         "abi": [
@@ -2286,7 +2286,7 @@ module.exports = {
                 "inputs": [
                     {
                         "internalType": "address",
-                        "name": "_bond",
+                        "name": "_token",
                         "type": "address"
                     }
                 ],
@@ -2395,19 +2395,6 @@ module.exports = {
                 ],
                 "name": "Withdrawal",
                 "type": "event"
-            },
-            {
-                "inputs": [],
-                "name": "bond",
-                "outputs": [
-                    {
-                        "internalType": "contract Bond",
-                        "name": "",
-                        "type": "address"
-                    }
-                ],
-                "stateMutability": "view",
-                "type": "function"
             },
             {
                 "inputs": [
@@ -2590,6 +2577,19 @@ module.exports = {
                 "type": "function"
             },
             {
+                "inputs": [],
+                "name": "token",
+                "outputs": [
+                    {
+                        "internalType": "contract ERC20",
+                        "name": "",
+                        "type": "address"
+                    }
+                ],
+                "stateMutability": "view",
+                "type": "function"
+            },
+            {
                 "inputs": [
                     {
                         "internalType": "address",
@@ -2625,8 +2625,8 @@ module.exports = {
         ]
     },
     "Stable": {
-        "address": "0x1f365bFb824fd4153A764fdc492Fbf666DE5e00a",
-        "name": "ABT",
+        "address": "0xb028D5a54f996bA4EF3eF2C2C7707db1f3D93120",
+        "name": "StableToken",
         "voting": true,
         "abi": [
             {
@@ -3001,7 +3001,7 @@ module.exports = {
         ]
     },
     "Treasury": {
-        "address": "0x9caE3D73719Bc129cCdD098F58EDAA84D94f2c90",
+        "address": "0x28D482EAb1587F1041AF9e570B5a992F52C996E7",
         "name": "Treasury",
         "voting": true,
         "abi": [
@@ -3146,7 +3146,7 @@ module.exports = {
         ]
     },
     "SecurityOracle": {
-        "address": "0xbaE768916C2764EAD3A0622261bF56C944B05CBF",
+        "address": "0x6519d43c37ff699Cb311CED15D147327633e481a",
         "name": "SecurityOracle",
         "voting": false,
         "abi": [
@@ -3277,7 +3277,7 @@ module.exports = {
         ]
     },
     "DepositaryOracle": {
-        "address": "0x37f677d3298ba5b5988f98C4D80610A3170db687",
+        "address": "0x89B720f0297247A2cB793e0DDA3071e4225564d2",
         "name": "DepositaryOracle",
         "voting": false,
         "abi": [
@@ -3442,7 +3442,7 @@ module.exports = {
         ]
     },
     "Issuer": {
-        "address": "0x1ded4E339c450fC8055758af299436D7A3a74B94",
+        "address": "0xe2c9Dc0684597379964bcb7008A7019d15C1d5b0",
         "name": "Issuer",
         "voting": true,
         "abi": [
@@ -3450,7 +3450,7 @@ module.exports = {
                 "inputs": [
                     {
                         "internalType": "address",
-                        "name": "_abt",
+                        "name": "_stableToken",
                         "type": "address"
                     },
                     {
@@ -3564,19 +3564,6 @@ module.exports = {
                 ],
                 "name": "Unpaused",
                 "type": "event"
-            },
-            {
-                "inputs": [],
-                "name": "abt",
-                "outputs": [
-                    {
-                        "internalType": "contract ABT",
-                        "name": "",
-                        "type": "address"
-                    }
-                ],
-                "stateMutability": "view",
-                "type": "function"
             },
             {
                 "inputs": [
@@ -3762,6 +3749,19 @@ module.exports = {
                 "type": "function"
             },
             {
+                "inputs": [],
+                "name": "stableToken",
+                "outputs": [
+                    {
+                        "internalType": "contract StableToken",
+                        "name": "",
+                        "type": "address"
+                    }
+                ],
+                "stateMutability": "view",
+                "type": "function"
+            },
+            {
                 "inputs": [
                     {
                         "internalType": "address",
@@ -3797,7 +3797,7 @@ module.exports = {
         ]
     },
     "Market": {
-        "address": "0x179d04dFd5c36D0e8aFd4132BB7c912027f82EA5",
+        "address": "0xEcEf42fdb1059D24AB774Ab04bcbe1dcf64229E7",
         "name": "Market",
         "voting": true,
         "abi": [
@@ -3810,12 +3810,12 @@ module.exports = {
                     },
                     {
                         "internalType": "address",
-                        "name": "_abt",
+                        "name": "_stableToken",
                         "type": "address"
                     },
                     {
                         "internalType": "address",
-                        "name": "_bond",
+                        "name": "_governanceToken",
                         "type": "address"
                     },
                     {
@@ -3831,19 +3831,6 @@ module.exports = {
                 ],
                 "stateMutability": "nonpayable",
                 "type": "constructor"
-            },
-            {
-                "anonymous": false,
-                "inputs": [
-                    {
-                        "indexed": false,
-                        "internalType": "uint256",
-                        "name": "newPrice",
-                        "type": "uint256"
-                    }
-                ],
-                "name": "BondPriceChanged",
-                "type": "event"
             },
             {
                 "anonymous": false,
@@ -3893,6 +3880,19 @@ module.exports = {
                     }
                 ],
                 "name": "CumulativeChanged",
+                "type": "event"
+            },
+            {
+                "anonymous": false,
+                "inputs": [
+                    {
+                        "indexed": false,
+                        "internalType": "uint256",
+                        "name": "newPrice",
+                        "type": "uint256"
+                    }
+                ],
+                "name": "GovernanceTokenPriceChanged",
                 "type": "event"
             },
             {
@@ -4050,19 +4050,6 @@ module.exports = {
                 "type": "function"
             },
             {
-                "inputs": [],
-                "name": "abt",
-                "outputs": [
-                    {
-                        "internalType": "contract ABT",
-                        "name": "",
-                        "type": "address"
-                    }
-                ],
-                "stateMutability": "view",
-                "type": "function"
-            },
-            {
                 "inputs": [
                     {
                         "internalType": "address",
@@ -4081,32 +4068,6 @@ module.exports = {
                 "type": "function"
             },
             {
-                "inputs": [],
-                "name": "bond",
-                "outputs": [
-                    {
-                        "internalType": "contract Bond",
-                        "name": "",
-                        "type": "address"
-                    }
-                ],
-                "stateMutability": "view",
-                "type": "function"
-            },
-            {
-                "inputs": [],
-                "name": "bondPrice",
-                "outputs": [
-                    {
-                        "internalType": "uint256",
-                        "name": "",
-                        "type": "uint256"
-                    }
-                ],
-                "stateMutability": "view",
-                "type": "function"
-            },
-            {
                 "inputs": [
                     {
                         "internalType": "address",
@@ -4119,7 +4080,7 @@ module.exports = {
                         "type": "uint256"
                     }
                 ],
-                "name": "buyABT",
+                "name": "buyGovernanceToken",
                 "outputs": [
                     {
                         "internalType": "bool",
@@ -4132,7 +4093,7 @@ module.exports = {
             },
             {
                 "inputs": [],
-                "name": "buyABTFromETH",
+                "name": "buyGovernanceTokenFromETH",
                 "outputs": [
                     {
                         "internalType": "bool",
@@ -4156,7 +4117,7 @@ module.exports = {
                         "type": "uint256"
                     }
                 ],
-                "name": "buyBond",
+                "name": "buyStableToken",
                 "outputs": [
                     {
                         "internalType": "bool",
@@ -4169,7 +4130,7 @@ module.exports = {
             },
             {
                 "inputs": [],
-                "name": "buyBondFromETH",
+                "name": "buyStableTokenFromETH",
                 "outputs": [
                     {
                         "internalType": "bool",
@@ -4178,19 +4139,6 @@ module.exports = {
                     }
                 ],
                 "stateMutability": "payable",
-                "type": "function"
-            },
-            {
-                "inputs": [
-                    {
-                        "internalType": "uint256",
-                        "name": "newPrice",
-                        "type": "uint256"
-                    }
-                ],
-                "name": "changeBondPrice",
-                "outputs": [],
-                "stateMutability": "nonpayable",
                 "type": "function"
             },
             {
@@ -4207,6 +4155,19 @@ module.exports = {
                     }
                 ],
                 "name": "changeCumulativeToken",
+                "outputs": [],
+                "stateMutability": "nonpayable",
+                "type": "function"
+            },
+            {
+                "inputs": [
+                    {
+                        "internalType": "uint256",
+                        "name": "newPrice",
+                        "type": "uint256"
+                    }
+                ],
+                "name": "changeGovernanceTokenPrice",
                 "outputs": [],
                 "stateMutability": "nonpayable",
                 "type": "function"
@@ -4274,6 +4235,32 @@ module.exports = {
                 "name": "denyToken",
                 "outputs": [],
                 "stateMutability": "nonpayable",
+                "type": "function"
+            },
+            {
+                "inputs": [],
+                "name": "governanceToken",
+                "outputs": [
+                    {
+                        "internalType": "contract ERC20",
+                        "name": "",
+                        "type": "address"
+                    }
+                ],
+                "stateMutability": "view",
+                "type": "function"
+            },
+            {
+                "inputs": [],
+                "name": "governanceTokenPrice",
+                "outputs": [
+                    {
+                        "internalType": "uint256",
+                        "name": "",
+                        "type": "uint256"
+                    }
+                ],
+                "stateMutability": "view",
                 "type": "function"
             },
             {
@@ -4354,31 +4341,7 @@ module.exports = {
                         "type": "uint256"
                     }
                 ],
-                "name": "priceABT",
-                "outputs": [
-                    {
-                        "internalType": "uint256",
-                        "name": "",
-                        "type": "uint256"
-                    }
-                ],
-                "stateMutability": "view",
-                "type": "function"
-            },
-            {
-                "inputs": [
-                    {
-                        "internalType": "address",
-                        "name": "token",
-                        "type": "address"
-                    },
-                    {
-                        "internalType": "uint256",
-                        "name": "amount",
-                        "type": "uint256"
-                    }
-                ],
-                "name": "priceBond",
+                "name": "priceGovernanceToken",
                 "outputs": [
                     {
                         "internalType": "uint256",
@@ -4403,6 +4366,30 @@ module.exports = {
                 "type": "function"
             },
             {
+                "inputs": [
+                    {
+                        "internalType": "address",
+                        "name": "token",
+                        "type": "address"
+                    },
+                    {
+                        "internalType": "uint256",
+                        "name": "amount",
+                        "type": "uint256"
+                    }
+                ],
+                "name": "priceStableToken",
+                "outputs": [
+                    {
+                        "internalType": "uint256",
+                        "name": "",
+                        "type": "uint256"
+                    }
+                ],
+                "stateMutability": "view",
+                "type": "function"
+            },
+            {
                 "inputs": [],
                 "name": "renounceOwnership",
                 "outputs": [],
@@ -4410,21 +4397,16 @@ module.exports = {
                 "type": "function"
             },
             {
-                "inputs": [
+                "inputs": [],
+                "name": "stableToken",
+                "outputs": [
                     {
-                        "internalType": "address",
-                        "name": "recipient",
+                        "internalType": "contract ERC20",
+                        "name": "",
                         "type": "address"
-                    },
-                    {
-                        "internalType": "uint256",
-                        "name": "amount",
-                        "type": "uint256"
                     }
                 ],
-                "name": "transferABT",
-                "outputs": [],
-                "stateMutability": "nonpayable",
+                "stateMutability": "view",
                 "type": "function"
             },
             {
@@ -4440,7 +4422,7 @@ module.exports = {
                         "type": "uint256"
                     }
                 ],
-                "name": "transferBond",
+                "name": "transferGovernanceToken",
                 "outputs": [],
                 "stateMutability": "nonpayable",
                 "type": "function"
@@ -4454,6 +4436,24 @@ module.exports = {
                     }
                 ],
                 "name": "transferOwnership",
+                "outputs": [],
+                "stateMutability": "nonpayable",
+                "type": "function"
+            },
+            {
+                "inputs": [
+                    {
+                        "internalType": "address",
+                        "name": "recipient",
+                        "type": "address"
+                    },
+                    {
+                        "internalType": "uint256",
+                        "name": "amount",
+                        "type": "uint256"
+                    }
+                ],
+                "name": "transferStableToken",
                 "outputs": [],
                 "stateMutability": "nonpayable",
                 "type": "function"
@@ -4494,7 +4494,7 @@ module.exports = {
         ]
     },
     "StableStaking": {
-        "address": "0xd88830b2940E8c911A46be9EBF69BF603D3dF61D",
+        "address": "0x1C10f405eB83CF09875E5531f29E56fDfE08444C",
         "name": "StableStaking",
         "voting": true,
         "abi": [
@@ -5089,7 +5089,7 @@ module.exports = {
         ]
     },
     "GovStaking": {
-        "address": "0x2c4E2Ecae53C66739E7F20AE39e4f75F8801C3F9",
+        "address": "0xD05ABc74C2Ad08FEF04e8ca2C15AC6ED96922a0a",
         "name": "GovStaking",
         "voting": true,
         "abi": [
@@ -5684,7 +5684,7 @@ module.exports = {
         ]
     },
     "Budget": {
-        "address": "0x8e4c07e9A588426e36C0Dc35860E64DE63fC163b",
+        "address": "0xB8289058b9f2EBd92391275e3915FD87d128C9B9",
         "name": "Budget",
         "voting": true,
         "abi": [
@@ -6011,7 +6011,7 @@ module.exports = {
         ]
     },
     "Buyback": {
-        "address": "0xc68D19b8a809E5b547Ee7977649320e333Bc8159",
+        "address": "0x4Cb5EBAadC17eB8Ba286Bd9cE8DFd5dAA9a9cb64",
         "name": "Buyback",
         "voting": true,
         "abi": [
@@ -6392,7 +6392,7 @@ module.exports = {
         ]
     },
     "UniswapMarketMaker": {
-        "address": "0x980EFE97Ae32c195D790aD50a8dd3cdFd50be2BA",
+        "address": "0x0DD4bcAa2F5AeEAcaabc5F867FEB5c649D3aF29E",
         "name": "UniswapMarketMaker",
         "voting": true,
         "abi": [
@@ -6809,7 +6809,7 @@ module.exports = {
         ]
     },
     "ProfitSplitter": {
-        "address": "0x405D96e61FabbEe6c3df4b63C2a74CA9b22EB34A",
+        "address": "0x267F000120c3BCC4B00F635649d52CC709B67D32",
         "name": "ProfitSplitter",
         "voting": true,
         "abi": [

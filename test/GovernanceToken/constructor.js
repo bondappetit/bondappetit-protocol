@@ -1,8 +1,8 @@
 const {contract, assert} = require("../../utils/test");
 
-contract("Bond.constructor", ({artifacts}) => {
+contract("GovernanceToken.constructor", ({artifacts}) => {
   it("constructor: should mint 10 million tokens", async () => {
-    const instance = await artifacts.require("Bond");
+    const instance = await artifacts.require("GovernanceToken");
 
     const balance = await instance.methods.totalSupply().call();
 

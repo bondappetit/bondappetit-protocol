@@ -7,7 +7,7 @@ contract("Treasury.transferETH", ({web3, artifacts}) => {
 
   it("transferETH: should transfer ETH", async () => {
     const instance = await artifacts.require("Treasury");
-    const recipient = (await web3.eth.getAccounts())[1];
+    const [, recipient] = artifacts.accounts;
     const amount = "10";
 
     await web3.eth.sendTransaction({
@@ -40,7 +40,7 @@ contract("Treasury.transferETH", ({web3, artifacts}) => {
 
   it("transferETH: should revert tx if called is not the owner", async () => {
     const instance = await artifacts.require("Treasury");
-    const notOwner = (await web3.eth.getAccounts())[1];
+    const [, notOwner] = artifacts.accounts;
 
     await assertions.reverts(
       instance.methods.transferETH(governor, 10).send({from: notOwner}),
