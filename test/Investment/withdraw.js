@@ -20,9 +20,9 @@ contract("Investment.withdraw", ({web3, artifacts}) => {
   );
 
   it("withdraw: should withdraw cumulative tokens to recipient", async () => {
-    const [instance, bondContract] = await artifacts.requireAll(
+    const [instance, govContract] = await artifacts.requireAll(
       "Investment",
-      "Bond"
+      "GovernanceToken"
     );
     const amountIn = "1000000";
     const usdcRecipientBalanceStart = await usdcContract.methods
@@ -32,7 +32,7 @@ contract("Investment.withdraw", ({web3, artifacts}) => {
       .getAmountsOut(amountIn, [USDT.address, WETH.address, USDC.address])
       .call();
 
-    await bondContract.methods
+    await govContract.methods
       .mint(
         instance._address,
         bn("10000000000")

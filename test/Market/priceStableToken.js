@@ -2,7 +2,7 @@ const assertions = require("truffle-assertions");
 const {contract, assert, bn} = require("../../utils/test");
 const {development} = require("../../networks");
 
-contract("Market.priceABT", ({web3, artifacts}) => {
+contract("Market.priceStableToken", ({web3, artifacts}) => {
   const {UniswapAnchoredView} = development.contracts;
   const priceOracle = new web3.eth.Contract(
     UniswapAnchoredView.abi,
@@ -10,7 +10,7 @@ contract("Market.priceABT", ({web3, artifacts}) => {
   );
   const {USDC, DAI} = development.assets;
 
-  it("priceABT: should get abt token price for cumulative token", async () => {
+  it("priceStableToken: should get stable token price for cumulative token", async () => {
     const instance = await artifacts.require("Market");
     const amount = bn(1)
       .mul(bn(10).pow(bn(6)))
@@ -18,7 +18,7 @@ contract("Market.priceABT", ({web3, artifacts}) => {
 
     const usdcPrice = await priceOracle.methods.price(USDC.symbol).call();
 
-    const price = await instance.methods.priceABT(USDC.address, amount).call();
+    const price = await instance.methods.priceStableToken(USDC.address, amount).call();
     assert.equal(
       price.toString(),
       bn(usdcPrice)
@@ -28,7 +28,7 @@ contract("Market.priceABT", ({web3, artifacts}) => {
     );
   });
 
-  it("priceABT: should get abt token price for other token", async () => {
+  it("priceStableToken: should get stable token price for other token", async () => {
     const instance = await artifacts.require("Market");
     const amount = bn(1)
       .mul(bn(10).pow(bn(6)))
@@ -44,16 +44,16 @@ contract("Market.priceABT", ({web3, artifacts}) => {
       .div(priceAccuracy)
       .toString();
 
-    const price = await instance.methods.priceABT(DAI.address, amount).call();
+    const price = await instance.methods.priceStableToken(DAI.address, amount).call();
     assert.equal(price, expectedPrice, "Invalid token price");
   });
 
-  it("priceABT: should revert tx if token is not allowed", async () => {
+  it("priceStableToken: should revert tx if token is not allowed", async () => {
     const instance = await artifacts.require("Market");
-    const notAllowedToken = (await web3.eth.getAccounts())[1];
+    const [, notAllowedToken] = artifacts.accounts;
 
     await assertions.reverts(
-      instance.methods.priceABT(notAllowedToken, 1).call(),
+      instance.methods.priceStableToken(notAllowedToken, 1).call(),
       "Market::price: invalid token"
     );
   });

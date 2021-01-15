@@ -12,7 +12,7 @@ contract("ProfitSplitter.split", ({web3, artifacts}) => {
   } = development.contracts;
 
   it("split: should split incoming tokens to all recipients ", async () => {
-    const [instance, abt] = await artifacts.requireAll("ProfitSplitter", "ABT");
+    const [instance, stable] = await artifacts.requireAll("ProfitSplitter", "StableToken");
     const uniswapRouter = new web3.eth.Contract(
       UniswapV2Router02.abi,
       UniswapV2Router02.address
@@ -20,12 +20,12 @@ contract("ProfitSplitter.split", ({web3, artifacts}) => {
     const amount = "200";
     const budgetAmount = "50000";
 
-    await abt.methods.mint(governor, "300").send({from: governor});
-    await abt.methods
+    await stable.methods.mint(governor, "300").send({from: governor});
+    await stable.methods
       .approve(UniswapV2Router02.address, "100")
       .send({from: governor, gas: 2000000});
     await uniswapRouter.methods
-      .addLiquidityETH(abt._address, "100", "0", "0", governor, Date.now())
+      .addLiquidityETH(stable._address, "100", "0", "0", governor, Date.now())
       .send({from: governor, value: 1000000, gas: 6000000});
 
     const recipients = await instance.methods.getRecipients().call();
@@ -37,7 +37,7 @@ contract("ProfitSplitter.split", ({web3, artifacts}) => {
       )
     );
     await instance.methods
-      .changeIncoming(abt._address, governor)
+      .changeIncoming(stable._address, governor)
       .send({from: governor, gas: 2000000});
     await instance.methods
       .changeBudget(Budget.address, budgetAmount)
@@ -50,14 +50,14 @@ contract("ProfitSplitter.split", ({web3, artifacts}) => {
       .send({from: governor, gas: 2000000});
 
     const startBudgetBalance = await web3.eth.getBalance(Budget.address);
-    const startMarketMakerBalance = await abt.methods
+    const startMarketMakerBalance = await stable.methods
       .balanceOf(UniswapMarketMaker.address)
       .call();
-    const startBuybackBalance = await abt.methods
+    const startBuybackBalance = await stable.methods
       .balanceOf(Buyback.address)
       .call();
 
-    await abt.methods
+    await stable.methods
       .approve(instance._address, amount)
       .send({from: governor, gas: 2000000});
     const tx = await instance.methods
@@ -75,10 +75,10 @@ contract("ProfitSplitter.split", ({web3, artifacts}) => {
     );
 
     const endBudgetBalance = await web3.eth.getBalance(Budget.address);
-    const endMarketMakerBalance = await abt.methods
+    const endMarketMakerBalance = await stable.methods
       .balanceOf(UniswapMarketMaker.address)
       .call();
-    const endBuybackBalance = await abt.methods
+    const endBuybackBalance = await stable.methods
       .balanceOf(Buyback.address)
       .call();
     assert.equal(

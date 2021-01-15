@@ -6,31 +6,31 @@ contract("ProfitSplitter.changeIncoming", ({web3, artifacts}) => {
   const governor = development.accounts.Governor.address;
 
   it("changeIncoming: should change incoming token address", async () => {
-    const [instance, bond, abt] = await artifacts.requireAll(
+    const [instance, gov, stable] = await artifacts.requireAll(
       "ProfitSplitter",
-      "Bond",
-      "ABT"
+      "GovernanceToken",
+      "StableToken"
     );
     const amount = "5";
 
     await instance.methods
-      .changeIncoming(bond._address, governor)
+      .changeIncoming(gov._address, governor)
       .send({from: governor});
 
-    await bond.methods
+    await gov.methods
       .transfer(instance._address, amount)
       .send({from: governor});
-    const startOwnerBalance = await bond.methods.balanceOf(governor).call();
+    const startOwnerBalance = await gov.methods.balanceOf(governor).call();
 
     await instance.methods
-      .changeIncoming(abt._address, governor)
+      .changeIncoming(stable._address, governor)
       .send({from: governor});
-    const endMarketMakerBalance = await bond.methods
+    const endMarketMakerBalance = await gov.methods
       .balanceOf(instance._address)
       .call();
-    const endOwnerBalance = await bond.methods.balanceOf(governor).call();
+    const endOwnerBalance = await gov.methods.balanceOf(governor).call();
     const incoming = await instance.methods.incoming().call();
-    assert.equal(incoming, abt._address, "Invalid end incoming token address");
+    assert.equal(incoming, stable._address, "Invalid end incoming token address");
     assert.equal(endMarketMakerBalance, "0", "Invalid end buyback balance");
     assert.equal(
       endOwnerBalance,
@@ -41,7 +41,7 @@ contract("ProfitSplitter.changeIncoming", ({web3, artifacts}) => {
 
   it("changeIncoming: should revert tx if sender not owner", async () => {
     const instance = await artifacts.require("ProfitSplitter");
-    const notOwner = (await web3.eth.getAccounts())[1];
+    const [, notOwner] = artifacts.accounts;
 
     await assertions.reverts(
       instance.methods.changeIncoming(notOwner, governor).send({

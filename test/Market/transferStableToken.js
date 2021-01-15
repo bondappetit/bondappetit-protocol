@@ -2,26 +2,26 @@ const assertions = require("truffle-assertions");
 const {contract, assert} = require("../../utils/test");
 const {development} = require("../../networks");
 
-contract("Market.transferBond", ({web3, artifacts}) => {
+contract("Market.transferStableToken", ({web3, artifacts}) => {
   const governor = development.accounts.Governor.address;
 
-  it("transferABT: should transfer ABT tokens", async () => {
-    const [instance, bond] = await artifacts.requireAll("Market", "Bond");
-    const recipient = (await web3.eth.getAccounts())[1];
+  it("transferStableToken: should transfer stable token", async () => {
+    const [instance, stable] = await artifacts.requireAll("Market", "StableToken");
+    const [, recipient] = artifacts.accounts;
     const amount = "1000000";
 
     assert.equal(
-      await bond.methods.balanceOf(recipient).call(),
+      await stable.methods.balanceOf(recipient).call(),
       "0",
       "Invalid start balance"
     );
 
-    await bond.methods.mint(instance._address, amount).send({from: governor});
+    await stable.methods.mint(instance._address, amount).send({from: governor});
     await instance.methods
-      .transferBond(recipient, amount)
+      .transferStableToken(recipient, amount)
       .send({from: governor});
     assert.equal(
-      await bond.methods.balanceOf(recipient).call(),
+      await stable.methods.balanceOf(recipient).call(),
       amount,
       "Invalid end balance"
     );
@@ -29,10 +29,10 @@ contract("Market.transferBond", ({web3, artifacts}) => {
 
   it("approve: should revert tx if called is not the owner", async () => {
     const instance = await artifacts.require("Market");
-    const notOwner = (await web3.eth.getAccounts())[1];
+    const [, notOwner] = artifacts.accounts;
 
     await assertions.reverts(
-      instance.methods.transferBond(notOwner, "1000000").send({from: notOwner}),
+      instance.methods.transferStableToken(notOwner, "1000000").send({from: notOwner}),
       "Ownable: caller is not the owner"
     );
   });

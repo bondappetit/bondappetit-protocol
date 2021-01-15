@@ -9,12 +9,12 @@
                 },
                 {
                     "internalType": "address",
-                    "name": "_abt",
+                    "name": "_stableToken",
                     "type": "address"
                 },
                 {
                     "internalType": "address",
-                    "name": "_bond",
+                    "name": "_governanceToken",
                     "type": "address"
                 },
                 {
@@ -30,19 +30,6 @@
             ],
             "stateMutability": "nonpayable",
             "type": "constructor"
-        },
-        {
-            "anonymous": false,
-            "inputs": [
-                {
-                    "indexed": false,
-                    "internalType": "uint256",
-                    "name": "newPrice",
-                    "type": "uint256"
-                }
-            ],
-            "name": "BondPriceChanged",
-            "type": "event"
         },
         {
             "anonymous": false,
@@ -92,6 +79,19 @@
                 }
             ],
             "name": "CumulativeChanged",
+            "type": "event"
+        },
+        {
+            "anonymous": false,
+            "inputs": [
+                {
+                    "indexed": false,
+                    "internalType": "uint256",
+                    "name": "newPrice",
+                    "type": "uint256"
+                }
+            ],
+            "name": "GovernanceTokenPriceChanged",
             "type": "event"
         },
         {
@@ -249,19 +249,6 @@
             "type": "function"
         },
         {
-            "inputs": [],
-            "name": "abt",
-            "outputs": [
-                {
-                    "internalType": "contract ABT",
-                    "name": "",
-                    "type": "address"
-                }
-            ],
-            "stateMutability": "view",
-            "type": "function"
-        },
-        {
             "inputs": [
                 {
                     "internalType": "address",
@@ -280,32 +267,6 @@
             "type": "function"
         },
         {
-            "inputs": [],
-            "name": "bond",
-            "outputs": [
-                {
-                    "internalType": "contract Bond",
-                    "name": "",
-                    "type": "address"
-                }
-            ],
-            "stateMutability": "view",
-            "type": "function"
-        },
-        {
-            "inputs": [],
-            "name": "bondPrice",
-            "outputs": [
-                {
-                    "internalType": "uint256",
-                    "name": "",
-                    "type": "uint256"
-                }
-            ],
-            "stateMutability": "view",
-            "type": "function"
-        },
-        {
             "inputs": [
                 {
                     "internalType": "address",
@@ -318,7 +279,7 @@
                     "type": "uint256"
                 }
             ],
-            "name": "buyABT",
+            "name": "buyGovernanceToken",
             "outputs": [
                 {
                     "internalType": "bool",
@@ -331,7 +292,7 @@
         },
         {
             "inputs": [],
-            "name": "buyABTFromETH",
+            "name": "buyGovernanceTokenFromETH",
             "outputs": [
                 {
                     "internalType": "bool",
@@ -355,7 +316,7 @@
                     "type": "uint256"
                 }
             ],
-            "name": "buyBond",
+            "name": "buyStableToken",
             "outputs": [
                 {
                     "internalType": "bool",
@@ -368,7 +329,7 @@
         },
         {
             "inputs": [],
-            "name": "buyBondFromETH",
+            "name": "buyStableTokenFromETH",
             "outputs": [
                 {
                     "internalType": "bool",
@@ -377,19 +338,6 @@
                 }
             ],
             "stateMutability": "payable",
-            "type": "function"
-        },
-        {
-            "inputs": [
-                {
-                    "internalType": "uint256",
-                    "name": "newPrice",
-                    "type": "uint256"
-                }
-            ],
-            "name": "changeBondPrice",
-            "outputs": [],
-            "stateMutability": "nonpayable",
             "type": "function"
         },
         {
@@ -406,6 +354,19 @@
                 }
             ],
             "name": "changeCumulativeToken",
+            "outputs": [],
+            "stateMutability": "nonpayable",
+            "type": "function"
+        },
+        {
+            "inputs": [
+                {
+                    "internalType": "uint256",
+                    "name": "newPrice",
+                    "type": "uint256"
+                }
+            ],
+            "name": "changeGovernanceTokenPrice",
             "outputs": [],
             "stateMutability": "nonpayable",
             "type": "function"
@@ -473,6 +434,32 @@
             "name": "denyToken",
             "outputs": [],
             "stateMutability": "nonpayable",
+            "type": "function"
+        },
+        {
+            "inputs": [],
+            "name": "governanceToken",
+            "outputs": [
+                {
+                    "internalType": "contract ERC20",
+                    "name": "",
+                    "type": "address"
+                }
+            ],
+            "stateMutability": "view",
+            "type": "function"
+        },
+        {
+            "inputs": [],
+            "name": "governanceTokenPrice",
+            "outputs": [
+                {
+                    "internalType": "uint256",
+                    "name": "",
+                    "type": "uint256"
+                }
+            ],
+            "stateMutability": "view",
             "type": "function"
         },
         {
@@ -553,31 +540,7 @@
                     "type": "uint256"
                 }
             ],
-            "name": "priceABT",
-            "outputs": [
-                {
-                    "internalType": "uint256",
-                    "name": "",
-                    "type": "uint256"
-                }
-            ],
-            "stateMutability": "view",
-            "type": "function"
-        },
-        {
-            "inputs": [
-                {
-                    "internalType": "address",
-                    "name": "token",
-                    "type": "address"
-                },
-                {
-                    "internalType": "uint256",
-                    "name": "amount",
-                    "type": "uint256"
-                }
-            ],
-            "name": "priceBond",
+            "name": "priceGovernanceToken",
             "outputs": [
                 {
                     "internalType": "uint256",
@@ -602,6 +565,30 @@
             "type": "function"
         },
         {
+            "inputs": [
+                {
+                    "internalType": "address",
+                    "name": "token",
+                    "type": "address"
+                },
+                {
+                    "internalType": "uint256",
+                    "name": "amount",
+                    "type": "uint256"
+                }
+            ],
+            "name": "priceStableToken",
+            "outputs": [
+                {
+                    "internalType": "uint256",
+                    "name": "",
+                    "type": "uint256"
+                }
+            ],
+            "stateMutability": "view",
+            "type": "function"
+        },
+        {
             "inputs": [],
             "name": "renounceOwnership",
             "outputs": [],
@@ -609,21 +596,16 @@
             "type": "function"
         },
         {
-            "inputs": [
+            "inputs": [],
+            "name": "stableToken",
+            "outputs": [
                 {
-                    "internalType": "address",
-                    "name": "recipient",
+                    "internalType": "contract ERC20",
+                    "name": "",
                     "type": "address"
-                },
-                {
-                    "internalType": "uint256",
-                    "name": "amount",
-                    "type": "uint256"
                 }
             ],
-            "name": "transferABT",
-            "outputs": [],
-            "stateMutability": "nonpayable",
+            "stateMutability": "view",
             "type": "function"
         },
         {
@@ -639,7 +621,7 @@
                     "type": "uint256"
                 }
             ],
-            "name": "transferBond",
+            "name": "transferGovernanceToken",
             "outputs": [],
             "stateMutability": "nonpayable",
             "type": "function"
@@ -653,6 +635,24 @@
                 }
             ],
             "name": "transferOwnership",
+            "outputs": [],
+            "stateMutability": "nonpayable",
+            "type": "function"
+        },
+        {
+            "inputs": [
+                {
+                    "internalType": "address",
+                    "name": "recipient",
+                    "type": "address"
+                },
+                {
+                    "internalType": "uint256",
+                    "name": "amount",
+                    "type": "uint256"
+                }
+            ],
+            "name": "transferStableToken",
             "outputs": [],
             "stateMutability": "nonpayable",
             "type": "function"

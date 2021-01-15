@@ -43,7 +43,7 @@ contract("ProfitSplitter.changeBudget", ({web3, artifacts}) => {
 
   it("changeBudget: should revert tx if sender not owner", async () => {
     const instance = await artifacts.require("ProfitSplitter");
-    const notOwner = (await web3.eth.getAccounts())[1];
+    const [, notOwner] = artifacts.accounts;
 
     await assertions.reverts(
       instance.methods.changeBudget(governor, 0).send({

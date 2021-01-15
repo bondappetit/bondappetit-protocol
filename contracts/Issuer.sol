@@ -1,15 +1,17 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.6.0;
 
+import "@openzeppelin/contracts/math/Math.sol";
 import "@openzeppelin/contracts/math/SafeMath.sol";
 import "./oracle/AgregateDepositaryBalanceView.sol";
-import "./ABT.sol";
+import "./StableToken.sol";
 
 contract Issuer is AgregateDepositaryBalanceView {
+    using Math for uint256;
     using SafeMath for uint256;
 
-    /// @notice ABT contract address.
-    ABT public abt;
+    /// @notice Stable token contract address.
+    StableToken public stableToken;
 
     /// @notice Treasury contract address.
     address public treasury;
@@ -17,15 +19,15 @@ contract Issuer is AgregateDepositaryBalanceView {
     /// @notice An event thats emitted when an Treasury contract transfered.
     event TransferTreasury(address newTreasury);
 
-    /// @notice An event thats emitted when an ABT total supply rebalanced.
+    /// @notice An event thats emitted when an stable token total supply rebalanced.
     event Rebalance();
 
     /**
-     * @param _abt ABT contract address.
+     * @param _stableToken Stable token contract address.
      * @param _treasury Treasury contract address.
      */
-    constructor(address _abt, address _treasury) public AgregateDepositaryBalanceView(ABT(_abt).decimals(), 50) {
-        abt = ABT(_abt);
+    constructor(address _stableToken, address _treasury) public AgregateDepositaryBalanceView(StableToken(_stableToken).decimals(), 50) {
+        stableToken = StableToken(_stableToken);
         treasury = _treasury;
     }
 
@@ -39,21 +41,21 @@ contract Issuer is AgregateDepositaryBalanceView {
     }
 
     /**
-     * @notice Rebalance ABT total supply by depositary balance. Mint ABT tokens if depositary balance greater token total supply and burn otherwise.
+     * @notice Rebalance stable token total supply by depositary balance. Mint stable token if depositary balance greater token total supply and burn otherwise.
      */
     function rebalance() external whenNotPaused {
         uint256 currentDepositaryBalance = this.balance();
-        uint256 burningBalance = abt.balanceOf(address(this));
-        uint256 abtTotalSupply = abt.totalSupply();
+        uint256 stableTokenTotalSupply = stableToken.totalSupply();
 
-        if (abtTotalSupply > currentDepositaryBalance && burningBalance > 0) {
-            abt.burn(address(this), burningBalance);
-            emit Rebalance();
+        if (stableTokenTotalSupply > currentDepositaryBalance) {
+            uint256 burningBalance = stableToken.balanceOf(address(this));
 
-            abtTotalSupply = abt.totalSupply();
-        }
-        if (abtTotalSupply < currentDepositaryBalance) {
-            abt.mint(treasury, currentDepositaryBalance.sub(abtTotalSupply));
+            if (burningBalance > 0) {
+                stableToken.burn(address(this), burningBalance.min(stableTokenTotalSupply.sub(currentDepositaryBalance)));
+                emit Rebalance();
+            }
+        } else if (stableTokenTotalSupply < currentDepositaryBalance) {
+            stableToken.mint(treasury, currentDepositaryBalance.sub(stableTokenTotalSupply));
             emit Rebalance();
         }
     }

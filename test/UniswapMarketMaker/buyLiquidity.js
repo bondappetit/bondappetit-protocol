@@ -6,35 +6,35 @@ contract("UniswapMarketMaker.buyLiquidity", ({web3, artifacts}) => {
   const UniswapRouter = development.contracts.UniswapV2Router02;
 
   it("buyLiquidity: should buy support token and add liquidity to pool", async () => {
-    const [instance, abt, bond] = await artifacts.requireAll(
+    const [instance, stable, gov] = await artifacts.requireAll(
       "UniswapMarketMaker",
-      "ABT",
-      "Bond"
+      "StableToken",
+      "GovernanceToken"
     );
     const uniswapRouter = new web3.eth.Contract(
       UniswapRouter.abi,
       UniswapRouter.address
     );
-    const abtAmount = "5000";
-    const bondAmount = "10000";
+    const stableAmount = "5000";
+    const govAmount = "10000";
 
-    await abt.methods
-      .mint(governor, bn(abtAmount).mul(bn(2)).toString())
+    await stable.methods
+      .mint(governor, bn(stableAmount).mul(bn(2)).toString())
       .send({from: governor});
-    await abt.methods.approve(UniswapRouter.address, abtAmount).send({
+    await stable.methods.approve(UniswapRouter.address, stableAmount).send({
       from: governor,
       gas: 2000000,
     });
-    await bond.methods.approve(UniswapRouter.address, bondAmount).send({
+    await gov.methods.approve(UniswapRouter.address, govAmount).send({
       from: governor,
       gas: 2000000,
     });
     await uniswapRouter.methods
       .addLiquidity(
-        abt._address,
-        bond._address,
-        abtAmount,
-        bondAmount,
+        stable._address,
+        gov._address,
+        stableAmount,
+        govAmount,
         "0",
         "0",
         governor,
@@ -42,20 +42,20 @@ contract("UniswapMarketMaker.buyLiquidity", ({web3, artifacts}) => {
       )
       .send({from: governor, gas: 6000000});
     const startAmountsOut = await uniswapRouter.methods
-      .getAmountsOut(abtAmount, [abt._address, bond._address])
+      .getAmountsOut(stableAmount, [stable._address, gov._address])
       .call();
 
     await instance.methods
-      .changeIncoming(abt._address, governor)
+      .changeIncoming(stable._address, governor)
       .send({from: governor});
-    await abt.methods.approve(instance._address, abtAmount).send({
+    await stable.methods.approve(instance._address, stableAmount).send({
       from: governor,
       gas: 2000000,
     });
 
-    await instance.methods.buyLiquidity(abtAmount).send({from: governor, gas: 6000000});
+    await instance.methods.buyLiquidity(stableAmount).send({from: governor, gas: 6000000});
     const endAmountsOut = await uniswapRouter.methods
-      .getAmountsOut(abtAmount, [abt._address, bond._address])
+      .getAmountsOut(stableAmount, [stable._address, gov._address])
       .call();
     assert.equal(
       startAmountsOut[1] > endAmountsOut[1],

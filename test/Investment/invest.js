@@ -20,12 +20,12 @@ contract("Investment.invest", ({web3, artifacts}) => {
   );
 
   it("invest: should get other tokens with swap", async () => {
-    const [instance, bondContract] = await artifacts.requireAll(
+    const [instance, govContract] = await artifacts.requireAll(
       "Investment",
-      "Bond"
+      "GovernanceToken"
     );
 
-    await bondContract.methods
+    await govContract.methods
       .mint(
         instance._address,
         bn("10000000000")
@@ -40,7 +40,7 @@ contract("Investment.invest", ({web3, artifacts}) => {
     const usdcInvestmentBalanceStart = await usdcContract.methods
       .balanceOf(instance._address)
       .call();
-    const bondInvestorBalanceStart = await bondContract.methods
+    const govInvestorBalanceStart = await govContract.methods
       .balanceOf(investor)
       .call();
     const amountOut = await uniswap.methods
@@ -62,7 +62,7 @@ contract("Investment.invest", ({web3, artifacts}) => {
     const usdcInvestmentBalanceEnd = await usdcContract.methods
       .balanceOf(instance._address)
       .call();
-    const bondInvestorBalanceEnd = await bondContract.methods
+    const govInvestorBalanceEnd = await govContract.methods
       .balanceOf(investor)
       .call();
     assert.equal(
@@ -71,9 +71,9 @@ contract("Investment.invest", ({web3, artifacts}) => {
       "Invest tokens should sub"
     );
     assert.equal(
-      bondInvestorBalanceEnd,
-      bn(bondInvestorBalanceStart).add(bn(reward)).toString(),
-      "Bond tokens should add"
+      govInvestorBalanceEnd,
+      bn(govInvestorBalanceStart).add(bn(reward)).toString(),
+      "Governance tokens should add"
     );
     assert.equal(
       usdcInvestmentBalanceEnd,
@@ -84,7 +84,7 @@ contract("Investment.invest", ({web3, artifacts}) => {
 
   it("invest: should revert tx if token is not investable", async () => {
     const instance = await artifacts.require("Investment");
-    const notInvestableToken = (await web3.eth.getAccounts())[1];
+    const [, notInvestableToken] = artifacts.accounts;
 
     await assertions.reverts(
       instance.methods.invest(notInvestableToken, 1).send({from: investor}),
@@ -93,9 +93,9 @@ contract("Investment.invest", ({web3, artifacts}) => {
   });
 
   it("invest: should get cumulative tokens without swap", async () => {
-    const [instance, bondContract] = await artifacts.requireAll(
+    const [instance, govContract] = await artifacts.requireAll(
       "Investment",
-      "Bond"
+      "GovernanceToken"
     );
     const amountIn = "1000000";
     const usdcInvestorBalanceStart = await usdcContract.methods
@@ -104,7 +104,7 @@ contract("Investment.invest", ({web3, artifacts}) => {
     const usdcInvestmentBalanceStart = await usdcContract.methods
       .balanceOf(instance._address)
       .call();
-    const bondInvestorBalanceStart = await bondContract.methods
+    const govInvestorBalanceStart = await govContract.methods
       .balanceOf(investor)
       .call();
     const reward = await instance.methods.price(USDC.address, amountIn).call();
@@ -130,7 +130,7 @@ contract("Investment.invest", ({web3, artifacts}) => {
     const usdcInvestmentBalanceEnd = await usdcContract.methods
       .balanceOf(instance._address)
       .call();
-    const bondInvestorBalanceEnd = await bondContract.methods
+    const govInvestorBalanceEnd = await govContract.methods
       .balanceOf(investor)
       .call();
     assert.equal(
@@ -139,9 +139,9 @@ contract("Investment.invest", ({web3, artifacts}) => {
       "Invest tokens should sub"
     );
     assert.equal(
-      bondInvestorBalanceEnd,
-      bn(bondInvestorBalanceStart).add(bn(reward)).toString(),
-      "Bond tokens should add"
+      govInvestorBalanceEnd,
+      bn(govInvestorBalanceStart).add(bn(reward)).toString(),
+      "Governance tokens should add"
     );
     assert.equal(
       usdcInvestmentBalanceEnd,

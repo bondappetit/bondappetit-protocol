@@ -3,10 +3,12 @@ pragma solidity ^0.6.0;
 
 import "@openzeppelin/contracts/math/SafeMath.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
-import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
+import "@openzeppelin/contracts/token/ERC20/ERC20.sol";
+import "@openzeppelin/contracts/token/ERC20/SafeERC20.sol";
 
 contract Treasury is Ownable {
     using SafeMath for uint256;
+    using SafeERC20 for ERC20;
 
     receive() external payable {}
 
@@ -21,7 +23,8 @@ contract Treasury is Ownable {
         address recipient,
         uint256 amount
     ) external onlyOwner returns (bool) {
-        return IERC20(token).transfer(recipient, amount);
+        ERC20(token).safeTransfer(recipient, amount);
+        return true;
     }
 
     /**
@@ -45,6 +48,7 @@ contract Treasury is Ownable {
         address recipient,
         uint256 amount
     ) external onlyOwner returns (bool) {
-        return IERC20(token).approve(recipient, amount);
+        ERC20(token).safeApprove(recipient, amount);
+        return true;
     }
 }

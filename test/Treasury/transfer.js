@@ -6,17 +6,17 @@ contract("Treasury.transfer", ({web3, artifacts}) => {
   const governor = development.accounts.Governor.address;
 
   it("transfer: should transfer target token", async () => {
-    const [instance, bond] = await artifacts.requireAll("Treasury", "Bond");
-    const accountWithoutTokens = (await web3.eth.getAccounts())[1];
+    const [instance, gov] = await artifacts.requireAll("Treasury", "GovernanceToken");
+    const [, accountWithoutTokens] = artifacts.accounts;
     const amount = "10";
 
-    await bond.methods
+    await gov.methods
       .transfer(instance._address, amount)
       .send({from: governor});
-    const startTreasuryBalance = await bond.methods
+    const startTreasuryBalance = await gov.methods
       .balanceOf(instance._address)
       .call();
-    const startAccountBalance = await bond.methods
+    const startAccountBalance = await gov.methods
       .balanceOf(accountWithoutTokens)
       .call();
     assert.equal(
@@ -27,14 +27,14 @@ contract("Treasury.transfer", ({web3, artifacts}) => {
     assert.equal(startAccountBalance, "0", "Invalid start account balance");
 
     await instance.methods
-      .transfer(bond._address, accountWithoutTokens, amount)
+      .transfer(gov._address, accountWithoutTokens, amount)
       .send({
         from: governor,
       });
-    const endTreasuryBalance = await bond.methods
+    const endTreasuryBalance = await gov.methods
       .balanceOf(instance._address)
       .call();
-    const endAccountBalance = await bond.methods
+    const endAccountBalance = await gov.methods
       .balanceOf(accountWithoutTokens)
       .call();
     assert.equal(endTreasuryBalance, "0", "Invalid end treasury balance");
@@ -43,7 +43,7 @@ contract("Treasury.transfer", ({web3, artifacts}) => {
 
   it("transfer: should revert tx if called is not the owner", async () => {
     const instance = await artifacts.require("Treasury");
-    const notOwner = (await web3.eth.getAccounts())[1];
+    const [, notOwner] = artifacts.accounts;
 
     await assertions.reverts(
       instance.methods.transfer(governor, governor, 10).send({from: notOwner}),

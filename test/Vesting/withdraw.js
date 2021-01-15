@@ -9,11 +9,11 @@ contract("Vesting.withdraw", ({web3, artifacts}) => {
   const date = "0";
 
   it("withdraw: should withdraw reward", async () => {
-    const [instance, bond] = await artifacts.requireAll("Vesting", "Bond");
-    const recipient = (await web3.eth.getAccounts())[1];
+    const [instance, gov] = await artifacts.requireAll("Vesting", "GovernanceToken");
+    const [, recipient] = artifacts.accounts;
 
-    const startBalance = await bond.methods.balanceOf(recipient).call();
-    await bond.methods
+    const startBalance = await gov.methods.balanceOf(recipient).call();
+    await gov.methods
       .approve(instance._address, amount)
       .send({from: governor});
     await instance.methods
@@ -27,7 +27,7 @@ contract("Vesting.withdraw", ({web3, artifacts}) => {
       .withdraw(addedPeriod.id)
       .send({from: recipient, gas: 6000000});
 
-    const endBalance = await bond.methods.balanceOf(recipient).call();
+    const endBalance = await gov.methods.balanceOf(recipient).call();
     const endPeriods = await instance.methods.info(recipient).call();
     const withdrawalPeriod = endPeriods[endPeriods.length - 1];
     assert.equal(
@@ -39,10 +39,10 @@ contract("Vesting.withdraw", ({web3, artifacts}) => {
   });
 
   it("withdraw: should revert tx if period is empty", async () => {
-    const [instance, bond] = await artifacts.requireAll("Vesting", "Bond");
-    const recipient = (await web3.eth.getAccounts())[1];
+    const [instance, gov] = await artifacts.requireAll("Vesting", "GovernanceToken");
+    const [, recipient] = artifacts.accounts;
 
-    await bond.methods
+    await gov.methods
       .approve(instance._address, amount)
       .send({from: governor});
     await instance.methods
@@ -65,10 +65,10 @@ contract("Vesting.withdraw", ({web3, artifacts}) => {
   });
 
   it("withdraw: should revert tx if period is withdrawal", async () => {
-    const [instance, bond] = await artifacts.requireAll("Vesting", "Bond");
-    const recipient = (await web3.eth.getAccounts())[1];
+    const [instance, gov] = await artifacts.requireAll("Vesting", "GovernanceToken");
+    const [, recipient] = artifacts.accounts;
 
-    await bond.methods
+    await gov.methods
       .approve(instance._address, amount)
       .send({from: governor});
     await instance.methods
@@ -91,11 +91,11 @@ contract("Vesting.withdraw", ({web3, artifacts}) => {
   });
 
   it("withdraw: should revert tx if period has not come", async () => {
-    const [instance, bond] = await artifacts.requireAll("Vesting", "Bond");
-    const recipient = (await web3.eth.getAccounts())[1];
+    const [instance, gov] = await artifacts.requireAll("Vesting", "GovernanceToken");
+    const [, recipient] = artifacts.accounts;
     const distantFuture = dayjs().add(1, "year").unix();
 
-    await bond.methods
+    await gov.methods
       .approve(instance._address, amount)
       .send({from: governor});
     await instance.methods

@@ -1,9 +1,9 @@
 const {migration} = require("../utils/deploy");
 
 module.exports = migration("Budget", async (d) => {
-  //const [bond] = await d.deployed("Bond");
+  //const [gov] = await d.deployed("GovernanceToken");
   const expenditures = [
-    //{address: bond.address, min: "0", target: "0"}
+    //{address: gov.address, min: "0", target: "0"}
   ];
 
   await d.deploy("Budget");

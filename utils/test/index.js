@@ -9,6 +9,7 @@ class ArtifactList {
     this.web3 = web3;
     this.deployments = deployments;
     this.cache = new Map();
+    this.accounts = [];
   }
 
   async require(contract) {
@@ -42,6 +43,10 @@ async function contract(name, test) {
     })
   );
   const artifacts = new ArtifactList(web3, `deployments/${network.name}`);
+
+  before(async () => {
+    artifacts.accounts = await web3.eth.getAccounts();
+  });
 
   describe(
     name,

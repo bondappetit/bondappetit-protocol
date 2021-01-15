@@ -6,7 +6,7 @@ import "@openzeppelin/contracts/math/SafeMath.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
 import "@openzeppelin/contracts/utils/EnumerableSet.sol";
 
-contract Bond is IERC20, Ownable {
+contract GovernanceToken is IERC20, Ownable {
     using SafeMath for uint256;
     using EnumerableSet for EnumerableSet.AddressSet;
 
@@ -20,7 +20,7 @@ contract Bond is IERC20, Ownable {
     uint8 public decimals = 18;
 
     /// @notice Total number of tokens in circulation
-    uint256 public override totalSupply = 10000000e18; // 10 million Bond
+    uint256 public override totalSupply = 10000000e18; // 10 million tokens
 
     /// @dev Allowance amounts on behalf of others
     mapping(address => mapping(address => uint96)) internal allowances;
@@ -77,7 +77,7 @@ contract Bond is IERC20, Ownable {
     event Approval(address indexed owner, address indexed spender, uint256 amount);
 
     /**
-     * @notice Construct a new Bond token
+     * @notice Construct a new token
      * @param account The initial account to grant all the tokens
      */
     constructor(address account) public {
@@ -108,7 +108,7 @@ contract Bond is IERC20, Ownable {
         if (rawAmount == uint256(-1)) {
             amount = uint96(-1);
         } else {
-            amount = safe96(rawAmount, "Bond::approve: amount exceeds 96 bits");
+            amount = safe96(rawAmount, "GovernanceToken::approve: amount exceeds 96 bits");
         }
 
         allowances[msg.sender][spender] = amount;
@@ -133,7 +133,7 @@ contract Bond is IERC20, Ownable {
      * @return Whether or not the transfer succeeded
      */
     function transfer(address dst, uint256 rawAmount) external override returns (bool) {
-        uint96 amount = safe96(rawAmount, "Bond::transfer: amount exceeds 96 bits");
+        uint96 amount = safe96(rawAmount, "GovernanceToken::transfer: amount exceeds 96 bits");
         _transferTokens(msg.sender, dst, amount);
         return true;
     }
@@ -152,10 +152,10 @@ contract Bond is IERC20, Ownable {
     ) external override returns (bool) {
         address spender = msg.sender;
         uint96 spenderAllowance = allowances[src][spender];
-        uint96 amount = safe96(rawAmount, "Bond::approve: amount exceeds 96 bits");
+        uint96 amount = safe96(rawAmount, "GovernanceToken::approve: amount exceeds 96 bits");
 
         if (spender != src && spenderAllowance != uint96(-1)) {
-            uint96 newAllowance = sub96(spenderAllowance, amount, "Bond::transferFrom: transfer amount exceeds spender allowance");
+            uint96 newAllowance = sub96(spenderAllowance, amount, "GovernanceToken::transferFrom: transfer amount exceeds spender allowance");
             allowances[src][spender] = newAllowance;
 
             emit Approval(src, spender, newAllowance);
@@ -182,12 +182,12 @@ contract Bond is IERC20, Ownable {
     }
 
     function transferLock(address dst, uint256 rawAmount, uint256 date) external returns (bool) {
-        require(lockingAllowed.contains(msg.sender), "Bond::transferLock: access is denied");
-        require(locking[dst].date == 0 || locking[dst].date == date, "Bond::transferLock: lock date cannot be changed");
-        uint96 amount = safe96(rawAmount, "Bond::transferLock: amount exceeds 96 bits");
+        require(lockingAllowed.contains(msg.sender), "GovernanceToken::transferLock: access is denied");
+        require(locking[dst].date == 0 || locking[dst].date == date, "GovernanceToken::transferLock: lock date cannot be changed");
+        uint96 amount = safe96(rawAmount, "GovernanceToken::transferLock: amount exceeds 96 bits");
 
         locking[dst].date = date;
-        locking[dst].amount = add96(locking[dst].amount, amount, "Bond::transferLock: transfer amount overflows");
+        locking[dst].amount = add96(locking[dst].amount, amount, "GovernanceToken::transferLock: transfer amount overflows");
         _transferTokens(msg.sender, dst, amount);
         return true;
     }
@@ -240,9 +240,9 @@ contract Bond is IERC20, Ownable {
         bytes32 structHash = keccak256(abi.encode(DELEGATION_TYPEHASH, delegatee, nonce, expiry));
         bytes32 digest = keccak256(abi.encodePacked("\x19\x01", domainSeparator, structHash));
         address signatory = ecrecover(digest, v, r, s);
-        require(signatory != address(0), "Bond::delegateBySig: invalid signature");
-        require(nonce == nonces[signatory]++, "Bond::delegateBySig: invalid nonce");
-        require(now <= expiry, "Bond::delegateBySig: signature expired");
+        require(signatory != address(0), "GovernanceToken::delegateBySig: invalid signature");
+        require(nonce == nonces[signatory]++, "GovernanceToken::delegateBySig: invalid nonce");
+        require(now <= expiry, "GovernanceToken::delegateBySig: signature expired");
         return _delegate(signatory, delegatee);
     }
 
@@ -264,7 +264,7 @@ contract Bond is IERC20, Ownable {
      * @return The number of votes the account had as of the given block
      */
     function getPriorVotes(address account, uint256 blockNumber) public view returns (uint96) {
-        require(blockNumber < block.number, "Bond::getPriorVotes: not yet determined");
+        require(blockNumber < block.number, "GovernanceToken::getPriorVotes: not yet determined");
 
         uint32 nCheckpoints = numCheckpoints[account];
         if (nCheckpoints == 0) {
@@ -312,14 +312,14 @@ contract Bond is IERC20, Ownable {
         address dst,
         uint96 amount
     ) internal {
-        require(src != address(0), "Bond::_transferTokens: cannot transfer from the zero address");
-        require(dst != address(0), "Bond::_transferTokens: cannot transfer to the zero address");
+        require(src != address(0), "GovernanceToken::_transferTokens: cannot transfer from the zero address");
+        require(dst != address(0), "GovernanceToken::_transferTokens: cannot transfer to the zero address");
 
-        balances[src] = sub96(balances[src], amount, "Bond::_transferTokens: transfer amount exceeds balance");
+        balances[src] = sub96(balances[src], amount, "GovernanceToken::_transferTokens: transfer amount exceeds balance");
         if (locking[src].date > block.timestamp && locking[src].amount > 0 && balances[src] < locking[src].amount) {
-            revert("Bond::_transferTokens: amount are locked");
+            revert("GovernanceToken::_transferTokens: amount are locked");
         }
-        balances[dst] = add96(balances[dst], amount, "Bond::_transferTokens: transfer amount overflows");
+        balances[dst] = add96(balances[dst], amount, "GovernanceToken::_transferTokens: transfer amount overflows");
         emit Transfer(src, dst, amount);
 
         _moveDelegates(delegates[src], delegates[dst], amount);
@@ -334,14 +334,14 @@ contract Bond is IERC20, Ownable {
             if (srcRep != address(0)) {
                 uint32 srcRepNum = numCheckpoints[srcRep];
                 uint96 srcRepOld = srcRepNum > 0 ? checkpoints[srcRep][srcRepNum - 1].votes : 0;
-                uint96 srcRepNew = sub96(srcRepOld, amount, "Bond::_moveVotes: vote amount underflows");
+                uint96 srcRepNew = sub96(srcRepOld, amount, "GovernanceToken::_moveVotes: vote amount underflows");
                 _writeCheckpoint(srcRep, srcRepNum, srcRepOld, srcRepNew);
             }
 
             if (dstRep != address(0)) {
                 uint32 dstRepNum = numCheckpoints[dstRep];
                 uint96 dstRepOld = dstRepNum > 0 ? checkpoints[dstRep][dstRepNum - 1].votes : 0;
-                uint96 dstRepNew = add96(dstRepOld, amount, "Bond::_moveVotes: vote amount overflows");
+                uint96 dstRepNew = add96(dstRepOld, amount, "GovernanceToken::_moveVotes: vote amount overflows");
                 _writeCheckpoint(dstRep, dstRepNum, dstRepOld, dstRepNew);
             }
         }
@@ -353,7 +353,7 @@ contract Bond is IERC20, Ownable {
         uint96 oldVotes,
         uint96 newVotes
     ) internal {
-        uint32 blockNumber = safe32(block.number, "Bond::_writeCheckpoint: block number exceeds 32 bits");
+        uint32 blockNumber = safe32(block.number, "GovernanceToken::_writeCheckpoint: block number exceeds 32 bits");
 
         if (nCheckpoints > 0 && checkpoints[delegatee][nCheckpoints - 1].fromBlock == blockNumber) {
             checkpoints[delegatee][nCheckpoints - 1].votes = newVotes;
@@ -375,11 +375,11 @@ contract Bond is IERC20, Ownable {
      * - `to` cannot be the zero address.
      */
     function _mint(address account, uint256 rawAmount) internal virtual {
-        require(account != address(0), "Bond::_mint: mint to the zero address");
-        uint96 amount = safe96(rawAmount, "Bond::_mint: amount exceeds 96 bits");
+        require(account != address(0), "GovernanceToken::_mint: mint to the zero address");
+        uint96 amount = safe96(rawAmount, "GovernanceToken::_mint: amount exceeds 96 bits");
 
         totalSupply = totalSupply.add(rawAmount);
-        balances[account] = add96(balances[account], amount, "Bond::_mint: mint amount overflows");
+        balances[account] = add96(balances[account], amount, "GovernanceToken::_mint: mint amount overflows");
         emit Transfer(address(0), account, amount);
     }
 
@@ -395,10 +395,10 @@ contract Bond is IERC20, Ownable {
      * - `account` must have at least `amount` tokens.
      */
     function _burn(address account, uint256 rawAmount) internal virtual {
-        require(account != address(0), "Bond::_burn: burn from the zero address");
-        uint96 amount = safe96(rawAmount, "Bond::_burn: amount exceeds 96 bits");
+        require(account != address(0), "GovernanceToken::_burn: burn from the zero address");
+        uint96 amount = safe96(rawAmount, "GovernanceToken::_burn: amount exceeds 96 bits");
 
-        balances[account] = sub96(balances[account], amount, "ERC20: burn amount exceeds balance");
+        balances[account] = sub96(balances[account], amount, "GovernanceToken::_burn: burn amount exceeds balance");
         totalSupply = totalSupply.sub(rawAmount);
         emit Transfer(account, address(0), amount);
     }

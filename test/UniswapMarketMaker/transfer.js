@@ -6,35 +6,31 @@ contract("UniswapMarketMaker.transfer", ({web3, artifacts}) => {
   const governor = development.accounts.Governor.address;
 
   it("transfer: should transfer token to recipient", async () => {
-    const [instance, abt, bond] = await artifacts.requireAll(
+    const [instance, gov] = await artifacts.requireAll(
       "UniswapMarketMaker",
-      "ABT",
-      "Bond"
+      "GovernanceToken"
     );
     const amount = "5";
 
-    await bond.methods
+    await gov.methods
       .transfer(instance._address, amount)
       .send({from: governor});
-    await instance.methods
-      .transfer(bond._address, governor, amount)
-      .send({from: governor, gas: 6000000});
-    /*
-    await bond.methods
-      .transfer(instance._address, amount)
-      .send({from: governor});
-    const startOwnerBalance = await bond.methods.balanceOf(governor).call();
-
-    instance.methods
-      .transfer(bond._address, governor, amount)
-      .send({from: governor});
-    const endMarketMakerBalance = await bond.methods
+    const startMarketMakerBalance = await gov.methods
       .balanceOf(instance._address)
       .call();
-    const endOwnerBalance = await bond.methods.balanceOf(governor).call();
+    const startOwnerBalance = await gov.methods.balanceOf(governor).call();
+
+    await instance.methods
+      .transfer(gov._address, governor, amount)
+      .send({from: governor});
+
+    const endMarketMakerBalance = await gov.methods
+      .balanceOf(instance._address)
+      .call();
+    const endOwnerBalance = await gov.methods.balanceOf(governor).call();
     assert.equal(
       endMarketMakerBalance,
-      "0",
+      bn(startMarketMakerBalance).sub(bn(amount)).toString(),
       "Invalid end market maker balance"
     );
     assert.equal(
@@ -42,12 +38,11 @@ contract("UniswapMarketMaker.transfer", ({web3, artifacts}) => {
       bn(startOwnerBalance).add(bn(amount)).toString(),
       "Invalid end owner balance"
     );
-    */
   });
 
   it("transfer: should revert tx if sender not owner", async () => {
     const instance = await artifacts.require("UniswapMarketMaker");
-    const notOwner = (await web3.eth.getAccounts())[1];
+    const [, notOwner] = artifacts.accounts;
 
     await assertions.reverts(
       instance.methods.transfer(governor, governor, "1").send({

@@ -103,7 +103,7 @@ contract("Budget.deficit", ({web3, artifacts}) => {
 
   it("deficitTo: should revert tx if target is not expenditure item", async () => {
     const instance = await artifacts.require("Budget");
-    const notExpenditureItem = (await web3.eth.getAccounts())[1];
+    const [, notExpenditureItem] = artifacts.accounts;
 
     await assertions.reverts(
       instance.methods.deficitTo(notExpenditureItem).call(),

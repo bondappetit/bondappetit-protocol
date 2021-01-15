@@ -8,12 +8,12 @@ contract("Vesting.lock", ({web3, artifacts}) => {
   const date = "0";
 
   it("lock: should lock period", async () => {
-    const [instance, bond] = await artifacts.requireAll("Vesting", "Bond");
-    const recipient = (await web3.eth.getAccounts())[1];
+    const [instance, gov] = await artifacts.requireAll("Vesting", "GovernanceToken");
+    const [, recipient] = artifacts.accounts;
 
     const startPeriods = await instance.methods.info(recipient).call();
 
-    await bond.methods
+    await gov.methods
       .approve(instance._address, amount)
       .send({from: governor});
     await instance.methods.lock(recipient, amount, date).send({from: governor, gas: 6000000});
@@ -35,13 +35,13 @@ contract("Vesting.lock", ({web3, artifacts}) => {
 
     await assertions.reverts(
       instance.methods.lock(governor, amount, date).send({from: governor, gas: 6000000}),
-      "Bond::transferFrom: transfer amount exceeds spender allowance"
+      "GovernanceToken::transferFrom: transfer amount exceeds spender allowance"
     );
   });
 
   it("lock: should revert tx if called is not the owner", async () => {
     const instance = await artifacts.require("Vesting");
-    const notOwner = (await web3.eth.getAccounts())[1];
+    const [, notOwner] = artifacts.accounts;
 
     await assertions.reverts(
       instance.methods.lock(governor, amount, date).send({from: notOwner, gas: 6000000}),
@@ -50,14 +50,14 @@ contract("Vesting.lock", ({web3, artifacts}) => {
   });
 
   it("lock: should revert tx if overflows", async () => {
-    const [instance, bond] = await artifacts.requireAll("Vesting", "Bond");
-    const recipient = (await web3.eth.getAccounts())[1];
+    const [instance, gov] = await artifacts.requireAll("Vesting", "GovernanceToken");
+    const [, recipient] = artifacts.accounts;
 
     const startPeriods = await instance.methods.info(recipient).call();
     const maxPeriods = await instance.methods.maxPeriodsPerRecipient().call();
 
     for (let i = 0; i < maxPeriods - startPeriods.length; i++) {
-      await bond.methods
+      await gov.methods
         .approve(instance._address, amount)
         .send({from: governor});
       await instance.methods
@@ -65,7 +65,7 @@ contract("Vesting.lock", ({web3, artifacts}) => {
         .send({from: governor, gas: 6000000});
     }
 
-    await bond.methods
+    await gov.methods
       .approve(instance._address, amount)
       .send({from: governor});
     await assertions.reverts(

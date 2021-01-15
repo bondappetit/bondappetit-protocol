@@ -43,7 +43,7 @@ contract("Budget.transferETH", ({web3, artifacts}) => {
 
   it("transferETH: should revert tx if sender not owner", async () => {
     const instance = await artifacts.require("Budget");
-    const notOwner = (await web3.eth.getAccounts())[1];
+    const [, notOwner] = artifacts.accounts;
     const contract = development.contracts.Treasury.address;
 
     await assertions.reverts(

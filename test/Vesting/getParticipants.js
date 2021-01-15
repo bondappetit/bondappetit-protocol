@@ -14,17 +14,17 @@ contract("Vesting.getParticipants", ({web3, artifacts}) => {
   });
 
   it("getParticipants: should return participants list", async () => {
-    const [instance, bond] = await artifacts.requireAll("Vesting", "Bond");
-    const [, recipientA, recipientB] = await web3.eth.getAccounts();
+    const [instance, gov] = await artifacts.requireAll("Vesting", "GovernanceToken");
+    const [, recipientA, recipientB] = artifacts.accounts;
 
-    await bond.methods
+    await gov.methods
       .approve(instance._address, amount)
       .send({from: governor});
     await instance.methods
       .lock(recipientA, amount, date)
       .send({from: governor, gas: 6000000});
 
-    await bond.methods
+    await gov.methods
       .approve(instance._address, amount)
       .send({from: governor});
     await instance.methods

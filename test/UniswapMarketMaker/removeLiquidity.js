@@ -6,24 +6,24 @@ contract("UniswapMarketMaker.removeLiquidity", ({web3, artifacts}) => {
   const governor = development.accounts.Governor.address;
 
   it("removeLiquidity: should add liquidity to pool", async () => {
-    const [instance, abt, bond] = await artifacts.requireAll(
+    const [instance, stable, gov] = await artifacts.requireAll(
       "UniswapMarketMaker",
-      "ABT",
-      "Bond"
+      "StableToken",
+      "GovernanceToken"
     );
-    const abtAmount = "5000";
-    const bondAmount = "10000";
+    const stableAmount = "5000";
+    const govAmount = "10000";
 
-    await abt.methods.mint(governor, abtAmount).send({from: governor});
+    await stable.methods.mint(governor, stableAmount).send({from: governor});
 
     await instance.methods
-      .changeIncoming(abt._address, governor)
+      .changeIncoming(stable._address, governor)
       .send({from: governor});
-    await abt.methods.transfer(instance._address, abtAmount).send({
+    await stable.methods.transfer(instance._address, stableAmount).send({
       from: governor,
       gas: 2000000,
     });
-    await bond.methods.transfer(instance._address, bondAmount).send({
+    await gov.methods.transfer(instance._address, govAmount).send({
       from: governor,
       gas: 2000000,
     });

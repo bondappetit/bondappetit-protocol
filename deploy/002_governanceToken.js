@@ -1,9 +1,9 @@
 const {migration} = require("../utils/deploy");
 
-module.exports = migration("Bond", async (d) => {
+module.exports = migration("GovernanceToken", async (d) => {
   const governor = d.getGovernor().address;
 
-  await d.deploy("Bond", {
+  await d.deploy("GovernanceToken", {
     args: [governor],
   });
 });

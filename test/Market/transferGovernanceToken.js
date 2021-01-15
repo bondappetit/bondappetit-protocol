@@ -2,26 +2,26 @@ const assertions = require("truffle-assertions");
 const {contract, assert} = require("../../utils/test");
 const {development} = require("../../networks");
 
-contract("Market.transferABT", ({web3, artifacts}) => {
+contract("Market.transferGovernanceToken", ({web3, artifacts}) => {
   const governor = development.accounts.Governor.address;
 
-  it("transferABT: should transfer ABT tokens", async () => {
-    const [instance, abt] = await artifacts.requireAll("Market", "ABT");
-    const recipient = (await web3.eth.getAccounts())[1];
+  it("transferGovernanceToken: should transfer governance token", async () => {
+    const [instance, gov] = await artifacts.requireAll("Market", "GovernanceToken");
+    const [, recipient] = artifacts.accounts;
     const amount = "1000000";
 
     assert.equal(
-      await abt.methods.balanceOf(recipient).call(),
+      await gov.methods.balanceOf(recipient).call(),
       "0",
       "Invalid start balance"
     );
 
-    await abt.methods.mint(instance._address, amount).send({from: governor});
+    await gov.methods.mint(instance._address, amount).send({from: governor});
     await instance.methods
-      .transferABT(recipient, amount)
+      .transferGovernanceToken(recipient, amount)
       .send({from: governor});
     assert.equal(
-      await abt.methods.balanceOf(recipient).call(),
+      await gov.methods.balanceOf(recipient).call(),
       amount,
       "Invalid end balance"
     );
@@ -29,10 +29,10 @@ contract("Market.transferABT", ({web3, artifacts}) => {
 
   it("approve: should revert tx if called is not the owner", async () => {
     const instance = await artifacts.require("Market");
-    const notOwner = (await web3.eth.getAccounts())[1];
+    const [, notOwner] = artifacts.accounts;
 
     await assertions.reverts(
-      instance.methods.transferABT(notOwner, "1000000").send({from: notOwner}),
+      instance.methods.transferGovernanceToken(notOwner, "1000000").send({from: notOwner}),
       "Ownable: caller is not the owner"
     );
   });

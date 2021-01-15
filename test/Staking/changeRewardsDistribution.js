@@ -7,7 +7,7 @@ contract("Staking.changeRewardsDistribution", ({web3, artifacts}) => {
 
   it("changeRewardsDistribution: should change reward distribution address", async () => {
     const instance = await artifacts.require("GovStaking");
-    const newDistributor = (await web3.eth.getAccounts())[1];
+    const [, newDistributor] = artifacts.accounts;
 
     const startDistributor = await instance.methods.rewardsDistribution().call();
     await instance.methods
@@ -24,7 +24,7 @@ contract("Staking.changeRewardsDistribution", ({web3, artifacts}) => {
 
   it("changeRewardsDistribution: should revert tx if called is not the owner", async () => {
     const instance = await artifacts.require("GovStaking");
-    const notOwner = (await web3.eth.getAccounts())[1];
+    const [, notOwner] = artifacts.accounts;
 
     await assertions.reverts(
       instance.methods.changeRewardsDistribution(governor).send({from: notOwner}),

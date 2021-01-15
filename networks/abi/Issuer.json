@@ -4,7 +4,7 @@
             "inputs": [
                 {
                     "internalType": "address",
-                    "name": "_abt",
+                    "name": "_stableToken",
                     "type": "address"
                 },
                 {
@@ -118,19 +118,6 @@
             ],
             "name": "Unpaused",
             "type": "event"
-        },
-        {
-            "inputs": [],
-            "name": "abt",
-            "outputs": [
-                {
-                    "internalType": "contract ABT",
-                    "name": "",
-                    "type": "address"
-                }
-            ],
-            "stateMutability": "view",
-            "type": "function"
         },
         {
             "inputs": [
@@ -310,6 +297,19 @@
                     "internalType": "uint256",
                     "name": "",
                     "type": "uint256"
+                }
+            ],
+            "stateMutability": "view",
+            "type": "function"
+        },
+        {
+            "inputs": [],
+            "name": "stableToken",
+            "outputs": [
+                {
+                    "internalType": "contract StableToken",
+                    "name": "",
+                    "type": "address"
                 }
             ],
             "stateMutability": "view",

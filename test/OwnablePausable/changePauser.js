@@ -7,7 +7,7 @@ contract("OwnablePausable.pause", ({web3, artifacts}) => {
 
   it("changePauser: should change pauser address", async () => {
     const instance = await artifacts.require("Investment");
-    const pauser = (await web3.eth.getAccounts())[1];
+    const [, pauser] = artifacts.accounts;
 
     await assertions.reverts(
       instance.methods.pause().send({from: pauser}),

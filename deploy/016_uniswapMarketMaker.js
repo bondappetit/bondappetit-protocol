@@ -6,8 +6,8 @@ module.exports = migration("UniswapMarketMaker", async (d) => {
     contracts: {UniswapV2Router02},
   } = d.getNetwork();
 
-  const [bond] = await d.deployed("Bond");
+  const [gov] = await d.deployed("GovernanceToken");
   await d.deploy("UniswapMarketMaker", {
-    args: [USDC.address, bond.address, UniswapV2Router02.address],
+    args: [USDC.address, gov.address, UniswapV2Router02.address],
   });
 });

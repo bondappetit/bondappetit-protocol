@@ -1,13 +1,13 @@
 const {migration} = require("../utils/deploy");
 
 module.exports = migration("Issuer", async (d) => {
-  const [abt, treasury, bondDepositaryBalanceView] = await d.deployed(
-    "ABT",
+  const [stable, treasury, bondDepositaryBalanceView] = await d.deployed(
+    "StableToken",
     "Treasury",
     "BondDepositaryBalanceView"
   );
   await d.deploy("Issuer", {
-    args: [abt.address, treasury.address],
+    args: [stable.address, treasury.address],
   });
   await d.send("Issuer", "addDepositary", [bondDepositaryBalanceView.address]);
 });

@@ -6,10 +6,10 @@ contract("Staking.notifyRewardAmount", ({web3, artifacts}) => {
   const governor = development.accounts.Governor.address;
 
   it("notifyRewardAmount: should change reward of stacking token", async () => {
-    const [instance, bond] = await artifacts.requireAll("GovStaking", "Bond");
+    const [instance, gov] = await artifacts.requireAll("GovStaking", "GovernanceToken");
     const amount = "1000000";
 
-    await bond.methods
+    await gov.methods
       .transfer(instance._address, amount)
       .send({from: governor});
     await instance.methods
@@ -26,7 +26,7 @@ contract("Staking.notifyRewardAmount", ({web3, artifacts}) => {
 
   it("notifyRewardAmount: should revert tx if called is not the owner", async () => {
     const instance = await artifacts.require("GovStaking");
-    const notOwner = (await web3.eth.getAccounts())[1];
+    const [, notOwner] = artifacts.accounts;
 
     await assertions.reverts(
       instance.methods.notifyRewardAmount("1").send({from: notOwner}),

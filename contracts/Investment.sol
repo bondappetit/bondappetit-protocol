@@ -6,7 +6,7 @@ import "@openzeppelin/contracts/token/ERC20/SafeERC20.sol";
 import "@openzeppelin/contracts/math/SafeMath.sol";
 import "./utils/OwnablePausable.sol";
 import "./uniswap/IUniswapV2Router02.sol";
-import "./Bond.sol";
+import "./GovernanceToken.sol";
 
 contract Investment is OwnablePausable {
     using SafeMath for uint256;
@@ -15,16 +15,16 @@ contract Investment is OwnablePausable {
     ///@notice Address of cumulative token
     ERC20 public cumulative;
 
-    ///@notice Address of Bond token
-    Bond public bond;
+    ///@notice Address of governance token
+    GovernanceToken public governanceToken;
 
-    ///@notice Date of locking bond token
-    uint256 public bondTokenLockDate;
+    ///@notice Date of locking governance token
+    uint256 public governanceTokenLockDate;
 
-    uint8 internal constant BOND_PRICE_DECIMALS = 6;
+    uint8 internal constant GOVERNANCE_TOKEN_PRICE_DECIMALS = 6;
 
-    ///@notice Price Bond token
-    uint256 public bondPrice = 1000000;
+    ///@notice Price governance token
+    uint256 public governanceTokenPrice = 1000000;
 
     ///@dev Address of UniswapV2Router
     IUniswapV2Router02 internal uniswapRouter;
@@ -41,8 +41,8 @@ contract Investment is OwnablePausable {
     /// @notice An event thats emitted when an invest token denied.
     event InvestTokenDenied(address token);
 
-    /// @notice An event thats emitted when an bond price changed.
-    event BondPriceChanged(uint256 newPrice);
+    /// @notice An event thats emitted when an governance token price changed.
+    event GovernanceTokenPriceChanged(uint256 newPrice);
 
     /// @notice An event thats emitted when an invested token.
     event Invested(address investor, address token, uint256 amount, uint256 reward);
@@ -52,18 +52,18 @@ contract Investment is OwnablePausable {
 
     /**
      * @param _cumulative Address of cumulative token
-     * @param _bond Address of Bond token
+     * @param _governanceToken Address of governance token
      * @param _uniswapRouter Address of UniswapV2Router
      */
     constructor(
         address _cumulative,
-        address _bond,
-        uint256 _bondTokenLockDate,
+        address _governanceToken,
+        uint256 _governanceTokenLockDate,
         address _uniswapRouter
     ) public {
         cumulative = ERC20(_cumulative);
-        bond = Bond(_bond);
-        bondTokenLockDate = _bondTokenLockDate;
+        governanceToken = GovernanceToken(_governanceToken);
+        governanceTokenLockDate = _governanceTokenLockDate;
         uniswapRouter = IUniswapV2Router02(_uniswapRouter);
     }
 
@@ -95,14 +95,14 @@ contract Investment is OwnablePausable {
     }
 
     /**
-     * @notice Update Bond token price
-     * @param newPrice New price of Bond token of USD (6 decimal)
+     * @notice Update governance token price
+     * @param newPrice New price of governance token of USD (6 decimal)
      */
-    function changeBondPrice(uint256 newPrice) external onlyOwner {
-        require(newPrice > 0, "Investment::changeBondPrice: invalid new bond price");
+    function changeGovernanceTokenPrice(uint256 newPrice) external onlyOwner {
+        require(newPrice > 0, "Investment::changeGovernanceTokenPrice: invalid new governance token price");
 
-        bondPrice = newPrice;
-        emit BondPriceChanged(newPrice);
+        governanceTokenPrice = newPrice;
+        emit GovernanceTokenPriceChanged(newPrice);
     }
 
     /**
@@ -139,18 +139,18 @@ contract Investment is OwnablePausable {
 
     /**
      * @param amount Cumulative amount invested
-     * @return Amount bond token after swap
+     * @return Amount governance token after swap
      */
-    function _bondPrice(uint256 amount) internal view returns (uint256) {
+    function _governanceTokenPrice(uint256 amount) internal view returns (uint256) {
         uint256 decimals = cumulative.decimals();
 
-        return amount.mul(10**(18 - decimals + BOND_PRICE_DECIMALS)).div(bondPrice);
+        return amount.mul(10**(18 - decimals + GOVERNANCE_TOKEN_PRICE_DECIMALS)).div(governanceTokenPrice);
     }
 
     /**
      * @param token Invested token
      * @param amount Invested amount
-     * @return Amount bond token after swap
+     * @return Amount governance token after swap
      */
     function price(address token, uint256 amount) external view returns (uint256) {
         require(investmentTokens[token], "Investment::price: invalid investable token");
@@ -160,7 +160,7 @@ contract Investment is OwnablePausable {
             amountOut = _amountOut(token, amount);
         }
 
-        return _bondPrice(amountOut);
+        return _governanceTokenPrice(amountOut);
     }
 
     /**
@@ -170,20 +170,20 @@ contract Investment is OwnablePausable {
      */
     function invest(address token, uint256 amount) external whenNotPaused returns (bool) {
         require(investmentTokens[token], "Investment::invest: invalid investable token");
-        uint256 reward = _bondPrice(amount);
+        uint256 reward = _governanceTokenPrice(amount);
 
         ERC20(token).safeTransferFrom(msg.sender, address(this), amount);
 
         if (token != address(cumulative)) {
             uint256 amountOut = _amountOut(token, amount);
             require(amountOut != 0, "Investment::invest: liquidity pool is empty");
-            reward = _bondPrice(amountOut);
+            reward = _governanceTokenPrice(amountOut);
 
             ERC20(token).safeApprove(address(uniswapRouter), amount);
             uniswapRouter.swapExactTokensForTokens(amount, amountOut, _path(token), address(this), block.timestamp);
         }
 
-        bond.transferLock(msg.sender, reward, bondTokenLockDate);
+        governanceToken.transferLock(msg.sender, reward, governanceTokenLockDate);
 
         emit Invested(msg.sender, token, amount, reward);
         return true;
@@ -195,17 +195,17 @@ contract Investment is OwnablePausable {
     function investETH() external payable whenNotPaused returns (bool) {
         address token = uniswapRouter.WETH();
         require(investmentTokens[token], "Investment::investETH: invalid investable token");
-        uint256 reward = _bondPrice(msg.value);
+        uint256 reward = _governanceTokenPrice(msg.value);
 
         if (token != address(cumulative)) {
             uint256 amountOut = _amountOut(token, msg.value);
             require(amountOut != 0, "Investment::invest: liquidity pool is empty");
-            reward = _bondPrice(amountOut);
+            reward = _governanceTokenPrice(amountOut);
 
             uniswapRouter.swapExactETHForTokens{value: msg.value}(amountOut, _path(token), address(this), block.timestamp);
         }
 
-        bond.transferLock(msg.sender, reward, bondTokenLockDate);
+        governanceToken.transferLock(msg.sender, reward, governanceTokenLockDate);
 
         emit Invested(msg.sender, token, msg.value, reward);
         return true;

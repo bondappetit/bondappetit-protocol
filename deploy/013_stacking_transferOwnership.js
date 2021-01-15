@@ -2,21 +2,21 @@ const {migration} = require("../utils/deploy");
 
 module.exports = migration("Staking", async (d) => {
   const governor = d.getGovernor().address;
-  const [abt, bond] = await d.deployed("ABT", "Bond");
+  const [stable, gov] = await d.deployed("StableToken", "GovernanceToken");
   const blocksPerMinute = 4;
   const rewardingTokens = [
     {
       name: "GovStaking",
       distributor: governor,
-      reward: bond.address,
-      staking: bond.address,
+      reward: gov.address,
+      staking: gov.address,
       duration: blocksPerMinute * 60 * 24 * 60, // 2 months
     },
     {
       name: "StableStaking",
       distributor: governor,
-      reward: bond.address,
-      staking: abt.address,
+      reward: gov.address,
+      staking: stable.address,
       duration: blocksPerMinute * 60 * 24 * 60, // 2 months
     },
   ];
@@ -39,11 +39,11 @@ module.exports = migration("Staking", async (d) => {
 
   if (networkName === "development") return;
 
-  await d.send("Bond", "transferOwnership", [timelock.address]);
+  await d.send("GovernanceToken", "transferOwnership", [timelock.address]);
   await d.send("Investment", "transferOwnership", [timelock.address]);
   await d.send("Vesting", "transferOwnership", [timelock.address]);
   await d.send("Treasury", "transferOwnership", [timelock.address]);
   await d.send("Issuer", "transferOwnership", [timelock.address]);
-  await d.send("ABT", "transferOwnership", [issuer.address]);
+  await d.send("StableToken", "transferOwnership", [issuer.address]);
   await d.send("Market", "transferOwnership", [timelock.address]);
 });
