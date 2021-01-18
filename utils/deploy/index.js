@@ -1,5 +1,6 @@
 const networks = require("../../networks");
-const web3 = require("web3");
+const hardhat = require("hardhat");
+const Web3 = require("web3");
 
 class Deployer {
   static GAS_LIMIT = 6000000;
@@ -23,6 +24,7 @@ class Deployer {
     if (!this.network) {
       throw new Error(`Network configuration for "${chainId}" not found`);
     }
+    this.web3 = new Web3(hardhat.network.config.url);
     this.totalCost = 0;
 
     console.log(
@@ -40,6 +42,13 @@ Network id: ${this.network.networkId}
     return this.network.accounts.Governor;
   }
 
+  getSendOptions() {
+    return {
+      from: this.getGovernor().address,
+      gasLimit: Deployer.GAS_LIMIT,
+    };
+  }
+
   start(name) {
     console.log(
       `${name}
@@ -49,19 +58,20 @@ Network id: ${this.network.networkId}
   }
 
   async _addCost(gas) {
-    this.totalCost = web3.utils
+    this.totalCost = Web3.utils
       .toBN(this.totalCost)
       .add(
-        web3.utils.toBN(gas).mul(web3.utils.toBN(this.getNetwork().gasPrice))
+        Web3.utils.toBN(gas).mul(Web3.utils.toBN(this.getNetwork().gasPrice))
       )
       .toString();
   }
 
   async deploy(contract, options = {}) {
-    console.log(`=== Deploying "${contract}(${(options.args || []).join(", ")})" ===`);
+    console.log(
+      `=== Deploying "${contract}(${(options.args || []).join(", ")})" ===`
+    );
     const tx = await this.deployments.deploy(contract, {
-      from: this.getGovernor().address,
-      gasLimit: Deployer.GAS_LIMIT,
+      ...this.getSendOptions(),
       ...options,
     });
     await this._addCost(tx.receipt.gasUsed.toString());
@@ -71,7 +81,7 @@ Network id: ${this.network.networkId}
 > block number: ${tx.receipt.blockNumber}
 > account: ${tx.receipt.from}
 > gas used: ${tx.receipt.gasUsed.toString()}
-> total cost: ${web3.utils.fromWei(this.totalCost, "ether")} ETH
+> total cost: ${Web3.utils.fromWei(this.totalCost, "ether")} ETH
 `);
 
     return tx;
@@ -79,8 +89,7 @@ Network id: ${this.network.networkId}
 
   async fetchIfDifferent(contract, options = {}) {
     return this.deployments.fetchIfDifferent(contract, {
-      from: this.getGovernor().address,
-      gasLimit: Deployer.GAS_LIMIT,
+      ...this.getSendOptions(),
       ...options,
     });
   }
@@ -88,6 +97,18 @@ Network id: ${this.network.networkId}
   async deployed(...contracts) {
     return Promise.all(
       contracts.map((contract) => this.deployments.get(contract))
+    );
+  }
+
+  async contract(...contracts) {
+    const networkContracts = this.getNetwork().contracts;
+
+    return contracts.map(
+      (contractName) =>
+        new this.web3.eth.Contract(
+          networkContracts[contractName].abi,
+          networkContracts[contractName].address
+        )
     );
   }
 
@@ -100,8 +121,7 @@ Network id: ${this.network.networkId}
     const tx = await this.deployments.execute(
       contract,
       {
-        from: this.getGovernor().address,
-        gasLimit: Deployer.GAS_LIMIT,
+        ...this.getSendOptions(),
         ...options,
       },
       method,
@@ -114,7 +134,7 @@ Network id: ${this.network.networkId}
 > block number: ${tx.blockNumber}
 > account: ${tx.from}
 > gas used: ${tx.gasUsed.toString()}
-> total cost: ${web3.utils.fromWei(this.totalCost, "ether")} ETH
+> total cost: ${Web3.utils.fromWei(this.totalCost, "ether")} ETH
 `);
 
     return tx;

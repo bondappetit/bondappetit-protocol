@@ -68,6 +68,21 @@
       "voting": true
     },
     {
+      "path": "deployments/%network%/UsdcGovLPStaking.json",
+      "name": "UsdcGovLPStaking",
+      "voting": true
+    },
+    {
+      "path": "deployments/%network%/UsdcStableLPStaking.json",
+      "name": "UsdcStableLPStaking",
+      "voting": true
+    },
+    {
+      "path": "deployments/%network%/GovStableLPStaking.json",
+      "name": "GovStableLPStaking",
+      "voting": true
+    },
+    {
       "path": "deployments/%network%/Budget.json",
       "name": "Budget",
       "voting": true
