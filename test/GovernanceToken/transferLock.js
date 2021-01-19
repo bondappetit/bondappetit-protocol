@@ -47,7 +47,7 @@ contract("GovernanceToken.transferLock", ({web3, artifacts}) => {
     await instance.methods.transfer(governor, 2).send({from: lockedAcc});
   });
 
-  it("transferLocK: should revert tx if change lock date", async () => {
+  it("transferLock: should revert tx if change lock date", async () => {
     const instance = await artifacts.require("GovernanceToken");
     const [, lockedAcc] = artifacts.accounts;
 

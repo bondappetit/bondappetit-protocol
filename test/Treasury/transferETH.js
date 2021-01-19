@@ -44,7 +44,7 @@ contract("Treasury.transferETH", ({web3, artifacts}) => {
 
     await assertions.reverts(
       instance.methods.transferETH(governor, 10).send({from: notOwner}),
-      "Ownable: caller is not the owner"
+      "AccessControl: caller is not allowed"
     );
   });
 });

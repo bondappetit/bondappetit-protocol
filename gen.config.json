@@ -48,8 +48,18 @@
       "voting": false
     },
     {
+      "path": "deployments/%network%/StableTokenDepositaryBalanceView.json",
+      "name": "StableTokenDepositaryBalanceView",
+      "voting": true
+    },
+    {
       "path": "deployments/%network%/Issuer.json",
       "name": "Issuer",
+      "voting": true
+    },
+    {
+      "path": "deployments/%network%/CollateralMarket.json",
+      "name": "Market",
       "voting": true
     },
     {
@@ -126,6 +136,9 @@
       "path": "artifacts/@openzeppelin/contracts/token/ERC20/IERC20.sol/IERC20.json"
     },
     {
+      "path": "artifacts/@openzeppelin/contracts/token/ERC20/ERC20.sol/ERC20.json"
+    },
+    {
       "path": "artifacts/contracts/uniswap/IUniswapAnchoredView.sol/IUniswapAnchoredView.json"
     },
     {
@@ -144,7 +157,11 @@
     {
       "path": "artifacts/contracts/oracle/DepositaryOracle.sol/DepositaryOracle.json"
     },
+    {
+      "path": "artifacts/contracts/oracle/StableTokenDepositaryBalanceView.sol/StableTokenDepositaryBalanceView.json"
+    },
     {"path": "artifacts/contracts/Issuer.sol/Issuer.json"},
+    {"path": "artifacts/contracts/CollateralMarket.sol/CollateralMarket.json"},
     {"path": "artifacts/contracts/Market.sol/Market.json"},
     {"path": "artifacts/contracts/Staking.sol/Staking.json"},
     {"path": "artifacts/contracts/Budget.sol/Budget.json"},
