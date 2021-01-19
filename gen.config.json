@@ -144,6 +144,9 @@
     {
       "path": "artifacts/contracts/uniswap/IUniswapV2Router02.sol/IUniswapV2Router02.json"
     },
+    {
+      "path": "artifacts/contracts/uniswap/IUniswapV2Pair.sol/IUniswapV2Pair.json"
+    },
     {"path": "artifacts/contracts/Timelock.sol/Timelock.json"},
     {"path": "artifacts/contracts/GovernanceToken.sol/GovernanceToken.json"},
     {"path": "artifacts/contracts/StableToken.sol/StableToken.json"},
