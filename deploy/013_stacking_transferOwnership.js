@@ -51,48 +51,49 @@ module.exports = migration("Staking", async (d) => {
       .createPair(gov.address, stable.address)
       .send(d.getSendOptions()),
   ]);
+  const duration = blocksPerMinute * 60 * 24 * 28; // 4 weeks
   const rewardingTokens = [
     {
       name: "GovStaking",
       distributor: governor,
       reward: gov.address,
       staking: gov.address,
-      duration: blocksPerMinute * 60 * 24 * 60, // 2 months
+      duration,
     },
     {
       name: "StableStaking",
       distributor: governor,
       reward: gov.address,
       staking: stable.address,
-      duration: blocksPerMinute * 60 * 24 * 60, // 2 months
+      duration,
     },
     {
       name: "UsdcGovLPStaking",
       distributor: governor,
       reward: gov.address,
       staking: UsdcGovLPAddress,
-      duration: blocksPerMinute * 60 * 24 * 60, // 2 months
+      duration,
     },
     {
       name: "WethGovLPStaking",
       distributor: governor,
       reward: gov.address,
       staking: WethGovLPAddress,
-      duration: blocksPerMinute * 60 * 24 * 60, // 2 months
+      duration,
     },
     {
       name: "UsdcStableLPStaking",
       distributor: governor,
       reward: gov.address,
       staking: UsdcStableLPAddress,
-      duration: blocksPerMinute * 60 * 24 * 60, // 2 months
+      duration,
     },
     {
       name: "GovStableLPStaking",
       distributor: governor,
       reward: gov.address,
       staking: GovStableLPAddress,
-      duration: blocksPerMinute * 60 * 24 * 60, // 2 months
+      duration,
     },
   ];
 
