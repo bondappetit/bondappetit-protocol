@@ -15,8 +15,9 @@ async function main() {
       UsdcGovLPStaking,
       UsdcStableLPStaking,
       GovStableLPStaking,
+      WethGovLPStaking,
     },
-    assets: {USDC, Governance},
+    assets: {USDC, Governance, WETH},
   } = development;
   const gov = new web3.eth.Contract(Stable.abi, Governance.address);
   const stable = new web3.eth.Contract(Stable.abi, Stable.address);
@@ -41,6 +42,7 @@ async function main() {
   await addStakingReward(UsdcGovLPStaking, amount);
   await addStakingReward(UsdcStableLPStaking, amount);
   await addStakingReward(GovStableLPStaking, amount);
+  await addStakingReward(WethGovLPStaking, amount);
 
   const uniswapRouter = new web3.eth.Contract(
     UniswapRouter.abi,
@@ -50,6 +52,7 @@ async function main() {
     UniswapFactory.abi,
     UniswapFactory.address
   );
+
   async function addLiquidity(tokenA, tokenB, amountA, amountB) {
     const lpAddress = await uniswapFactory.methods
       .getPair(tokenA._address, tokenB._address)
@@ -85,8 +88,28 @@ async function main() {
     console.log(`Price for ${tokenASymbol}-${tokenBSymbol}: ${price}`);
   }
 
+  async function addLiquidityETH(token, amount, amountETH) {
+    const lpAddress = await uniswapFactory.methods
+      .getPair(WETH.address, token._address)
+      .call();
+    console.log(`Liquidity pool pair address: ${lpAddress}`);
+
+    await token.methods
+      .approve(UniswapRouter.address, amount)
+      .send({from: governor});
+    await uniswapRouter.methods
+      .addLiquidityETH(token._address, amount, "0", "0", governor, Date.now())
+      .send({value: amountETH, from: governor, gas: 6000000});
+
+    const tokenSymbol = await token.methods.symbol().call();
+    const [, price] = await uniswapRouter.methods
+      .getAmountsOut(amount, [token._address, WETH.address])
+      .call();
+    console.log(`Price for ${tokenSymbol}-${WETH.symbol}: ${price}`);
+  }
+
   await gov.methods
-    .mint(governor, "2000000000000000000")
+    .mint(governor, "3000000000000000000")
     .send({from: governor});
   await stable.methods
     .mint(governor, "2000000000000000000")
@@ -94,6 +117,7 @@ async function main() {
   await addLiquidity(gov, usdc, "1000000000000000000", "1000000");
   await addLiquidity(stable, usdc, "1000000000000000000", "1000000");
   await addLiquidity(gov, stable, "1000000000000000000", "1000000000000000000");
+  await addLiquidityETH(gov, "1000000000000000000", "1000000000000000000");
 }
 
 main()

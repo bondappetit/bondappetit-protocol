@@ -2,7 +2,7 @@ const {migration} = require("../utils/deploy");
 
 module.exports = migration("Staking", async (d) => {
   const {
-    assets: {USDC},
+    assets: {USDC, WETH},
   } = d.getNetwork();
   const governor = d.getGovernor().address;
   const [stable, gov] = await d.deployed("StableToken", "GovernanceToken");
@@ -13,6 +13,13 @@ module.exports = migration("Staking", async (d) => {
       events: {
         PairCreated: {
           returnValues: {pair: UsdcGovLPAddress},
+        },
+      },
+    },
+    {
+      events: {
+        PairCreated: {
+          returnValues: {pair: WethGovLPAddress},
         },
       },
     },
@@ -33,6 +40,9 @@ module.exports = migration("Staking", async (d) => {
   ] = await Promise.all([
     uniswapFactory.methods
       .createPair(USDC.address, gov.address)
+      .send(d.getSendOptions()),
+    uniswapFactory.methods
+      .createPair(WETH.address, gov.address)
       .send(d.getSendOptions()),
     uniswapFactory.methods
       .createPair(USDC.address, stable.address)
@@ -61,6 +71,13 @@ module.exports = migration("Staking", async (d) => {
       distributor: governor,
       reward: gov.address,
       staking: UsdcGovLPAddress,
+      duration: blocksPerMinute * 60 * 24 * 60, // 2 months
+    },
+    {
+      name: "WethGovLPStaking",
+      distributor: governor,
+      reward: gov.address,
+      staking: WethGovLPAddress,
       duration: blocksPerMinute * 60 * 24 * 60, // 2 months
     },
     {
@@ -100,7 +117,9 @@ module.exports = migration("Staking", async (d) => {
   await d.send("Investment", "transferOwnership", [timelock.address]);
   await d.send("Vesting", "transferOwnership", [timelock.address]);
   await d.send("Treasury", "transferOwnership", [timelock.address]);
-  await d.send("StableTokenDepositaryBalanceView", "transferOwnership", [timelock.address]);
+  await d.send("StableTokenDepositaryBalanceView", "transferOwnership", [
+    timelock.address,
+  ]);
   await d.send("Issuer", "transferOwnership", [timelock.address]);
   await d.send("StableToken", "transferOwnership", [issuer.address]);
   await d.send("CollateralAddress", "transferOwnership", [timelock.address]);

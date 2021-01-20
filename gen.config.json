@@ -93,6 +93,11 @@
       "voting": true
     },
     {
+      "path": "deployments/%network%/WethGovLPStaking.json",
+      "name": "WethGovLPStaking",
+      "voting": true
+    },
+    {
       "path": "deployments/%network%/Budget.json",
       "name": "Budget",
       "voting": true
