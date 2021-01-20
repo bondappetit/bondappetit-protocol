@@ -20,14 +20,6 @@ contract("Investment.investETH", ({web3, artifacts}) => {
       "GovernanceToken"
     );
 
-    await govContract.methods
-      .mint(
-        instance._address,
-        bn("10000000000")
-          .mul(bn("10").pow(bn("18")))
-          .toString()
-      )
-      .send({from: governor});
     const amountIn = "1000000000000000000";
     const usdcInvestmentBalanceStart = await usdcContract.methods
       .balanceOf(instance._address)
@@ -39,6 +31,9 @@ contract("Investment.investETH", ({web3, artifacts}) => {
       .getAmountsOut(amountIn, [WETH.address, USDC.address])
       .call();
     const reward = await instance.methods.price(WETH.address, amountIn).call();
+    await govContract.methods
+      .mint(instance._address, reward)
+      .send({from: governor});
 
     await instance.methods.investETH().send({
       from: investor,

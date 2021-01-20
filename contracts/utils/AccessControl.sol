@@ -21,7 +21,7 @@ contract AccessControl is Ownable {
      * @param member Target address.
      */
     function allowAccess(address member) external onlyOwner {
-        require(!allowed.contains(member) && member != owner(), "AccessControl::allowAccess: member already allowed");
+        require(!allowed.contains(member), "AccessControl::allowAccess: member already allowed");
 
         allowed.add(member);
         emit AccessAllowed(member);
@@ -32,7 +32,6 @@ contract AccessControl is Ownable {
      * @param member Target address.
      */
     function denyAccess(address member) external onlyOwner {
-        require(member != owner(), "AccessControl::denyAccess: it is impossible to deny access to the owner");
         require(allowed.contains(member), "AccessControl::denyAccess: member already denied");
 
         allowed.remove(member);
@@ -48,7 +47,6 @@ contract AccessControl is Ownable {
         for (uint256 i = 0; i < allowed.length(); i++) {
             result[i] = allowed.at(i);
         }
-        result[allowed.length()] = owner();
 
         return result;
     }

@@ -2,9 +2,9 @@
 pragma solidity ^0.6.0;
 
 import "@openzeppelin/contracts/token/ERC20/ERC20.sol";
-import "@openzeppelin/contracts/access/Ownable.sol";
+import "./utils/AccessControl.sol";
 
-contract StableToken is ERC20, Ownable {
+contract StableToken is ERC20, AccessControl {
     /**
      * @param initialSupply Total supply.
      */
@@ -16,7 +16,7 @@ contract StableToken is ERC20, Ownable {
      * @param account Recipient of created token.
      * @param amount Amount of token to be created.
      */
-    function mint(address account, uint256 amount) public onlyOwner {
+    function mint(address account, uint256 amount) public onlyAllowed {
         _mint(account, amount);
     }
 
@@ -24,7 +24,7 @@ contract StableToken is ERC20, Ownable {
      * @param account Owner of removed token.
      * @param amount Amount of token to be removed.
      */
-    function burn(address account, uint256 amount) public onlyOwner {
+    function burn(address account, uint256 amount) public onlyAllowed {
         _burn(account, amount);
     }
 }

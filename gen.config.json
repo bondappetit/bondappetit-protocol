@@ -59,7 +59,7 @@
     },
     {
       "path": "deployments/%network%/CollateralMarket.json",
-      "name": "Market",
+      "name": "CollateralMarket",
       "voting": true
     },
     {

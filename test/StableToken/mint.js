@@ -38,7 +38,7 @@ contract("StableToken.mint", ({web3, artifacts}) => {
       instance.methods.mint(governor, "100").send({
         from: notOwner,
       }),
-      "Ownable: caller is not the owner"
+      "AccessControl: caller is not allowed"
     );
   });
 });

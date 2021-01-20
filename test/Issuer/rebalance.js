@@ -30,10 +30,6 @@ contract("Issuer.rebalance", ({web3, artifacts}) => {
       "SecurityOracle"
     );
 
-    await stable.methods
-      .transferOwnership(instance._address)
-      .send({from: governor});
-
     const startStableTokenTotalSupply = await stable.methods
       .totalSupply()
       .call();

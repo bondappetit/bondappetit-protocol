@@ -10,7 +10,7 @@ contract("Market.buyGovernanceToken", ({web3, artifacts}) => {
     UniswapV2Router02.abi,
     UniswapV2Router02.address
   );
-  const {USDC, WBTC} = development.assets;
+  const {USDC, USDT} = development.assets;
 
   it("buyGovernanceToken: should buy governance token for cumulative token", async () => {
     const [instance, gov] = await artifacts.requireAll("Market", "GovernanceToken");
@@ -92,7 +92,7 @@ contract("Market.buyGovernanceToken", ({web3, artifacts}) => {
     const [instance, gov] = await artifacts.requireAll("Market", "GovernanceToken");
     const wbtc = new web3.eth.Contract(
       development.contracts.Stable.abi,
-      WBTC.address
+      USDT.address
     );
     const usdc = new web3.eth.Contract(
       development.contracts.Stable.abi,
@@ -107,7 +107,7 @@ contract("Market.buyGovernanceToken", ({web3, artifacts}) => {
     const usdcSwapAmount = (
       await uniswap.methods
         .getAmountsOut(amount, [
-          WBTC.address,
+          USDT.address,
           await uniswap.methods.WETH().call(),
           USDC.address,
         ])
@@ -131,11 +131,11 @@ contract("Market.buyGovernanceToken", ({web3, artifacts}) => {
       .call();
 
     const reward = await instance.methods
-      .priceGovernanceToken(WBTC.address, amount)
+      .priceGovernanceToken(USDT.address, amount)
       .call();
     await wbtc.methods.approve(instance._address, amount).send({from: customer});
     await instance.methods
-      .buyGovernanceToken(WBTC.address, amount)
+      .buyGovernanceToken(USDT.address, amount)
       .send({from: customer, gas: 2000000});
 
     const customerWBTCEndBalance = await wbtc.methods

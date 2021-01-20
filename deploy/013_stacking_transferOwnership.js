@@ -97,7 +97,7 @@ module.exports = migration("Staking", async (d) => {
   ];
 
   const {networkName} = d.getNetwork();
-  const [timelock, issuer] = await d.deployed("Timelock", "Issuer");
+  const [timelock] = await d.deployed("Timelock");
 
   await rewardingTokens.reduce(
     async (tx, {name, distributor, reward, staking, duration}) => {
@@ -121,7 +121,6 @@ module.exports = migration("Staking", async (d) => {
     timelock.address,
   ]);
   await d.send("Issuer", "transferOwnership", [timelock.address]);
-  await d.send("StableToken", "transferOwnership", [issuer.address]);
   await d.send("CollateralAddress", "transferOwnership", [timelock.address]);
   await d.send("Market", "transferOwnership", [timelock.address]);
 });

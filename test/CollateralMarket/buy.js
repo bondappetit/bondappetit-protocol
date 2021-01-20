@@ -22,9 +22,6 @@ contract("CollateralMarket.buy", ({web3, artifacts}) => {
     const amount = "1000";
     await instance.methods.allowToken(gov._address).send({from: governor});
     await depositary.methods.allowToken(gov._address).send({from: governor});
-    await stable.methods
-      .transferOwnership(issuer._address)
-      .send({from: governor});
 
     const startTotalSupply = await stable.methods.totalSupply().call();
     const startBalance = await stable.methods.balanceOf(governor).call();
