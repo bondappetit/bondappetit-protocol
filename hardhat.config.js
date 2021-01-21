@@ -1,3 +1,4 @@
+require('@nomiclabs/hardhat-web3');
 require("hardhat-deploy");
 require("dotenv").config();
 const networks = require("./networks");
