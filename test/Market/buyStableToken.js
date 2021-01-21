@@ -10,7 +10,7 @@ contract("Market.buyStableToken", ({web3, artifacts}) => {
     UniswapV2Router02.abi,
     UniswapV2Router02.address
   );
-  const {USDC, WBTC} = development.assets;
+  const {USDC, USDT} = development.assets;
 
   it("buyStableToken: should buy stable token for cumulative token", async () => {
     const [instance, stable] = await artifacts.requireAll("Market", "StableToken");
@@ -86,7 +86,7 @@ contract("Market.buyStableToken", ({web3, artifacts}) => {
     const [instance, stable] = await artifacts.requireAll("Market", "StableToken");
     const wbtc = new web3.eth.Contract(
       development.contracts.Stable.abi,
-      WBTC.address
+      USDT.address
     );
     const usdc = new web3.eth.Contract(
       development.contracts.Stable.abi,
@@ -101,7 +101,7 @@ contract("Market.buyStableToken", ({web3, artifacts}) => {
     const usdcSwapAmount = (
       await uniswap.methods
         .getAmountsOut(amount, [
-          WBTC.address,
+          USDT.address,
           await uniswap.methods.WETH().call(),
           USDC.address,
         ])
@@ -122,12 +122,12 @@ contract("Market.buyStableToken", ({web3, artifacts}) => {
       .balanceOf(instance._address)
       .call();
 
-    const reward = await instance.methods.priceStableToken(WBTC.address, amount).call();
+    const reward = await instance.methods.priceStableToken(USDT.address, amount).call();
     await wbtc.methods
       .approve(instance._address, amount)
       .send({from: customer});
     await instance.methods
-      .buyStableToken(WBTC.address, amount)
+      .buyStableToken(USDT.address, amount)
       .send({from: customer, gas: 2000000});
 
     const customerWBTCEndBalance = await wbtc.methods

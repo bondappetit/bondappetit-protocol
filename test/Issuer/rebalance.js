@@ -30,10 +30,6 @@ contract("Issuer.rebalance", ({web3, artifacts}) => {
       "SecurityOracle"
     );
 
-    await stable.methods
-      .transferOwnership(instance._address)
-      .send({from: governor});
-
     const startStableTokenTotalSupply = await stable.methods
       .totalSupply()
       .call();
@@ -63,7 +59,7 @@ contract("Issuer.rebalance", ({web3, artifacts}) => {
       "Invalid issuer balance"
     );
 
-    await instance.methods.rebalance().send({from: governor});
+    await instance.methods.rebalance().send({from: governor, gas: 6000000});
 
     const endStableTokenTotalSupply = await stable.methods.totalSupply().call();
     const endStableTokenTreasuryBalance = await stable.methods
@@ -94,7 +90,7 @@ contract("Issuer.rebalance", ({web3, artifacts}) => {
     await treasury.methods
       .transfer(stable._address, instance._address, expectedAmount)
       .send({from: governor});
-    await instance.methods.rebalance().send({from: governor});
+    await instance.methods.rebalance().send({from: governor, gas: 6000000});
 
     const endStableTokenTotalSupply = await stable.methods.totalSupply().call();
     const endStableTokenTreasuryBalance = await stable.methods

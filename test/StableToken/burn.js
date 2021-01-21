@@ -41,7 +41,7 @@ contract("StableToken.burn", ({web3, artifacts}) => {
       instance.methods.burn(governor, "100").send({
         from: notOwner,
       }),
-      "Ownable: caller is not the owner"
+      "AccessControl: caller is not allowed"
     );
   });
 });

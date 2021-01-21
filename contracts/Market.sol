@@ -112,6 +112,7 @@ contract Market is OwnablePausable {
     /**
      * @notice Add token to tokens white list.
      * @param token Allowable token.
+     * @param symbol Symbol target token of price oracle contract.
      */
     function allowToken(address token, string calldata symbol) external onlyOwner {
         allowedTokens[token] = symbol;

@@ -35,7 +35,7 @@ contract("Treasury.approve", ({web3, artifacts}) => {
 
     await assertions.reverts(
       instance.methods.approve(governor, governor, 10).send({from: notOwner}),
-      "Ownable: caller is not the owner"
+      "AccessControl: caller is not allowed"
     );
   });
 });

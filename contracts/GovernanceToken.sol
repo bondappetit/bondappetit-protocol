@@ -20,7 +20,7 @@ contract GovernanceToken is IERC20, Ownable {
     uint8 public decimals = 18;
 
     /// @notice Total number of tokens in circulation
-    uint256 public override totalSupply = 10000000e18; // 10 million tokens
+    uint256 public override totalSupply = 100000000e18; // 100 million tokens
 
     /// @dev Allowance amounts on behalf of others
     mapping(address => mapping(address => uint96)) internal allowances;
