@@ -122,6 +122,6 @@ module.exports = migration("Staking", async (d) => {
     timelock.address,
   ]);
   await d.send("Issuer", "transferOwnership", [timelock.address]);
-  await d.send("CollateralAddress", "transferOwnership", [timelock.address]);
+  await d.send("CollateralMarket", "transferOwnership", [timelock.address]);
   await d.send("Market", "transferOwnership", [timelock.address]);
 });
