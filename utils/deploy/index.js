@@ -1,6 +1,5 @@
 const networks = require("../../networks");
-const hardhat = require("hardhat");
-const Web3 = require("web3");
+const {Web3, web3} = require("hardhat");
 
 class Deployer {
   static GAS_LIMIT = 6000000;
@@ -24,7 +23,7 @@ class Deployer {
     if (!this.network) {
       throw new Error(`Network configuration for "${chainId}" not found`);
     }
-    this.web3 = new Web3(hardhat.network.config.url);
+    this.web3 = web3;
     this.totalCost = 0;
 
     console.log(
@@ -58,11 +57,9 @@ Network id: ${this.network.networkId}
   }
 
   async _addCost(gas) {
-    this.totalCost = Web3.utils
-      .toBN(this.totalCost)
-      .add(
-        Web3.utils.toBN(gas).mul(Web3.utils.toBN(this.getNetwork().gasPrice))
-      )
+    const bn = Web3.utils.toBN.bind(Web3.utils);
+    this.totalCost = bn(this.totalCost)
+      .add(bn(gas).mul(bn(this.getNetwork().gasPrice)))
       .toString();
   }
 
@@ -112,21 +109,35 @@ Network id: ${this.network.networkId}
     );
   }
 
-  async call(contract, methods, args, options = {}) {
-    return this.deployments.read(contract, options, methods, ...args);
+  async call(contractName, method, args, options = {}) {
+    if (contractName[0] === "@") {
+      const [contract] = await this.contract(contractName.slice(1));
+      return contract.methods[method](...args).call(options);
+    } else {
+      return this.deployments.read(contractName, options, method, ...args);
+    }
   }
 
-  async send(contract, method, args, options = {}) {
-    console.log(`=== Send "${contract}.${method}(${args.join(", ")})" ===`);
-    const tx = await this.deployments.execute(
-      contract,
-      {
+  async send(contractName, method, args, options = {}) {
+    console.log(`=== Send "${contractName}.${method}(${args.join(", ")})" ===`);
+    let tx;
+    if (contractName[0] === "@") {
+      const [contract] = await this.contract(contractName.slice(1));
+      tx = await contract.methods[method](...args).send({
         ...this.getSendOptions(),
         ...options,
-      },
-      method,
-      ...args
-    );
+      });
+    } else {
+      tx = await this.deployments.execute(
+        contractName,
+        {
+          ...this.getSendOptions(),
+          ...options,
+        },
+        method,
+        ...args
+      );
+    }
     await this._addCost(tx.gasUsed.toString());
 
     console.log(`> transaction hash: ${tx.transactionHash}

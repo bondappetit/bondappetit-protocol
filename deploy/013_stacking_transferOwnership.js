@@ -6,51 +6,47 @@ module.exports = migration("Staking", async (d) => {
   } = d.getNetwork();
   const governor = d.getGovernor().address;
   const [stable, gov] = await d.deployed("StableToken", "GovernanceToken");
-  const [uniswapFactory] = await d.contract("UniswapV2Factory");
-  const blocksPerMinute = 4;
-  const [
-    {
-      events: {
-        PairCreated: {
-          returnValues: {pair: UsdcGovLPAddress},
-        },
+  const {
+    events: {
+      PairCreated: {
+        returnValues: {pair: UsdcGovLPAddress},
       },
     },
-    {
-      events: {
-        PairCreated: {
-          returnValues: {pair: WethGovLPAddress},
-        },
-      },
-    },
-    {
-      events: {
-        PairCreated: {
-          returnValues: {pair: UsdcStableLPAddress},
-        },
-      },
-    },
-    {
-      events: {
-        PairCreated: {
-          returnValues: {pair: GovStableLPAddress},
-        },
-      },
-    },
-  ] = await Promise.all([
-    uniswapFactory.methods
-      .createPair(USDC.address, gov.address)
-      .send(d.getSendOptions()),
-    uniswapFactory.methods
-      .createPair(WETH.address, gov.address)
-      .send(d.getSendOptions()),
-    uniswapFactory.methods
-      .createPair(USDC.address, stable.address)
-      .send(d.getSendOptions()),
-    uniswapFactory.methods
-      .createPair(gov.address, stable.address)
-      .send(d.getSendOptions()),
+  } = await d.send("@UniswapV2Factory", "createPair", [
+    USDC.address,
+    gov.address,
   ]);
+  const {
+    events: {
+      PairCreated: {
+        returnValues: {pair: WethGovLPAddress},
+      },
+    },
+  } = await d.send("@UniswapV2Factory", "createPair", [
+    WETH.address,
+    gov.address,
+  ]);
+  const {
+    events: {
+      PairCreated: {
+        returnValues: {pair: UsdcStableLPAddress},
+      },
+    },
+  } = await d.send("@UniswapV2Factory", "createPair", [
+    USDC.address,
+    stable.address,
+  ]);
+  const {
+    events: {
+      PairCreated: {
+        returnValues: {pair: GovStableLPAddress},
+      },
+    },
+  } = await d.send("@UniswapV2Factory", "createPair", [
+    gov.address,
+    stable.address,
+  ]);
+  const blocksPerMinute = 4;
   const duration = blocksPerMinute * 60 * 24 * 28; // 4 weeks
   const rewardingTokens = [
     {
