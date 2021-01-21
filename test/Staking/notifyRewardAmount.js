@@ -19,7 +19,7 @@ contract("Staking.notifyRewardAmount", ({web3, artifacts}) => {
     const endRewardRate = await instance.methods.rewardRate().call();
     assert.equal(
       endRewardRate,
-      '2',
+      '6',
       "Invalid reward rate"
     );
   });
