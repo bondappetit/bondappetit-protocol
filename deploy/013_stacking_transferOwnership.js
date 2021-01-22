@@ -1,51 +1,59 @@
 const {migration} = require("../utils/deploy");
 
-module.exports = migration("Staking", async (d) => {
+async function createUniswapPair(d, token0, token1) {
   const {
-    assets: {USDC, WETH},
+    events: {
+      PairCreated: {
+        returnValues: {pair},
+      },
+    },
+  } = await d.send("@UniswapV2Factory", "createPair", [token0, token1]);
+
+  return pair;
+}
+
+module.exports = migration("UsdcStableLPStaking", async (d) => {
+  let {
+    assets: {USDC, WETH, USDN},
   } = d.getNetwork();
   const governor = d.getGovernor().address;
+
+  if (!USDN) {
+    [USDN] = await d.deployed("USDN");
+  }
+
   const [stable, gov] = await d.deployed("StableToken", "GovernanceToken");
-  const {
-    events: {
-      PairCreated: {
-        returnValues: {pair: UsdcGovLPAddress},
-      },
-    },
-  } = await d.send("@UniswapV2Factory", "createPair", [
+  const UsdcGovLPAddress = await createUniswapPair(
+    d,
     USDC.address,
-    gov.address,
-  ]);
-  const {
-    events: {
-      PairCreated: {
-        returnValues: {pair: WethGovLPAddress},
-      },
-    },
-  } = await d.send("@UniswapV2Factory", "createPair", [
+    gov.address
+  );
+  const WethGovLPAddress = await createUniswapPair(
+    d,
     WETH.address,
-    gov.address,
-  ]);
-  const {
-    events: {
-      PairCreated: {
-        returnValues: {pair: UsdcStableLPAddress},
-      },
-    },
-  } = await d.send("@UniswapV2Factory", "createPair", [
+    gov.address
+  );
+  const UsdnGovLPAddress = await createUniswapPair(
+    d,
+    USDN.address,
+    gov.address
+  );
+  const UsdcStableLPAddress = await createUniswapPair(
+    d,
     USDC.address,
-    stable.address,
-  ]);
-  const {
-    events: {
-      PairCreated: {
-        returnValues: {pair: GovStableLPAddress},
-      },
-    },
-  } = await d.send("@UniswapV2Factory", "createPair", [
+    stable.address
+  );
+  const UsdnStableLPAddress = await createUniswapPair(
+    d,
+    USDN.address,
+    stable.address
+  );
+  const GovStableLPAddress = await createUniswapPair(
+    d,
     gov.address,
-    stable.address,
-  ]);
+    stable.address
+  );
+
   const blocksPerMinute = 4;
   const duration = blocksPerMinute * 60 * 24 * 28; // 4 weeks
   const rewardingTokens = [
@@ -78,10 +86,24 @@ module.exports = migration("Staking", async (d) => {
       duration,
     },
     {
+      name: "UsdnGovLPStaking",
+      distributor: governor,
+      reward: gov.address,
+      staking: UsdnGovLPAddress,
+      duration,
+    },
+    {
       name: "UsdcStableLPStaking",
       distributor: governor,
       reward: gov.address,
       staking: UsdcStableLPAddress,
+      duration,
+    },
+    {
+      name: "UsdnStableLPStaking",
+      distributor: governor,
+      reward: gov.address,
+      staking: UsdnStableLPAddress,
       duration,
     },
     {

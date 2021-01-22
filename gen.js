@@ -27,21 +27,28 @@ async function writeJson(path, data) {
   const config = JSON.parse(await fs.readFile(configPath));
 
   const [assets, contracts, abiContracts] = await Promise.all([
-    Promise.all(
-      (config.assets || []).map(
-        async ({path, key, name, symbol, decimals, investing}) => {
+    (config.assets || []).reduce(
+      async (assets, {path, key, name, symbol, decimals, investing}) => {
+        const res = await assets;
+        try {
           const {address} = await loadJson(path.replace("%network%", network));
 
-          return {
-            key,
-            name,
-            address,
-            symbol,
-            decimals,
-            investing,
-          };
+          return [
+            ...res,
+            {
+              key,
+              name,
+              address,
+              symbol,
+              decimals,
+              investing,
+            },
+          ];
+        } catch (e) {
+          return res; // Use preset data if asset not deployed (see USDN token)
         }
-      )
+      },
+      Promise.resolve([])
     ),
     Promise.all(
       (config.contracts || []).map(async ({path, key, name, voting}) => {

@@ -14,6 +14,8 @@ async function main() {
       StableStaking,
       UsdcGovLPStaking,
       UsdcStableLPStaking,
+      UsdnGovLPStaking,
+      UsdnStableLPStaking,
       GovStableLPStaking,
       WethGovLPStaking,
     },
@@ -41,6 +43,8 @@ async function main() {
   await addStakingReward(StableStaking, amount);
   await addStakingReward(UsdcGovLPStaking, amount);
   await addStakingReward(UsdcStableLPStaking, amount);
+  await addStakingReward(UsdnGovLPStaking, amount);
+  await addStakingReward(UsdnStableLPStaking, amount);
   await addStakingReward(GovStableLPStaking, amount);
   await addStakingReward(WethGovLPStaking, amount);
 

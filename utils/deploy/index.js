@@ -157,10 +157,10 @@ function migration(contract, handler) {
     const d = Deployer.getInstance(deployments, await getChainId());
     d.start(contract);
 
-    const {differences, address} = await d.fetchIfDifferent(contract);
-    if (differences) return handler(d);
+    const deployed = await deployments.getOrNull(contract);
+    if (!deployed) return handler(d);
 
-    console.log(`Already deployed: ${address}
+    console.log(`Already deployed: ${deployed.address}
 `);
   };
 }
