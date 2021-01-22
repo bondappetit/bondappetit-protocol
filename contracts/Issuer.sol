@@ -3,7 +3,7 @@ pragma solidity ^0.6.0;
 
 import "@openzeppelin/contracts/math/Math.sol";
 import "@openzeppelin/contracts/math/SafeMath.sol";
-import "./oracle/AgregateDepositaryBalanceView.sol";
+import "./depositary/AgregateDepositaryBalanceView.sol";
 import "./StableToken.sol";
 
 contract Issuer is AgregateDepositaryBalanceView {

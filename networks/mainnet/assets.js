@@ -13,4 +13,11 @@ module.exports = {
     decimals: 6,
     investing: true,
   },
+  USDN: {
+    address: "0x674C6Ad92Fd080e4004b2312b45f796a192D27a0",
+    name: "Neutrino USD",
+    symbol: "USDN",
+    decimals: 18,
+    investing: true,
+  },
 };

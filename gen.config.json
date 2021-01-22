@@ -98,6 +98,16 @@
       "voting": true
     },
     {
+      "path": "deployments/%network%/UsdnGovLPStaking.json",
+      "name": "UsdnGovLPStaking",
+      "voting": true
+    },
+    {
+      "path": "deployments/%network%/UsdnStableLPStaking.json",
+      "name": "UsdnStableLPStaking",
+      "voting": true
+    },
+    {
       "path": "deployments/%network%/Budget.json",
       "name": "Budget",
       "voting": true
@@ -134,6 +144,14 @@
       "symbol": "USDp",
       "decimals": 18,
       "investing": false
+    },
+    {
+      "path": "deployments/%network%/USDN.json",
+      "key": "USDN",
+      "name": "Neutrino USD",
+      "symbol": "USDN",
+      "decimals": 18,
+      "investing": false
     }
   ],
   "abi": [
@@ -160,13 +178,13 @@
     {"path": "artifacts/contracts/Vesting.sol/Vesting.json"},
     {"path": "artifacts/contracts/Treasury.sol/Treasury.json"},
     {
-      "path": "artifacts/contracts/oracle/SecurityOracle.sol/SecurityOracle.json"
+      "path": "artifacts/contracts/depositary/SecurityOracle.sol/SecurityOracle.json"
     },
     {
-      "path": "artifacts/contracts/oracle/DepositaryOracle.sol/DepositaryOracle.json"
+      "path": "artifacts/contracts/depositary/DepositaryOracle.sol/DepositaryOracle.json"
     },
     {
-      "path": "artifacts/contracts/oracle/StableTokenDepositaryBalanceView.sol/StableTokenDepositaryBalanceView.json"
+      "path": "artifacts/contracts/depositary/StableTokenDepositaryBalanceView.sol/StableTokenDepositaryBalanceView.json"
     },
     {"path": "artifacts/contracts/Issuer.sol/Issuer.json"},
     {"path": "artifacts/contracts/CollateralMarket.sol/CollateralMarket.json"},
