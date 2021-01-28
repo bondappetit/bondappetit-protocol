@@ -22,6 +22,7 @@ module.exports = migration("UsdcStableLPStaking", async (d) => {
     [USDN] = await d.deployed("USDN");
   }
 
+  const currentBlock = await d.web3.eth.getBlockNumber();
   const [stable, gov] = await d.deployed("StableToken", "GovernanceToken");
   const UsdcGovLPAddress = await createUniswapPair(
     d,
@@ -55,63 +56,106 @@ module.exports = migration("UsdcStableLPStaking", async (d) => {
   );
 
   const blocksPerMinute = 4;
-  const duration = blocksPerMinute * 60 * 24 * 28; // 4 weeks
+  const weeks4Duration = blocksPerMinute * 60 * 24 * 28;
+  const months6Duration = blocksPerMinute * 60 * 24 * 180;
   const rewardingTokens = [
     {
       name: "GovStaking",
       distributor: governor,
       reward: gov.address,
       staking: gov.address,
-      duration,
+      duration: weeks4Duration,
+      endStakingBlock: 0,
+      startUnstakingBlock: 0,
     },
     {
       name: "StableStaking",
       distributor: governor,
       reward: gov.address,
       staking: stable.address,
-      duration,
+      duration: weeks4Duration,
+      endStakingBlock: 0,
+      startUnstakingBlock: 0,
     },
     {
       name: "UsdcGovLPStaking",
       distributor: governor,
       reward: gov.address,
       staking: UsdcGovLPAddress,
-      duration,
+      duration: weeks4Duration,
+      endStakingBlock: 0,
+      startUnstakingBlock: 0,
     },
     {
       name: "WethGovLPStaking",
       distributor: governor,
       reward: gov.address,
       staking: WethGovLPAddress,
-      duration,
+      duration: weeks4Duration,
+      endStakingBlock: 0,
+      startUnstakingBlock: 0,
     },
     {
       name: "UsdnGovLPStaking",
       distributor: governor,
       reward: gov.address,
       staking: UsdnGovLPAddress,
-      duration,
+      duration: weeks4Duration,
+      endStakingBlock: 0,
+      startUnstakingBlock: 0,
     },
     {
       name: "UsdcStableLPStaking",
       distributor: governor,
       reward: gov.address,
       staking: UsdcStableLPAddress,
-      duration,
+      duration: weeks4Duration,
+      endStakingBlock: 0,
+      startUnstakingBlock: 0,
     },
     {
       name: "UsdnStableLPStaking",
       distributor: governor,
       reward: gov.address,
       staking: UsdnStableLPAddress,
-      duration,
+      duration: weeks4Duration,
+      endStakingBlock: 0,
+      startUnstakingBlock: 0,
     },
     {
       name: "GovStableLPStaking",
       distributor: governor,
       reward: gov.address,
       staking: GovStableLPAddress,
-      duration,
+      duration: weeks4Duration,
+      endStakingBlock: 0,
+      startUnstakingBlock: 0,
+    },
+    {
+      name: "UsdcStableLPLockStaking",
+      distributor: governor,
+      reward: gov.address,
+      staking: UsdcStableLPAddress,
+      duration: months6Duration,
+      endStakingBlock: Math.floor(
+        currentBlock + (new Date("2021-04-01 00:00:00") - Date.now()) / 15000
+      ),
+      startUnstakingBlock: Math.floor(
+        currentBlock + (new Date("2021-07-01 00:00:00") - Date.now()) / 15000
+      ),
+    },
+    {
+      name: "UsdnStableLPLockStaking",
+      distributor: governor,
+      reward: gov.address,
+      staking: UsdnStableLPAddress,
+      duration: months6Duration,
+      endStakingBlock: Math.floor(
+        currentBlock + (new Date("2021-04-01 00:00:00") - Date.now()) / 15000
+      ),
+      startUnstakingBlock: Math.floor(
+        currentBlock + (new Date("2021-07-01 00:00:00") - Date.now()) / 15000
+      ),
     },
   ];
 
@@ -119,11 +163,29 @@ module.exports = migration("UsdcStableLPStaking", async (d) => {
   const [timelock] = await d.deployed("Timelock");
 
   await rewardingTokens.reduce(
-    async (tx, {name, distributor, reward, staking, duration}) => {
+    async (
+      tx,
+      {
+        name,
+        distributor,
+        reward,
+        staking,
+        duration,
+        endStakingBlock,
+        startUnstakingBlock,
+      }
+    ) => {
       await tx;
       await d.deploy(name, {
         contract: "Staking",
-        args: [distributor, duration, reward, staking],
+        args: [
+          distributor,
+          duration,
+          reward,
+          staking,
+          endStakingBlock,
+          startUnstakingBlock,
+        ],
       });
       if (networkName === "development") return;
       await d.send(name, "transferOwnership", [timelock.address]);
