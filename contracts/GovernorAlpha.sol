@@ -13,8 +13,8 @@ contract GovernorAlpha {
 
     /// @notice The number of votes required in order for a voter to become a proposer
     function proposalThreshold() public pure returns (uint256) {
-        return 100000e18;
-    } // 100,000 = 1% of governance token
+        return 1000000e18;
+    } // 1,000,000 = 1% of governance token
 
     /// @notice The maximum number of actions that can be included in a proposal
     function proposalMaxOperations() public pure returns (uint256) {

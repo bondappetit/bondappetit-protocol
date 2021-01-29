@@ -28,6 +28,8 @@ contract Vesting is OwnablePausable {
         uint256 amount;
         // Unlockd date.
         uint256 date;
+        // Description.
+        string description;
         // Reward withdrawal flag.
         bool withdrawal;
     }
@@ -43,6 +45,9 @@ contract Vesting is OwnablePausable {
 
     /// @dev Period identifiers index.
     mapping(address => uint256[]) internal periodsIndex;
+
+    /// @notice An event emitted when all votes delegate to.
+    event DelegateVotes(address delegatee);
 
     /// @notice An event emitted when locking a period.
     event Locked(uint256 periodId);
@@ -61,6 +66,15 @@ contract Vesting is OwnablePausable {
     }
 
     /**
+     * @notice Delegate votes to delegatee.
+     * @param delegatee The address to delegate votes to
+     */
+    function delegate(address governanceToken, address delegatee) external onlyOwner {
+        GovernanceTokenInterface(governanceToken).delegate(delegatee);
+        emit DelegateVotes(delegatee);
+    }
+
+    /**
      * @notice Add new period.
      * @param recipient Recipient of reward.
      * @param amount Reward amount.
@@ -70,15 +84,16 @@ contract Vesting is OwnablePausable {
     function lock(
         address recipient,
         uint256 amount,
+        string memory description,
         uint256 date
     ) external onlyOwner returns (uint256) {
-        require(periodsIndex[recipient].length < maxPeriodsPerRecipient(), "Vesting::lock: too many periods");
+        require(periodsIndex[recipient].length <= maxPeriodsPerRecipient(), "Vesting::lock: too many periods");
 
         token.safeTransferFrom(_msgSender(), address(this), amount);
 
         currentPeriod += 1;
         participants.add(recipient);
-        periods[recipient][currentPeriod] = Period(currentPeriod, amount, date, false);
+        periods[recipient][currentPeriod] = Period(currentPeriod, amount, date, description, false);
         periodsIndex[recipient].push(currentPeriod);
         emit Locked(currentPeriod);
 
@@ -148,4 +163,8 @@ contract Vesting is OwnablePausable {
         token.safeTransfer(recipient, period.amount);
         emit Withdrawal(recipient, periodId);
     }
+}
+
+interface GovernanceTokenInterface {
+    function delegate(address delegatee) external;
 }

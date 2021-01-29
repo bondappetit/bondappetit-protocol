@@ -4,6 +4,7 @@ const {development} = require("../../networks");
 contract("Vesting.getParticipants", ({web3, artifacts}) => {
   const governor = development.accounts.Governor.address;
   const amount = "100";
+  const description = "test";
   const date = "0";
 
   it("getParticipants: should return empty array if not locked participant", async () => {
@@ -21,14 +22,14 @@ contract("Vesting.getParticipants", ({web3, artifacts}) => {
       .approve(instance._address, amount)
       .send({from: governor});
     await instance.methods
-      .lock(recipientA, amount, date)
+      .lock(recipientA, amount, description, date)
       .send({from: governor, gas: 6000000});
 
     await gov.methods
       .approve(instance._address, amount)
       .send({from: governor});
     await instance.methods
-      .lock(recipientB, amount, date)
+      .lock(recipientB, amount, description, date)
       .send({from: governor, gas: 6000000});
 
     const participants = await instance.methods.getParticipants().call();

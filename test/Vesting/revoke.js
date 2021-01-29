@@ -5,6 +5,7 @@ const {development} = require("../../networks");
 contract("Vesting.revoke", ({web3, artifacts}) => {
   const governor = development.accounts.Governor.address;
   const amount = "100";
+  const description = "test";
   const date = "0";
 
   it("revoke: should revoke period", async () => {
@@ -16,7 +17,7 @@ contract("Vesting.revoke", ({web3, artifacts}) => {
       .approve(instance._address, amount)
       .send({from: governor});
     await instance.methods
-      .lock(recipient, amount, date)
+      .lock(recipient, amount, description, date)
       .send({from: governor, gas: 6000000});
 
     const startPeriods = await instance.methods.info(recipient).call();
@@ -42,7 +43,7 @@ contract("Vesting.revoke", ({web3, artifacts}) => {
       .approve(instance._address, amount)
       .send({from: governor});
     await instance.methods
-      .lock(recipient, amount, date)
+      .lock(recipient, amount, description, date)
       .send({from: governor, gas: 6000000});
 
     const periods = await instance.methods.info(recipient).call();
@@ -64,7 +65,7 @@ contract("Vesting.revoke", ({web3, artifacts}) => {
       .approve(instance._address, amount)
       .send({from: governor});
     await instance.methods
-      .lock(recipient, amount, date)
+      .lock(recipient, amount, description, date)
       .send({from: governor, gas: 6000000});
     const periods = await instance.methods.info(recipient).call();
     const addedPeriod = periods[periods.length - 1];

@@ -165,7 +165,10 @@ function migration(contract, handler) {
   };
 }
 
+const bn = Web3.utils.toBN.bind(Web3.utils);
+
 module.exports = {
   Deployer,
   migration,
+  bn,
 };

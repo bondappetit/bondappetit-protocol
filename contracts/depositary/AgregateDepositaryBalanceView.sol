@@ -10,9 +10,9 @@ contract AgregateDepositaryBalanceView is IDepositaryBalanceView, OwnablePausabl
 
     /// @notice The number of depositaries in agregate.
     uint256 public maxSize;
-    
+
     /// @notice Decimals balance.
-    uint256 override public decimals;
+    uint256 public override decimals;
 
     /// @notice Depositaries in agregate.
     IDepositaryBalanceView[] public depositaries;
@@ -22,7 +22,7 @@ contract AgregateDepositaryBalanceView is IDepositaryBalanceView, OwnablePausabl
 
     /// @notice An event thats emitted when an new depositary added to agregate.
     event DepositaryAdded(address depositary);
-    
+
     /// @notice An event thats emitted when an depositary removed from agregate.
     event DepositaryRemoved(address depositary);
 
@@ -38,7 +38,7 @@ contract AgregateDepositaryBalanceView is IDepositaryBalanceView, OwnablePausabl
     /**
      * @return Depositaries count of agregate.
      */
-    function size() public view returns(uint256) {
+    function size() public view returns (uint256) {
         return depositaries.length;
     }
 
@@ -69,10 +69,23 @@ contract AgregateDepositaryBalanceView is IDepositaryBalanceView, OwnablePausabl
         emit DepositaryRemoved(depositary);
     }
 
-    function balance() external override view returns(uint256) {
+    /**
+     * @return Allowed depositaries list.
+     */
+    function allowedDepositaries() external view returns (address[] memory) {
+        address[] memory result = new address[](size());
+
+        for (uint256 i = 0; i < size(); i++) {
+            result[i] = address(depositaries[i]);
+        }
+
+        return result;
+    }
+
+    function balance() external view override returns (uint256) {
         uint256 result;
 
-        for (uint256 i = 0; i < size(); i++) {                
+        for (uint256 i = 0; i < size(); i++) {
             uint256 depositaryBalance = depositaries[i].balance();
             uint256 depositaryDecimals = depositaries[i].decimals();
             uint256 decimalsPower = decimals.sub(depositaryDecimals);
