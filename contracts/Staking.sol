@@ -35,6 +35,12 @@ contract Staking is OwnablePausable, ReentrancyGuard {
     /// @notice Static reward distribution amount per block.
     uint256 public rewardPerTokenStored;
 
+    /// @notice Staking completion block number.
+    uint256 public stakingEndBlock;
+
+    /// @notice Unstaking start block number.
+    uint256 public unstakingStartBlock;
+
     /// @notice Rewards paid.
     mapping(address => uint256) public userRewardPerTokenPaid;
 
@@ -65,6 +71,12 @@ contract Staking is OwnablePausable, ReentrancyGuard {
     /// @notice An event thats emitted when an rewards tokens transfered to recipient.
     event RewardsTransfered(address recipient, uint256 amount);
 
+    /// @notice An event thats emitted when an staking end block number changed.
+    event StakingEndBlockChanged(uint256 newBlockNumber);
+
+    /// @notice An event thats emitted when an unstaking start block number changed.
+    event UnstakingStartBlockChanged(uint256 newBlockNumber);
+
     /**
      * @param _rewardsDistribution Rewards distribution address.
      * @param _rewardsDuration Duration of distribution.
@@ -75,12 +87,16 @@ contract Staking is OwnablePausable, ReentrancyGuard {
         address _rewardsDistribution,
         uint256 _rewardsDuration,
         address _rewardsToken,
-        address _stakingToken
+        address _stakingToken,
+        uint256 _stakingEndBlock,
+        uint256 _unstakingStartBlock
     ) public {
         rewardsDistribution = _rewardsDistribution;
         rewardsDuration = _rewardsDuration;
         rewardsToken = IERC20(_rewardsToken);
         stakingToken = IERC20(_stakingToken);
+        stakingEndBlock = _stakingEndBlock;
+        unstakingStartBlock = _unstakingStartBlock;
     }
 
     /**
@@ -150,6 +166,9 @@ contract Staking is OwnablePausable, ReentrancyGuard {
      */
     function stake(uint256 amount) external nonReentrant updateReward(msg.sender) {
         require(amount > 0, "Staking::stake: cannot stake 0");
+        if (stakingEndBlock > 0) {
+            require(block.number < stakingEndBlock, "Staking:stake: staking completed");
+        }
         _totalSupply = _totalSupply.add(amount);
         _balances[msg.sender] = _balances[msg.sender].add(amount);
         stakingToken.safeTransferFrom(msg.sender, address(this), amount);
@@ -162,6 +181,7 @@ contract Staking is OwnablePausable, ReentrancyGuard {
      */
     function withdraw(uint256 amount) public nonReentrant updateReward(msg.sender) {
         require(amount > 0, "Staking::withdraw: Cannot withdraw 0");
+        require(block.number >= unstakingStartBlock, "Staking:withdraw: unstaking not started");
         _totalSupply = _totalSupply.sub(amount);
         _balances[msg.sender] = _balances[msg.sender].sub(amount);
         stakingToken.safeTransfer(msg.sender, amount);
@@ -207,6 +227,24 @@ contract Staking is OwnablePausable, ReentrancyGuard {
 
         rewardsToken.safeTransfer(recipient, amount);
         emit RewardsTransfered(recipient, amount);
+    }
+
+    /**
+     * @notice Change staking end block number.
+     * @param _stakingEndBlock New staking end block number.
+     */
+    function changeStakingEndBlock(uint256 _stakingEndBlock) external onlyOwner {
+        stakingEndBlock = _stakingEndBlock;
+        emit StakingEndBlockChanged(stakingEndBlock);
+    }
+
+    /**
+     * @notice Change unstaking start block number.
+     * @param _unstakingStartBlock New unstaking start block number.
+     */
+    function changeUnstakingStartBlock(uint256 _unstakingStartBlock) external onlyOwner {
+        unstakingStartBlock = _unstakingStartBlock;
+        emit UnstakingStartBlockChanged(unstakingStartBlock);
     }
 
     /**

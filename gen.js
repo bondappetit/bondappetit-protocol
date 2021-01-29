@@ -50,20 +50,29 @@ async function writeJson(path, data) {
       },
       Promise.resolve([])
     ),
-    Promise.all(
-      (config.contracts || []).map(async ({path, key, name, voting}) => {
-        const {address, abi} = await loadJson(
-          path.replace("%network%", network)
-        );
+    (config.contracts || []).reduce(
+      async (contracts, {path, key, name, voting}) => {
+        const res = await contracts;
+        try {
+          const {address, abi} = await loadJson(
+            path.replace("%network%", network)
+          );
 
-        return {
-          key,
-          address,
-          name,
-          abi,
-          voting,
-        };
-      })
+          return [
+            ...res,
+            {
+              key,
+              address,
+              name,
+              abi,
+              voting,
+            },
+          ];
+        } catch (e) {
+          return res; // use preset data if contract not deployed
+        }
+      },
+      Promise.resolve([])
     ),
     Promise.all(
       (config.abi || []).map(async ({path}) => {

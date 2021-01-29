@@ -5,9 +5,10 @@ const {readFile} = require("fs").promises;
 const assert = require("assert").strict;
 
 class ArtifactList {
-  constructor(web3, deployments) {
+  constructor(web3, deployments, artifacts) {
     this.web3 = web3;
     this.deployments = deployments;
+    this.artifacts = artifacts;
     this.cache = new Map();
     this.accounts = [];
   }
@@ -32,6 +33,33 @@ class ArtifactList {
   async requireAll(...contracts) {
     return Promise.all(contracts.map((contract) => this.require(contract)));
   }
+
+  async new(dir, contractFileName, name, args, options = {}) {
+    const path = `${this.artifacts}/${dir}/${contractFileName}.sol/${contractFileName}.json`;
+
+    let json;
+    try {
+      json = await readFile(path);
+    } catch (e) {
+      throw new Error(`Artifact "${contractFileName}" not found in "${path}"`);
+    }
+
+    const {abi, bytecode} = JSON.parse(json);
+
+    try {
+      let contract = new this.web3.eth.Contract(abi);
+      contract = await contract
+        .deploy({
+          data: bytecode,
+          arguments: args,
+        })
+        .send(options);
+      this.cache.set(name, contract);
+      return contract;
+    } catch (e) {
+      throw new Error(`Contract "${contract}" not deployed with error: ${e}`);
+    }
+  }
 }
 
 async function contract(name, test) {
@@ -42,7 +70,11 @@ async function contract(name, test) {
       unlocked_accounts: network.config.accounts.unlocked,
     })
   );
-  const artifacts = new ArtifactList(web3, `deployments/${network.name}`);
+  const artifacts = new ArtifactList(
+    web3,
+    `deployments/${network.name}`,
+    "artifacts"
+  );
 
   before(async () => {
     artifacts.accounts = await web3.eth.getAccounts();

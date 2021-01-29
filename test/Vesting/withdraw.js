@@ -6,6 +6,7 @@ const dayjs = require("dayjs");
 contract("Vesting.withdraw", ({web3, artifacts}) => {
   const governor = development.accounts.Governor.address;
   const amount = "100";
+  const description = "test";
   const date = "0";
 
   it("withdraw: should withdraw reward", async () => {
@@ -17,7 +18,7 @@ contract("Vesting.withdraw", ({web3, artifacts}) => {
       .approve(instance._address, amount)
       .send({from: governor});
     await instance.methods
-      .lock(recipient, amount, date)
+      .lock(recipient, amount, description, date)
       .send({from: governor, gas: 6000000});
 
     const startPeriods = await instance.methods.info(recipient).call();
@@ -46,7 +47,7 @@ contract("Vesting.withdraw", ({web3, artifacts}) => {
       .approve(instance._address, amount)
       .send({from: governor});
     await instance.methods
-      .lock(recipient, amount, date)
+      .lock(recipient, amount, description, date)
       .send({from: governor, gas: 6000000});
 
     const periods = await instance.methods.info(recipient).call();
@@ -72,7 +73,7 @@ contract("Vesting.withdraw", ({web3, artifacts}) => {
       .approve(instance._address, amount)
       .send({from: governor});
     await instance.methods
-      .lock(recipient, amount, date)
+      .lock(recipient, amount, description, date)
       .send({from: governor, gas: 6000000});
 
     const periods = await instance.methods.info(recipient).call();
@@ -99,7 +100,7 @@ contract("Vesting.withdraw", ({web3, artifacts}) => {
       .approve(instance._address, amount)
       .send({from: governor});
     await instance.methods
-      .lock(recipient, amount, distantFuture)
+      .lock(recipient, amount, description, distantFuture)
       .send({from: governor, gas: 6000000});
 
     const periods = await instance.methods.info(recipient).call();

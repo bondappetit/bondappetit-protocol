@@ -64,16 +64,11 @@ jobs:
     runs-on: ${{ matrix.platform }}
 
     steps:
-      - name: Extract branch name
-        shell: bash
-        run: echo "##[set-output name=branch;]$(echo ${GITHUB_REF##*/})"
-        id: extract_branch
-
-      - name: Clone ${{ steps.extract_branch.outputs.branch }} branch
+      - name: Clone master branch
         run: |
           git config --global user.name "${GITHUB_ACTOR}"
           git config --global user.email "${GITHUB_ACTOR}@https://users.noreply.github.com/"
-          git clone "https://${{ secrets.ACCESS_TOKEN }}@github.com/$GITHUB_REPOSITORY.git" --branch ${{ steps.extract_branch.outputs.branch }} --single-branch ./output
+          git clone "https://${{ secrets.ACCESS_TOKEN }}@github.com/$GITHUB_REPOSITORY.git" --branch master --single-branch ./output
 
       - name: Download artifacts
         uses: actions/download-artifact@v2

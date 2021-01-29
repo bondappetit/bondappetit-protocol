@@ -108,6 +108,16 @@
       "voting": true
     },
     {
+      "path": "deployments/%network%/UsdcStableLPLockStaking.json",
+      "name": "UsdcStableLPLockStaking",
+      "voting": true
+    },
+    {
+      "path": "deployments/%network%/UsdnStableLPLockStaking.json",
+      "name": "UsdnStableLPLockStaking",
+      "voting": true
+    },
+    {
       "path": "deployments/%network%/Budget.json",
       "name": "Budget",
       "voting": true
