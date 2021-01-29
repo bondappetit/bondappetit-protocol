@@ -8,7 +8,7 @@ module.exports = migration("Timelock", async (d) => {
   await d.deploy("Timelock", {
     args: [
       governor,
-      2 * 24 * 60 * 60, // 2 days delay
+      0
     ],
     libraries: {
       SafeMath: safeMath.address,
