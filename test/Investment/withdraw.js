@@ -24,7 +24,7 @@ contract("Investment.withdraw", ({web3, artifacts}) => {
       "Investment",
       "GovernanceToken"
     );
-    const amountIn = "1000000";
+    const amountIn = "100";
     const usdcRecipientBalanceStart = await usdcContract.methods
       .balanceOf(recipient)
       .call();

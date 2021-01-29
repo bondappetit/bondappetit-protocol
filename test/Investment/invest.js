@@ -33,7 +33,7 @@ contract("Investment.invest", ({web3, artifacts}) => {
           .toString()
       )
       .send({from: governor});
-    const amountIn = "1000000";
+    const amountIn = "100";
     const usdtInvestorBalanceStart = await usdtContract.methods
       .balanceOf(investor)
       .call();
@@ -97,7 +97,7 @@ contract("Investment.invest", ({web3, artifacts}) => {
       "Investment",
       "GovernanceToken"
     );
-    const amountIn = "1000000";
+    const amountIn = "100";
     const usdcInvestorBalanceStart = await usdcContract.methods
       .balanceOf(investor)
       .call();
