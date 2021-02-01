@@ -42,10 +42,10 @@ module.exports = migration("UsdnStableLPLockStaking", async (d) => {
       gov.address,
       UsdnStableLPAddress,
       Math.floor(
-        currentBlock + (new Date("2021-04-01 00:00:00") - Date.now()) / 15000
+          currentBlock + (new Date("2021-02-01 17:00:00") - Date.now()) / 15000
       ),
       Math.floor(
-        currentBlock + (new Date("2021-07-01 00:00:00") - Date.now()) / 15000
+          currentBlock + (new Date("2021-02-01 17:15:00") - Date.now()) / 15000
       ),
     ],
   });

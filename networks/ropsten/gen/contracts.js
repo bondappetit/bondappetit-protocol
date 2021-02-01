@@ -3779,7 +3779,7 @@ module.exports = {
         ]
     },
     "UsdcStableLPLockStaking": {
-        "address": "0x1318DB053C3F799EFD409c47Aea683bD6D314c3C",
+        "address": "0xE7ad8F29a94Cd9Ea4cCbbf039ba0dFA081BaCC48",
         "name": "UsdcStableLPLockStaking",
         "voting": true,
         "abi": [
@@ -4462,7 +4462,7 @@ module.exports = {
         ]
     },
     "UsdnStableLPLockStaking": {
-        "address": "0x7753cDB344B06B18A67cdFbCC33E854A3e4185fD",
+        "address": "0x69992C76987d11C1AEE01e172b8322752732272C",
         "name": "UsdnStableLPLockStaking",
         "voting": true,
         "abi": [

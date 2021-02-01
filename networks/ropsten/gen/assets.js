@@ -12,5 +12,12 @@ module.exports = {
         "symbol": "USDp",
         "decimals": 18,
         "investing": false
+    },
+    "USDN": {
+        "address": "0x049d9Aa4C4d032b70D48d7FDB2417629990C51F8",
+        "name": "Neutrino USD",
+        "symbol": "USDN",
+        "decimals": 18,
+        "investing": false
     }
 }

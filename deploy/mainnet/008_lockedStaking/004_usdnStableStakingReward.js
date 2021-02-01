@@ -8,7 +8,7 @@ module.exports = migration(
     const currentReward = await d.call("GovernanceToken", "balanceOf", [
       staking.address,
     ]);
-    const amount = bn(govTotalSupply).div(bn(20)).toString(); // 5%
+    const amount = bn(govTotalSupply).div(bn(100)).toString(); // 1%
     if (currentReward.toString() === amount) {
       console.log("Reward already transfered");
       return;
