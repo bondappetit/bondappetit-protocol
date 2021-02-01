@@ -134,6 +134,19 @@
         },
         {
             "inputs": [],
+            "name": "allowedDepositaries",
+            "outputs": [
+                {
+                    "internalType": "address[]",
+                    "name": "",
+                    "type": "address[]"
+                }
+            ],
+            "stateMutability": "view",
+            "type": "function"
+        },
+        {
+            "inputs": [],
             "name": "balance",
             "outputs": [
                 {
