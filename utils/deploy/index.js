@@ -1,5 +1,5 @@
 const networks = require("../../networks");
-const {Web3, web3} = require("hardhat");
+const {Web3, web3, network} = require("hardhat");
 
 class Deployer {
   static GAS_LIMIT = 6000000;
@@ -45,6 +45,7 @@ Network id: ${this.network.networkId}
     return {
       from: this.getGovernor().address,
       gasLimit: Deployer.GAS_LIMIT,
+      gasPrice: network.config.gasPrice,
     };
   }
 
