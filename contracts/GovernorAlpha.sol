@@ -8,8 +8,8 @@ contract GovernorAlpha {
 
     /// @notice The number of votes in support of a proposal required in order for a quorum to be reached and for a vote to succeed
     function quorumVotes() public pure returns (uint256) {
-        return 400000e18;
-    } // 400,000 = 4% of governance token
+        return 4000000e18;
+    } // 4,000,000 = 4% of governance token
 
     /// @notice The number of votes required in order for a voter to become a proposer
     function proposalThreshold() public pure returns (uint256) {
