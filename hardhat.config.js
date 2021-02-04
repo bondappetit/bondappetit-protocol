@@ -1,4 +1,4 @@
-require('@nomiclabs/hardhat-web3');
+require("@nomiclabs/hardhat-web3");
 require("hardhat-deploy");
 require("dotenv").config();
 const networks = require("./networks");
@@ -19,6 +19,11 @@ module.exports = {
         mnemonic: process.env.MNENOMIC,
         unlocked: ["0x876A207aD9f6f0fA2C58A7902B2E7568a41c299f"],
       },
+      /*
+     accounts: [
+       '0x3490e2cca2c8c14a5b7b2241ca4c13b5148d36e2e48653aef6751412d5a901ed'
+     ]
+     */
     },
     ropsten: {
       url: "http://46.165.249.37:8545",
@@ -28,6 +33,13 @@ module.exports = {
       accounts: {
         mnemonic: process.env.MNENOMIC,
       },
+    },
+    mainnet: {
+      url: "http://46.165.249.37:8545",
+      chainId: 1,
+      from: networks.main.accounts.Governor.address,
+      gasPrice: parseInt(networks.main.gasPrice, 10),
+      accounts: process.env.GOVERNOR_PK ? [process.env.GOVERNOR_PK] : [],
     },
   },
 };

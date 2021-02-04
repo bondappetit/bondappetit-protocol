@@ -41,6 +41,14 @@ contract Issuer is AgregateDepositaryBalanceView {
     }
 
     /**
+     * @notice Change owner of Stable token contract.
+     * @param _owner New owner address.
+     */
+    function changeStableTokenOwner(address _owner) external onlyOwner {
+        stableToken.transferOwnership(_owner);
+    }
+
+    /**
      * @notice Rebalance stable token total supply by depositary balance. Mint stable token if depositary balance greater token total supply and burn otherwise.
      */
     function rebalance() external whenNotPaused {
