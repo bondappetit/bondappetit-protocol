@@ -3,36 +3,35 @@ const dayjs = require("dayjs");
 
 module.exports = migration("Vesting.lock", async (d) => {
   const govTotalSupply = await d.call("GovernanceToken", "totalSupply", []);
-  const amount = bn(govTotalSupply).div(bn(100)).mul(bn(20)).div(bn(40)).toString(); // 0.5%
+  const [vesting, splitter] = await d.deployed("Vesting", "VestingSplitter");
+  const vestingAmount = bn(govTotalSupply).div(bn(5)).toString(); // 20%
   const recipients = [
     {
-      wallet: "0x876A207aD9f6f0fA2C58A7902B2E7568a41c299f",
+      wallet: splitter.address,
       periods: [
         {
-          amount,
-          description: 'test1',
-          date: dayjs("2022-01-01T00:00:00.000Z").unix(),
+          amount: bn(vestingAmount).div(bn(100)).mul(bn(40)).toString(), // 40%
+          description: "BondAppétite team & future team members",
+          date: dayjs("2022-04-01T03:00:00.000Z").unix(),
         },
         {
-          amount,
-          description: 'test2',
-          date: dayjs("2023-01-01T00:00:00.000Z").unix(),
+          amount: bn(vestingAmount).div(bn(100)).mul(bn(30)).toString(), // 30%
+          description: "BondAppétite team & future team members",
+          date: dayjs("2023-04-01T03:00:00.000Z").unix(),
         },
         {
-          amount,
-          description: 'test3',
-          date: dayjs("2024-01-01T00:00:00.000Z").unix(),
+          amount: bn(vestingAmount).div(bn(100)).mul(bn(20)).toString(), // 20%
+          description: "BondAppétite team & future team members",
+          date: dayjs("2024-04-01T03:00:00.000Z").unix(),
         },
         {
-          amount,
-          description: 'test4',
-          date: dayjs("2025-01-01T00:00:00.000Z").unix(),
+          amount: bn(vestingAmount).div(bn(100)).mul(bn(10)).toString(), // 10%
+          description: "BondAppétite team & future team members",
+          date: dayjs("2025-04-01T03:00:00.000Z").unix(),
         },
       ],
     },
   ];
-
-  const [vesting] = await d.deployed("Vesting");
 
   await recipients.reduce(async (tx, {wallet, periods}) => {
     await tx;
