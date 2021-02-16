@@ -6,28 +6,17 @@ contract("Issuer.rebalance", ({web3, artifacts}) => {
   const isin = "test bond";
   const amount = "10";
   const nominalValue = bn("1000").mul(bn("10").pow(bn("6")));
-  const nominalValueBytes = web3.eth.abi.encodeParameters(
-    ["uint256"],
-    [nominalValue.toString()]
-  );
   const expectedAmount = bn(amount)
     .mul(bn(nominalValue))
     .mul(bn("10").pow(bn("12")))
     .toString();
 
   it("rebalance: should mint stable token", async () => {
-    const [
-      instance,
-      stable,
-      treasury,
-      depositary,
-      security,
-    ] = await artifacts.requireAll(
+    const [instance, stable, treasury, depositary] = await artifacts.requireAll(
       "Issuer",
       "StableToken",
       "Treasury",
-      "DepositaryOracle",
-      "SecurityOracle"
+      "RealAssetDepositaryBalanceView"
     );
 
     const startStableTokenTotalSupply = await stable.methods
@@ -47,10 +36,16 @@ contract("Issuer.rebalance", ({web3, artifacts}) => {
       "Invalid start treasury balance"
     );
 
-    await depositary.methods.put(isin, amount).send({from: governor});
-    await security.methods.put(isin, "nominalValue", nominalValueBytes).send({
-      from: governor,
-    });
+    await depositary.methods
+      .put(
+        isin,
+        amount,
+        nominalValue.toString(),
+        Date.now(),
+        "data",
+        "signature"
+      )
+      .send({from: governor});
 
     const issuerBalance = await instance.methods.balance().call();
     assert.equal(
@@ -82,11 +77,10 @@ contract("Issuer.rebalance", ({web3, artifacts}) => {
       "Issuer",
       "StableToken",
       "Treasury",
-      "DepositaryOracle",
-      "SecurityOracle"
+      "RealAssetDepositaryBalanceView"
     );
 
-    await depositary.methods.put(isin, 0).send({from: governor});
+    await depositary.methods.remove(isin).send({from: governor, gas: 6000000});
     await treasury.methods
       .transfer(stable._address, instance._address, expectedAmount)
       .send({from: governor});

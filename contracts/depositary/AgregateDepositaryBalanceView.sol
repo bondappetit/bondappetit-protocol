@@ -51,7 +51,7 @@ contract AgregateDepositaryBalanceView is IDepositaryBalanceView, OwnablePausabl
         require(size() < maxSize, "AgregateDepositaryBalanceView::addDepositary: too many depositaries");
 
         depositaries.push(IDepositaryBalanceView(depositary));
-        depositariesIndex[depositary] = size().sub(1);
+        depositariesIndex[depositary] = size();
         emit DepositaryAdded(depositary);
     }
 
@@ -60,12 +60,17 @@ contract AgregateDepositaryBalanceView is IDepositaryBalanceView, OwnablePausabl
      * @param depositary Removed depositary address.
      */
     function removeDepositary(address depositary) external onlyOwner {
-        uint256 depositaryIndex = depositariesIndex[depositary];
-        require(depositaryIndex != 0, "AgregateDepositaryBalanceView::removeDepositary: depositary already removed");
+        uint256 valueIndex = depositariesIndex[depositary];
+        require(valueIndex != 0, "AgregateDepositaryBalanceView::removeDepositary: depositary already removed");
 
+        uint256 toDeleteIndex = valueIndex.sub(1);
+        uint256 lastIndex = size().sub(1);
+        IDepositaryBalanceView lastValue = depositaries[lastIndex];
+        depositaries[toDeleteIndex] = lastValue;
+        depositariesIndex[address(lastValue)] = toDeleteIndex.add(1);
+        depositaries.pop();
         delete depositariesIndex[depositary];
-        depositaries[depositaryIndex] = depositaries[size().sub(1)];
-        delete depositaries[size().sub(1)];
+
         emit DepositaryRemoved(depositary);
     }
 

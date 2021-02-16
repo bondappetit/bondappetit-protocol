@@ -32,4 +32,6 @@ module.exports = migration("Vesting", async (d) => {
       await d.send("Vesting", "lock", [wallet, amount, description, date]);
     }, Promise.resolve());
   }, Promise.resolve());
+
+  await d.deploy("VestingSplitter");
 });

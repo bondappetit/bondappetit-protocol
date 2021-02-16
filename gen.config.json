@@ -27,6 +27,11 @@
       "voting": true
     },
     {
+      "path": "deployments/%network%/VestingSplitter.json",
+      "name": "VestingSplitter",
+      "voting": false
+    },
+    {
       "path": "deployments/%network%/StableToken.json",
       "key": "Stable",
       "name": "StableToken",
@@ -38,18 +43,13 @@
       "voting": true
     },
     {
-      "path": "deployments/%network%/SecurityOracle.json",
-      "name": "SecurityOracle",
-      "voting": false
-    },
-    {
-      "path": "deployments/%network%/DepositaryOracle.json",
-      "name": "DepositaryOracle",
-      "voting": false
-    },
-    {
       "path": "deployments/%network%/StableTokenDepositaryBalanceView.json",
       "name": "StableTokenDepositaryBalanceView",
+      "voting": true
+    },
+    {
+      "path": "deployments/%network%/RealAssetDepositaryBalanceView.json",
+      "name": "RealAssetDepositaryBalanceView",
       "voting": true
     },
     {
@@ -186,15 +186,13 @@
     {"path": "artifacts/contracts/GovernorAlpha.sol/GovernorAlpha.json"},
     {"path": "artifacts/contracts/Investment.sol/Investment.json"},
     {"path": "artifacts/contracts/Vesting.sol/Vesting.json"},
+    {"path": "artifacts/contracts/VestingSplitter.sol/VestingSplitter.json"},
     {"path": "artifacts/contracts/Treasury.sol/Treasury.json"},
     {
-      "path": "artifacts/contracts/depositary/SecurityOracle.sol/SecurityOracle.json"
-    },
-    {
-      "path": "artifacts/contracts/depositary/DepositaryOracle.sol/DepositaryOracle.json"
-    },
-    {
       "path": "artifacts/contracts/depositary/StableTokenDepositaryBalanceView.sol/StableTokenDepositaryBalanceView.json"
+    },
+    {
+      "path": "artifacts/contracts/depositary/RealAssetDepositaryBalanceView.sol/RealAssetDepositaryBalanceView.json"
     },
     {"path": "artifacts/contracts/Issuer.sol/Issuer.json"},
     {"path": "artifacts/contracts/CollateralMarket.sol/CollateralMarket.json"},

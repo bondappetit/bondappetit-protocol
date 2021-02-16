@@ -4,6 +4,7 @@
 
 {{{natspec.devdoc}}}
 
+{{#if ownEvents.length}}
 ### Events
 {{#each ownEvents}}
 ```solidity
@@ -16,6 +17,8 @@
 
 {{/each}}
 
+{{/if}}
+{{#if ownVariables.length}}
 ### Variables
 {{#each ownVariables}}
 ```solidity
@@ -24,6 +27,8 @@
 
 {{/each}}
 
+{{/if}}
+{{#if ownFunctions.length}}
 ### Functions
 {{#each ownFunctions}}
 {{#if (or (eq visibility "public") (eq visibility "external"))}}
@@ -51,3 +56,4 @@
 
 {{/if}}
 {{/each}}
+{{/if}}

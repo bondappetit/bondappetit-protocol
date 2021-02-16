@@ -201,6 +201,9 @@ module.exports = migration("UsdcStableLPStaking", async (d) => {
   await d.send("StableTokenDepositaryBalanceView", "transferOwnership", [
     timelock.address,
   ]);
+  await d.send("RealAssetDepositaryBalanceView", "transferOwnership", [
+    timelock.address,
+  ]);
   await d.send("Issuer", "transferOwnership", [timelock.address]);
   await d.send("CollateralMarket", "transferOwnership", [timelock.address]);
   await d.send("Market", "transferOwnership", [timelock.address]);
