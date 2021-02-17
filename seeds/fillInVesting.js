@@ -32,7 +32,7 @@ async function main() {
       VestingSplitter.address,
       "5000",
       "later",
-      dayjs().add(30, "munite").unix()
+      dayjs().add(30, "minutes").unix()
     )
     .send({from: governor, gas: 6000000});
 
