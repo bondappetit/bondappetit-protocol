@@ -18,19 +18,19 @@ async function main() {
   );
 
   await gov.methods
-    .approve(Vesting.address, "1000")
+    .approve(Vesting.address, "1000000000000000000")
     .send({from: governor, gas: 6000000});
   await vesting.methods
-    .lock(VestingSplitter.address, "1000", "now", dayjs().unix())
+    .lock(VestingSplitter.address, "1000000000000000000", "now", dayjs().unix())
     .send({from: governor, gas: 6000000});
 
   await gov.methods
-    .approve(Vesting.address, "5000")
+    .approve(Vesting.address, "5000000000000000000")
     .send({from: governor, gas: 6000000});
   await vesting.methods
     .lock(
       VestingSplitter.address,
-      "5000",
+      "5000000000000000000",
       "later",
       dayjs().add(30, "minutes").unix()
     )

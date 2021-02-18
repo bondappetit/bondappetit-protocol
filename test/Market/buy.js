@@ -2,7 +2,7 @@ const assertions = require("truffle-assertions");
 const {contract, assert, bn} = require("../../utils/test");
 const {development} = require("../../networks");
 
-contract("Market.buyGovernanceToken", ({web3, artifacts}) => {
+contract("Market.buy", ({web3, artifacts}) => {
   const governor = development.accounts.Governor.address;
   const customer = "0x876A207aD9f6f0fA2C58A7902B2E7568a41c299f";
   const {UniswapV2Router02} = development.contracts;
@@ -12,21 +12,27 @@ contract("Market.buyGovernanceToken", ({web3, artifacts}) => {
   );
   const {USDC, USDT} = development.assets;
 
-  it("buyGovernanceToken: should buy governance token for cumulative token", async () => {
-    const [instance, gov] = await artifacts.requireAll("Market", "GovernanceToken");
+  it("buy: should buy product token for cumulative token", async () => {
+    const [instance, gov, stable] = await artifacts.requireAll(
+      "Market",
+      "GovernanceToken",
+      "StableToken"
+    );
     const usdc = new web3.eth.Contract(
       development.contracts.Stable.abi,
       USDC.address
     );
-    const startGov = bn(10).pow(bn(18)).toString();
+    const startStableToken = bn(10).pow(bn(18)).toString();
     const amount = bn(1)
       .mul(bn(10).pow(bn(6)))
       .toString();
-
-    await gov.methods.transfer(customer, 1).send({from: governor});
+    const rewardBalance = "100000";
 
     await gov.methods
-      .mint(instance._address, startGov)
+      .mint(instance._address, rewardBalance)
+      .send({from: governor});
+    await stable.methods
+      .mint(instance._address, startStableToken)
       .send({from: governor});
     const customerUSDCStartBalance = await usdc.methods
       .balanceOf(customer)
@@ -34,24 +40,29 @@ contract("Market.buyGovernanceToken", ({web3, artifacts}) => {
     const marketUSDCStartBalance = await usdc.methods
       .balanceOf(instance._address)
       .call();
-    const customerGovStartBalance = await gov.methods
+    const customerStableTokenStartBalance = await stable.methods
       .balanceOf(customer)
       .call();
-    const marketGovStartBalance = await gov.methods
+    const customerGovTokenStartBalance = await gov.methods
+      .balanceOf(customer)
+      .call();
+    const marketStableTokenStartBalance = await stable.methods
       .balanceOf(instance._address)
       .call();
     assert.equal(
-      customerGovStartBalance,
-      "1",
-      "Invalid governance token start balance for customer"
+      customerStableTokenStartBalance,
+      "0",
+      "Invalid stable token start balance for customer"
     );
 
-    const reward = await instance.methods
-      .priceGovernanceToken(USDC.address, amount)
+    const {product, reward} = await instance.methods
+      .price(USDC.address, amount)
       .call();
-    await usdc.methods.approve(instance._address, amount).send({from: customer});
+    await usdc.methods
+      .approve(instance._address, amount)
+      .send({from: customer});
     await instance.methods
-      .buyGovernanceToken(USDC.address, amount)
+      .buy(USDC.address, amount)
       .send({from: customer, gas: 2000000});
 
     const customerUSDCEndBalance = await usdc.methods
@@ -60,10 +71,13 @@ contract("Market.buyGovernanceToken", ({web3, artifacts}) => {
     const marketUSDCEndBalance = await usdc.methods
       .balanceOf(instance._address)
       .call();
-    const customerGovernanceTokenEndBalance = await gov.methods
+    const customerStableTokenEndBalance = await stable.methods
       .balanceOf(customer)
       .call();
-    const marketGovernanceTokenEndBalance = await gov.methods
+    const customerGovTokenEndBalance = await gov.methods
+      .balanceOf(customer)
+      .call();
+    const marketStableTokenEndBalance = await stable.methods
       .balanceOf(instance._address)
       .call();
     assert.equal(
@@ -77,19 +91,27 @@ contract("Market.buyGovernanceToken", ({web3, artifacts}) => {
       "Invalid token end balance for market"
     );
     assert.equal(
-      customerGovernanceTokenEndBalance,
-      bn(customerGovStartBalance).add(bn(reward)).toString(),
-      "Invalid governance token end balance for customer"
+      customerStableTokenEndBalance,
+      bn(customerStableTokenStartBalance).add(bn(product)).toString(),
+      "Invalid stable token end balance for customer"
     );
     assert.equal(
-      marketGovernanceTokenEndBalance,
-      bn(marketGovStartBalance).sub(bn(reward)).toString(),
-      "Invalid governance token end balance for market"
+      customerGovTokenEndBalance,
+      bn(customerGovTokenStartBalance).add(bn(reward)).toString(),
+      "Invalid gov token end balance for customer"
+    );
+    assert.equal(
+      marketStableTokenEndBalance,
+      bn(marketStableTokenStartBalance).sub(bn(product)).toString(),
+      "Invalid stable token end balance for market"
     );
   });
 
-  it("buyGovernanceToken: should buy governance token for other token", async () => {
-    const [instance, gov] = await artifacts.requireAll("Market", "GovernanceToken");
+  it("buy: should buy stable token for other token", async () => {
+    const [instance, stable] = await artifacts.requireAll(
+      "Market",
+      "StableToken"
+    );
     const wbtc = new web3.eth.Contract(
       development.contracts.Stable.abi,
       USDT.address
@@ -98,7 +120,7 @@ contract("Market.buyGovernanceToken", ({web3, artifacts}) => {
       development.contracts.Stable.abi,
       USDC.address
     );
-    const startGov = bn(1000)
+    const startStableToken = bn(1000)
       .mul(bn(10).pow(bn(18)))
       .toString();
     const amount = bn(1)
@@ -114,8 +136,8 @@ contract("Market.buyGovernanceToken", ({web3, artifacts}) => {
         .call()
     )[2];
 
-    await gov.methods
-      .mint(instance._address, startGov)
+    await stable.methods
+      .mint(instance._address, startStableToken)
       .send({from: governor});
     const customerWBTCStartBalance = await wbtc.methods
       .balanceOf(customer)
@@ -123,19 +145,19 @@ contract("Market.buyGovernanceToken", ({web3, artifacts}) => {
     const marketUSDCStartBalance = await usdc.methods
       .balanceOf(instance._address)
       .call();
-    const customerGovStartBalance = await gov.methods
+    const customerStableTokenStartBalance = await stable.methods
       .balanceOf(customer)
       .call();
-    const marketGovStartBalance = await gov.methods
+    const marketStableTokenStartBalance = await stable.methods
       .balanceOf(instance._address)
       .call();
 
-    const reward = await instance.methods
-      .priceGovernanceToken(USDT.address, amount)
-      .call();
-    await wbtc.methods.approve(instance._address, amount).send({from: customer});
+    const {product} = await instance.methods.price(USDT.address, amount).call();
+    await wbtc.methods
+      .approve(instance._address, amount)
+      .send({from: customer});
     await instance.methods
-      .buyGovernanceToken(USDT.address, amount)
+      .buy(USDT.address, amount)
       .send({from: customer, gas: 2000000});
 
     const customerWBTCEndBalance = await wbtc.methods
@@ -144,10 +166,10 @@ contract("Market.buyGovernanceToken", ({web3, artifacts}) => {
     const marketUSDCEndBalance = await usdc.methods
       .balanceOf(instance._address)
       .call();
-    const customerGovEndBalance = await gov.methods
+    const customerStableTokenEndBalance = await stable.methods
       .balanceOf(customer)
       .call();
-    const marketGovEndBalance = await gov.methods
+    const marketStableTokenEndBalance = await stable.methods
       .balanceOf(instance._address)
       .call();
     assert.equal(
@@ -161,43 +183,24 @@ contract("Market.buyGovernanceToken", ({web3, artifacts}) => {
       "Invalid token end balance for market"
     );
     assert.equal(
-      customerGovEndBalance,
-      bn(customerGovStartBalance).add(bn(reward)).toString(),
-      "Invalid governance token end balance for customer"
+      customerStableTokenEndBalance,
+      bn(customerStableTokenStartBalance).add(bn(product)).toString(),
+      "Invalid stable token end balance for customer"
     );
     assert.equal(
-      marketGovEndBalance,
-      bn(marketGovStartBalance).sub(bn(reward)).toString(),
-      "Invalid governance token end balance for market"
+      marketStableTokenEndBalance,
+      bn(marketStableTokenStartBalance).sub(bn(product)).toString(),
+      "Invalid stable token end balance for market"
     );
   });
 
-  it("buyGovernanceToken: should revert tx if token is not allowed", async () => {
+  it("buy: should revert tx if token is not allowed", async () => {
     const instance = await artifacts.require("Market");
     const [, notAllowedToken] = artifacts.accounts;
 
     await assertions.reverts(
-      instance.methods.buyGovernanceToken(notAllowedToken, 1).send({from: customer}),
-      "Market::buy: invalid token"
-    );
-  });
-
-  it("buyGovernanceToken: should revert tx if customer not tokenholder", async () => {
-    const instance = await artifacts.require("Market");
-    const [, notTokenholder] = artifacts.accounts;
-    const usdc = new web3.eth.Contract(
-      development.contracts.Stable.abi,
-      USDC.address
-    );
-    const amount = "1";
-
-    await usdc.methods.transfer(notTokenholder, amount).send({from: customer});
-
-    await assertions.reverts(
-      instance.methods
-        .buyGovernanceToken(USDC.address, amount)
-        .send({from: notTokenholder}),
-      "Market::buyGovernanceToken: only tokenholder can buy new governance token"
+      instance.methods.buy(notAllowedToken, 1).send({from: customer}),
+      "Market::price: currency not allowed"
     );
   });
 });

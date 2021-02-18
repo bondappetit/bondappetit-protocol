@@ -14,17 +14,16 @@ contract Market is OwnablePausable {
 
     uint256 public constant PRICE_DECIMALS = 6;
 
+    uint256 public constant REWARD_DECIMALS = 12;
+
     /// @notice Address of cumulative token.
     ERC20 public cumulative;
 
-    /// @notice Address of stable token contract.
-    ERC20 public stableToken;
+    /// @notice Address of product token contract.
+    ERC20 public productToken;
 
-    /// @notice Address of governance token contract.
-    ERC20 public governanceToken;
-
-    /// @notice Price of governance token
-    uint256 public governanceTokenPrice = 1000000;
+    /// @notice Address of reward token contract.
+    ERC20 public rewardToken;
 
     /// @dev Address of UniswapV2Router.
     IUniswapV2Router02 public uniswapRouter;
@@ -50,32 +49,29 @@ contract Market is OwnablePausable {
     /// @notice An event thats emitted when an token denied.
     event TokenDenied(address token);
 
-    /// @notice An event thats emitted when an governance token price changed.
-    event GovernanceTokenPriceChanged(uint256 newPrice);
-
     /// @notice An event thats emitted when an account buyed token.
-    event Buy(address customer, address product, address token, uint256 amount, uint256 buy);
+    event Buy(address customer, address token, uint256 amount, uint256 buy);
 
     /// @notice An event thats emitted when an cumulative token withdrawal.
     event Withdrawal(address recipient, address token, uint256 amount);
 
     /**
      * @param _cumulative Address of cumulative token.
-     * @param _stableToken Address of stable token.
-     * @param _governanceToken Address of governance token.
+     * @param _productToken Address of product token.
+     * @param _rewardToken Address of reward token.
      * @param _uniswapRouter Address of Uniswap router contract.
      * @param _priceOracle Address of Price oracle contract.
      */
     constructor(
         address _cumulative,
-        address _stableToken,
-        address _governanceToken,
+        address _productToken,
+        address _rewardToken,
         address _uniswapRouter,
         address _priceOracle
     ) public {
         cumulative = ERC20(_cumulative);
-        stableToken = ERC20(_stableToken);
-        governanceToken = ERC20(_governanceToken);
+        productToken = ERC20(_productToken);
+        rewardToken = ERC20(_rewardToken);
         uniswapRouter = IUniswapV2Router02(_uniswapRouter);
         priceOracle = IUniswapAnchoredView(_priceOracle);
     }
@@ -137,17 +133,6 @@ contract Market is OwnablePausable {
     }
 
     /**
-     * @notice Update price of governance token.
-     * @param newPrice New price of governance token of USD (6 decimal).
-     */
-    function changeGovernanceTokenPrice(uint256 newPrice) external onlyOwner {
-        require(newPrice > 0, "Market::changeGovernanceTokenPrice: invalid new price of governance token");
-
-        governanceTokenPrice = newPrice;
-        emit GovernanceTokenPriceChanged(newPrice);
-    }
-
-    /**
      * @dev Transfer token to recipient.
      * @param from Address of transfered token contract.
      * @param recipient Address of recipient.
@@ -167,208 +152,138 @@ contract Market is OwnablePausable {
     }
 
     /**
-     * @notice Transfer stable token to recipient.
+     * @notice Transfer product token to recipient.
      * @param recipient Address of recipient.
      * @param amount Amount of transfered token.
      */
-    function transferStableToken(address recipient, uint256 amount) external onlyOwner {
-        transfer(stableToken, recipient, amount);
+    function transferProductToken(address recipient, uint256 amount) external onlyOwner {
+        transfer(productToken, recipient, amount);
     }
 
     /**
-     * @notice Transfer governance token to recipient.
+     * @notice Transfer reward token to recipient.
      * @param recipient Address of recipient.
      * @param amount Amount of transfered token.
      */
-    function transferGovernanceToken(address recipient, uint256 amount) external onlyOwner {
-        transfer(governanceToken, recipient, amount);
+    function transferRewardToken(address recipient, uint256 amount) external onlyOwner {
+        transfer(rewardToken, recipient, amount);
     }
 
     /**
-     * @dev Convert token amount to governance token amount.
-     * @param amount Target token amount.
-     * @return Governance token amount.
+     * @notice Get token price.
+     * @param currency Currency token.
+     * @param payment Amount of payment.
+     * @return product Amount of product token.
+     * @return reward Amount of reward token.
      */
-    function _governanceTokenPrice(uint256 amount) internal view returns (uint256) {
-        return amount.mul(10**PRICE_DECIMALS).div(governanceTokenPrice);
-    }
+    function price(address currency, uint256 payment) public view returns (uint256 product, uint256 reward) {
+        require(isAllowedToken(currency), "Market::price: currency not allowed");
 
-    /**
-     * @dev Get product token price from payment token amount.
-     * @param product Product token.
-     * @param token Payment token.
-     * @param amount Payment token amount.
-     * @return Price of product token.
-     */
-    function price(
-        ERC20 product,
-        ERC20 token,
-        uint256 amount
-    ) internal view returns (uint256) {
-        require(isAllowedToken(address(token)), "Market::price: invalid token");
-
-        uint256 tokenDecimals = token.decimals();
-        uint256 productDecimals = product.decimals();
-        uint256 tokenPrice = priceOracle.price(allowedTokens[address(token)]);
+        uint256 tokenDecimals = ERC20(currency).decimals();
+        uint256 productDecimals = productToken.decimals();
+        uint256 tokenPrice = priceOracle.price(allowedTokens[currency]);
         uint256 cumulativePrice = priceOracle.price(cumulative.symbol());
 
-        uint256 result = amount.mul(10**productDecimals.sub(tokenDecimals));
-        if (address(product) != address(token)) {
-            result = tokenPrice.mul(10**PRICE_DECIMALS).div(cumulativePrice).mul(amount).div(10**PRICE_DECIMALS).mul(10**productDecimals.sub(tokenDecimals));
-        }
-        if (address(product) == address(governanceToken)) {
-            return _governanceTokenPrice(result);
+        product = payment.mul(10**productDecimals.sub(tokenDecimals));
+        if (address(productToken) != currency) {
+            product = tokenPrice.mul(10**PRICE_DECIMALS).div(cumulativePrice).mul(payment).div(10**PRICE_DECIMALS).mul(10**productDecimals.sub(tokenDecimals));
         }
 
-        return result;
+        uint256 productTokenBalance = productToken.balanceOf(address(this));
+        if (productTokenBalance > 0) {
+            uint256 rewardTokenBalance = rewardToken.balanceOf(address(this));
+            reward = product.mul(10**REWARD_DECIMALS).div(productTokenBalance).mul(rewardTokenBalance).div(10**REWARD_DECIMALS);
+        }
     }
 
     /**
-     * @dev Get stable token price from payment token amount.
-     * @param token Payment token.
-     * @param amount Payment token amount.
-     * @return Price of product token.
-     */
-    function priceStableToken(address token, uint256 amount) external view returns (uint256) {
-        return price(stableToken, ERC20(token), amount);
-    }
-
-    /**
-     * @dev Get governance token price from payment token amount.
-     * @param token Payment token.
-     * @param amount Payment token amount.
-     * @return Price of product token.
-     */
-    function priceGovernanceToken(address token, uint256 amount) external view returns (uint256) {
-        return price(governanceToken, ERC20(token), amount);
-    }
-
-    /**
-     * @param token Buy token.
+     * @param currency Currency token.
      * @return Pools for each consecutive pair of addresses must exist and have liquidity
      */
-    function _path(address token) internal view returns (address[] memory) {
+    function _path(address currency) internal view returns (address[] memory) {
         address weth = uniswapRouter.WETH();
-        if (weth == token) {
+        if (weth == currency) {
             address[] memory path = new address[](2);
-            path[0] = token;
+            path[0] = currency;
             path[1] = address(cumulative);
             return path;
         }
 
         address[] memory path = new address[](3);
-        path[0] = token;
+        path[0] = currency;
         path[1] = weth;
         path[2] = address(cumulative);
         return path;
     }
 
     /**
-     * @param token Buy token.
-     * @param amount Buy amount.
+     * @param currency Currency token.
+     * @param payment Amount of payment.
      * @return Amount cumulative token after swap.
      */
-    function _amountOut(address token, uint256 amount) internal view returns (uint256) {
-        uint256[] memory amountsOut = uniswapRouter.getAmountsOut(amount, _path(token));
+    function _amountOut(address currency, uint256 payment) internal view returns (uint256) {
+        uint256[] memory amountsOut = uniswapRouter.getAmountsOut(payment, _path(currency));
         require(amountsOut.length != 0, "Market::_amountOut: invalid amounts out length");
 
         return amountsOut[amountsOut.length - 1];
     }
 
     /**
-     * @dev Buy product token with ERC20 payment token amount.
-     * @param product Purchased token.
-     * @param token Payment token.
-     * @param amount Amount of payment token.
+     * @notice Buy token with ERC20.
+     * @param currency Currency token.
+     * @param payment Amount of payment.
      * @return True if success.
      */
-    function buy(
-        ERC20 product,
-        ERC20 token,
-        uint256 amount
-    ) internal whenNotPaused returns (bool) {
-        require(isAllowedToken(address(token)), "Market::buy: invalid token");
+    function buy(address currency, uint256 payment) external returns (bool) {
+        (uint256 product, uint256 reward) = price(currency, payment);
+        uint256 productTokenBalance = productToken.balanceOf(address(this));
+        require(productTokenBalance > 0 && product <= productTokenBalance, "Market::buy: exceeds balance");
 
-        uint256 reward = price(product, token, amount);
-        token.safeTransferFrom(msg.sender, address(this), amount);
+        ERC20(currency).safeTransferFrom(msg.sender, address(this), payment);
 
-        if (address(token) != address(cumulative)) {
-            uint256 amountOut = _amountOut(address(token), amount);
+        if (currency != address(cumulative)) {
+            uint256 amountOut = _amountOut(currency, payment);
             require(amountOut != 0, "Market::buy: liquidity pool is empty");
 
-            token.safeApprove(address(uniswapRouter), amount);
-            uniswapRouter.swapExactTokensForTokens(amount, amountOut, _path(address(token)), address(this), block.timestamp);
+            ERC20(currency).safeApprove(address(uniswapRouter), payment);
+            uniswapRouter.swapExactTokensForTokens(payment, amountOut, _path(currency), address(this), block.timestamp);
         }
 
-        product.safeTransfer(msg.sender, reward);
-        emit Buy(msg.sender, address(product), address(token), amount, reward);
+        productToken.safeTransfer(msg.sender, product);
+        if (reward > 0) {
+            rewardToken.safeTransfer(msg.sender, reward);
+        }
+        emit Buy(msg.sender, currency, payment, product);
 
         return true;
     }
 
     /**
-     * @notice Buy stable token with ERC20 payment token amount.
-     * @param token Payment token.
-     * @param amount Amount of payment token.
+     * @notice Buy token with ETH.
      * @return True if success.
      */
-    function buyStableToken(address token, uint256 amount) external returns (bool) {
-        return buy(stableToken, ERC20(token), amount);
-    }
+    function buyFromETH() external payable returns (bool) {
+        address currency = uniswapRouter.WETH();
+        uint256 payment = msg.value;
 
-    /**
-     * @notice Buy governance token with ERC20 payment token amount.
-     * @param token Payment token.
-     * @param amount Amount of payment token.
-     * @return True if success.
-     */
-    function buyGovernanceToken(address token, uint256 amount) external returns (bool) {
-        require(governanceToken.balanceOf(msg.sender) > 0, "Market::buyGovernanceToken: only tokenholder can buy new governance token");
+        (uint256 product, uint256 reward) = price(currency, payment);
+        uint256 productTokenBalance = productToken.balanceOf(address(this));
+        require(product <= productTokenBalance, "Market::buyFromETH: balance is empty");
 
-        return buy(governanceToken, ERC20(token), amount);
-    }
-
-    /**
-     * @dev Buy product token with ETH amount.
-     * @param product Purchased token.
-     * @return True if success.
-     */
-    function buyFromETH(ERC20 product) internal whenNotPaused returns (bool) {
-        ERC20 token = ERC20(uniswapRouter.WETH());
-        uint256 amount = msg.value;
-        require(isAllowedToken(address(token)), "Market::buyFromETH: invalid token");
-
-        uint256 reward = price(product, token, amount);
-
-        if (address(token) != address(cumulative)) {
-            uint256 amountOut = _amountOut(address(token), amount);
+        if (currency != address(cumulative)) {
+            uint256 amountOut = _amountOut(currency, payment);
             require(amountOut != 0, "Market::buyFromETH: liquidity pool is empty");
 
-            uniswapRouter.swapExactETHForTokens{value: amount}(amountOut, _path(address(token)), address(this), block.timestamp);
+            uniswapRouter.swapExactETHForTokens{value: payment}(amountOut, _path(currency), address(this), block.timestamp);
         }
 
-        product.safeTransfer(msg.sender, reward);
-        emit Buy(msg.sender, address(product), address(token), amount, reward);
+        productToken.safeTransfer(msg.sender, product);
+        if (reward > 0) {
+            rewardToken.safeTransfer(msg.sender, reward);
+        }
+        emit Buy(msg.sender, currency, payment, product);
 
         return true;
-    }
-
-    /**
-     * @notice Buy stable token with ETH amount.
-     * @return True if success.
-     */
-    function buyStableTokenFromETH() external payable returns (bool) {
-        return buyFromETH(stableToken);
-    }
-
-    /**
-     * @notice Buy governance token with ETH amount.
-     * @return True if success.
-     */
-    function buyGovernanceTokenFromETH() external payable returns (bool) {
-        require(governanceToken.balanceOf(msg.sender) > 0, "Market::buyGovernanceTokenFromETH: only tokenholder can buy new governance token");
-
-        return buyFromETH(governanceToken);
     }
 
     /**
