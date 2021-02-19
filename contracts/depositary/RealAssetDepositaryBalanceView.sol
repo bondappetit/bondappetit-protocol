@@ -20,8 +20,6 @@ contract RealAssetDepositaryBalanceView is IDepositaryBalanceView, AccessControl
         string id;
         uint256 amount;
         uint256 price;
-        uint256 updatedAt;
-        Proof proof;
     }
 
     /// @notice The number of assets in depositary.
@@ -37,10 +35,10 @@ contract RealAssetDepositaryBalanceView is IDepositaryBalanceView, AccessControl
     mapping(string => uint256) internal portfolioIndex;
 
     /// @notice An event thats emitted when asset updated in portfolio.
-    event AssetUpdated(string isin, uint256 amount, uint256 updatedAt);
+    event AssetUpdated(string id, uint256 updatedAt, Proof proof);
 
     /// @notice An event thats emitted when asset removed from portfolio.
-    event AssetRemoved(string isin);
+    event AssetRemoved(string id);
 
     /**
      * @param _decimals Decimals balance.
@@ -92,12 +90,12 @@ contract RealAssetDepositaryBalanceView is IDepositaryBalanceView, AccessControl
 
         uint256 valueIndex = portfolioIndex[id];
         if (valueIndex != 0) {
-            portfolio[valueIndex.sub(1)] = Asset(id, amount, price, updatedAt, Proof(proofData, proofSignature));
+            portfolio[valueIndex.sub(1)] = Asset(id, amount, price);
         } else {
-            portfolio.push(Asset(id, amount, price, updatedAt, Proof(proofData, proofSignature)));
+            portfolio.push(Asset(id, amount, price));
             portfolioIndex[id] = size();
         }
-        emit AssetUpdated(id, amount, updatedAt);
+        emit AssetUpdated(id, updatedAt, Proof(proofData, proofSignature));
     }
 
     /**
