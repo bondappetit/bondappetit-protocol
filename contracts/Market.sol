@@ -234,7 +234,7 @@ contract Market is OwnablePausable {
      * @param payment Amount of payment.
      * @return True if success.
      */
-    function buy(address currency, uint256 payment) external returns (bool) {
+    function buy(address currency, uint256 payment) external whenNotPaused returns (bool) {
         (uint256 product, uint256 reward) = price(currency, payment);
         uint256 productTokenBalance = productToken.balanceOf(address(this));
         require(productTokenBalance > 0 && product <= productTokenBalance, "Market::buy: exceeds balance");
@@ -262,7 +262,7 @@ contract Market is OwnablePausable {
      * @notice Buy token with ETH.
      * @return True if success.
      */
-    function buyFromETH() external payable returns (bool) {
+    function buyFromETH() external payable whenNotPaused returns (bool) {
         address currency = uniswapRouter.WETH();
         uint256 payment = msg.value;
 
