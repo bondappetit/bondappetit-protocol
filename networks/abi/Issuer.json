@@ -134,6 +134,19 @@
         },
         {
             "inputs": [],
+            "name": "allowedDepositaries",
+            "outputs": [
+                {
+                    "internalType": "address[]",
+                    "name": "",
+                    "type": "address[]"
+                }
+            ],
+            "stateMutability": "view",
+            "type": "function"
+        },
+        {
+            "inputs": [],
             "name": "balance",
             "outputs": [
                 {
@@ -154,6 +167,19 @@
                 }
             ],
             "name": "changePauser",
+            "outputs": [],
+            "stateMutability": "nonpayable",
+            "type": "function"
+        },
+        {
+            "inputs": [
+                {
+                    "internalType": "address",
+                    "name": "_owner",
+                    "type": "address"
+                }
+            ],
+            "name": "changeStableTokenOwner",
             "outputs": [],
             "stateMutability": "nonpayable",
             "type": "function"
