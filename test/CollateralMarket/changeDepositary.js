@@ -6,13 +6,15 @@ contract("CollateralMarket.changeDepositary", ({web3, artifacts}) => {
   const governor = development.accounts.Governor.address;
 
   it("changeDepositary: should change depositary contract address", async () => {
-    const [instance, gov] = await artifacts.requireAll(
+    const [instance, issuer, gov] = await artifacts.requireAll(
       "CollateralMarket",
+      "Issuer",
       "GovernanceToken"
     );
 
     const startAddress = await instance.methods.depositary().call();
 
+    await issuer.methods.addDepositary(gov._address).send({from: governor});
     await instance.methods
       .changeDepositary(gov._address)
       .send({from: governor});
@@ -24,6 +26,18 @@ contract("CollateralMarket.changeDepositary", ({web3, artifacts}) => {
       "Start address equals end address"
     );
     assert.equal(endAddress, gov._address, "Invalid end address");
+  });
+
+  it("changeDepositary: should revert tx if depositary not allowed in issuer", async () => {
+    const instance = await artifacts.require("CollateralMarket");
+    const [, notAllowed] = artifacts.accounts;
+
+    await assertions.reverts(
+      instance.methods.changeDepositary(notAllowed).send({
+        from: governor,
+      }),
+      "CollateralMarket::changeDepositary: collateral depositary is not allowed"
+    );
   });
 
   it("changeDepositary: should revert tx if sender not owner", async () => {

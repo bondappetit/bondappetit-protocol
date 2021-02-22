@@ -75,6 +75,14 @@ contract AgregateDepositaryBalanceView is IDepositaryBalanceView, OwnablePausabl
     }
 
     /**
+     * @param depositary Target depositary address.
+     * @return True if target depositary is allowed.
+     */
+    function hasDepositary(address depositary) external view returns (bool) {
+        return depositariesIndex[depositary] != 0;
+    }
+
+    /**
      * @return Allowed depositaries list.
      */
     function allowedDepositaries() external view returns (address[] memory) {

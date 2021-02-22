@@ -164,39 +164,39 @@ contract Staking is OwnablePausable, ReentrancyGuard {
      * @notice Stake token.
      * @param amount Amount staking token.
      */
-    function stake(uint256 amount) external nonReentrant updateReward(msg.sender) {
+    function stake(uint256 amount) external nonReentrant updateReward(_msgSender()) {
         require(amount > 0, "Staking::stake: cannot stake 0");
         if (stakingEndBlock > 0) {
             require(block.number < stakingEndBlock, "Staking:stake: staking completed");
         }
         _totalSupply = _totalSupply.add(amount);
-        _balances[msg.sender] = _balances[msg.sender].add(amount);
-        stakingToken.safeTransferFrom(msg.sender, address(this), amount);
-        emit Staked(msg.sender, amount);
+        _balances[_msgSender()] = _balances[_msgSender()].add(amount);
+        stakingToken.safeTransferFrom(_msgSender(), address(this), amount);
+        emit Staked(_msgSender(), amount);
     }
 
     /**
      * @notice Withdraw staking token.
      * @param amount Amount withdraw token.
      */
-    function withdraw(uint256 amount) public nonReentrant updateReward(msg.sender) {
+    function withdraw(uint256 amount) public nonReentrant updateReward(_msgSender()) {
         require(amount > 0, "Staking::withdraw: Cannot withdraw 0");
         require(block.number >= unstakingStartBlock, "Staking:withdraw: unstaking not started");
         _totalSupply = _totalSupply.sub(amount);
-        _balances[msg.sender] = _balances[msg.sender].sub(amount);
-        stakingToken.safeTransfer(msg.sender, amount);
-        emit Withdrawn(msg.sender, amount);
+        _balances[_msgSender()] = _balances[_msgSender()].sub(amount);
+        stakingToken.safeTransfer(_msgSender(), amount);
+        emit Withdrawn(_msgSender(), amount);
     }
 
     /**
      * @notice Withdraw reward token.
      */
-    function getReward() public nonReentrant updateReward(msg.sender) {
-        uint256 reward = rewards[msg.sender];
+    function getReward() public nonReentrant updateReward(_msgSender()) {
+        uint256 reward = rewards[_msgSender()];
         if (reward > 0) {
-            rewards[msg.sender] = 0;
-            rewardsToken.safeTransfer(msg.sender, reward);
-            emit RewardPaid(msg.sender, reward);
+            rewards[_msgSender()] = 0;
+            rewardsToken.safeTransfer(_msgSender(), reward);
+            emit RewardPaid(_msgSender(), reward);
         }
     }
 
@@ -204,7 +204,7 @@ contract Staking is OwnablePausable, ReentrancyGuard {
      * @notice Withdraw reward and staking token.
      */
     function exit() external {
-        withdraw(_balances[msg.sender]);
+        withdraw(_balances[_msgSender()]);
         getReward();
     }
 
@@ -252,7 +252,7 @@ contract Staking is OwnablePausable, ReentrancyGuard {
      * @param reward Distributed rewards amount.
      */
     function notifyRewardAmount(uint256 reward) external updateReward(address(0)) {
-        require(msg.sender == rewardsDistribution || msg.sender == owner(), "Staking::notifyRewardAmount: caller is not RewardsDistribution or Owner address");
+        require(_msgSender() == rewardsDistribution || _msgSender() == owner(), "Staking::notifyRewardAmount: caller is not RewardsDistribution or Owner address");
 
         if (block.number >= periodFinish) {
             rewardRate = reward.div(rewardsDuration);
