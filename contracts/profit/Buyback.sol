@@ -108,7 +108,7 @@ contract Buyback is OwnablePausable {
      */
     function buy(uint256 amount) external whenNotPaused {
         if (amount > 0) {
-            incoming.safeTransferFrom(msg.sender, address(this), amount);
+            incoming.safeTransferFrom(_msgSender(), address(this), amount);
         }
 
         address[] memory path = new address[](2);

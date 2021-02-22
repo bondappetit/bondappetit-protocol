@@ -10,7 +10,7 @@ contract MockERC20 is ERC20, Ownable {
         string memory symbol,
         uint256 initialSupply
     ) public ERC20(name, symbol) {
-        _mint(msg.sender, initialSupply);
+        _mint(_msgSender(), initialSupply);
     }
 
     function mint(address account, uint256 amount) public onlyOwner {

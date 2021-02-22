@@ -136,10 +136,10 @@ contract VestingSplitter is Ownable {
      * @param token Target token.
      */
     function withdraw(address token) external {
-        uint256 reward = _balances[token][msg.sender];
-        _balances[token][msg.sender] = 0;
+        uint256 reward = _balances[token][_msgSender()];
+        _balances[token][_msgSender()] = 0;
         totalSupply[token] = totalSupply[token].sub(reward);
-        ERC20(token).safeTransfer(msg.sender, reward);
-        emit Withdraw(token, msg.sender, reward);
+        ERC20(token).safeTransfer(_msgSender(), reward);
+        emit Withdraw(token, _msgSender(), reward);
     }
 }

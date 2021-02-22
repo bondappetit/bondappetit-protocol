@@ -99,7 +99,7 @@ contract UniswapMarketMaker is OwnablePausable {
      */
     function buyLiquidity(uint256 amount) external whenNotPaused {
         if (amount > 0) {
-            incoming.safeTransferFrom(msg.sender, address(this), amount);
+            incoming.safeTransferFrom(_msgSender(), address(this), amount);
         }
 
         address[] memory path = new address[](2);
@@ -137,10 +137,10 @@ contract UniswapMarketMaker is OwnablePausable {
      */
     function addLiquidity(uint256 incomingAmount, uint256 supportAmount) external whenNotPaused {
         if (incomingAmount > 0) {
-            incoming.safeTransferFrom(msg.sender, address(this), incomingAmount);
+            incoming.safeTransferFrom(_msgSender(), address(this), incomingAmount);
         }
         if (supportAmount > 0) {
-            support.safeTransferFrom(msg.sender, address(this), supportAmount);
+            support.safeTransferFrom(_msgSender(), address(this), supportAmount);
         }
 
         uint256 incomingBalance = incoming.balanceOf(address(this));
