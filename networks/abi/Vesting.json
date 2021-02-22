@@ -16,6 +16,19 @@
             "inputs": [
                 {
                     "indexed": false,
+                    "internalType": "address",
+                    "name": "delegatee",
+                    "type": "address"
+                }
+            ],
+            "name": "DelegateVotes",
+            "type": "event"
+        },
+        {
+            "anonymous": false,
+            "inputs": [
+                {
+                    "indexed": false,
                     "internalType": "uint256",
                     "name": "periodId",
                     "type": "uint256"
@@ -128,6 +141,24 @@
             "type": "function"
         },
         {
+            "inputs": [
+                {
+                    "internalType": "address",
+                    "name": "governanceToken",
+                    "type": "address"
+                },
+                {
+                    "internalType": "address",
+                    "name": "delegatee",
+                    "type": "address"
+                }
+            ],
+            "name": "delegate",
+            "outputs": [],
+            "stateMutability": "nonpayable",
+            "type": "function"
+        },
+        {
             "inputs": [],
             "name": "getParticipants",
             "outputs": [
@@ -168,6 +199,11 @@
                             "type": "uint256"
                         },
                         {
+                            "internalType": "string",
+                            "name": "description",
+                            "type": "string"
+                        },
+                        {
                             "internalType": "bool",
                             "name": "withdrawal",
                             "type": "bool"
@@ -192,6 +228,11 @@
                     "internalType": "uint256",
                     "name": "amount",
                     "type": "uint256"
+                },
+                {
+                    "internalType": "string",
+                    "name": "description",
+                    "type": "string"
                 },
                 {
                     "internalType": "uint256",
