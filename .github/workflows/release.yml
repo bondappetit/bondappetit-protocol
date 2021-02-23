@@ -44,6 +44,9 @@ jobs:
       - name: npm docs
         run: npm run docs
 
+      - name: npm etherscan-verify
+        run: npm run etherscan-verify -- --network ropsten
+
       - name: Archive artifacts
         uses: actions/upload-artifact@v2
         with:
