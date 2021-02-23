@@ -1,6 +1,6 @@
 module.exports = {
   networkName: 'mainnet',
-  networkUrl: '',
+  networkUrl: 'https://mainnet.bondappetit.io',
   networkEtherscan: 'https://etherscan.io',
   networkId: 1,
   gasPrice: '60000000000',
