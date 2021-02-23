@@ -35,7 +35,7 @@ module.exports = {
       },
     },
     mainnet: {
-      url: "http://46.165.249.37:8545",
+      url: "https://mainnet.bondappetit.io",
       chainId: 1,
       from: networks.main.accounts.Governor.address,
       gasPrice: parseInt(networks.main.gasPrice, 10),

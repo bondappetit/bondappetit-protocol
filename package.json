@@ -11,7 +11,8 @@
     "node": "ganache-cli -f https://ropsten.bondappetit.io -m 'tape total toast night perfect myself kiwi rich glow moment bitter actual spare bottom boss' -u 0x876A207aD9f6f0fA2C58A7902B2E7568a41c299f -i 999 --chainId 999",
     "test": "hardhat test",
     "console": "hardhat console",
-    "docs": "solidity-docgen -i ./contracts -o ./docs/api -t ./docs/templates"
+    "docs": "solidity-docgen -i ./contracts -o ./docs/api -t ./docs/templates",
+    "etherscan-verify": "hardhat etherscan-verify"
   },
   "author": "",
   "license": "ISC",
