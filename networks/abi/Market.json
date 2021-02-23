@@ -57,6 +57,12 @@
                     "internalType": "uint256",
                     "name": "buy",
                     "type": "uint256"
+                },
+                {
+                    "indexed": false,
+                    "internalType": "uint256",
+                    "name": "reward",
+                    "type": "uint256"
                 }
             ],
             "name": "Buy",
