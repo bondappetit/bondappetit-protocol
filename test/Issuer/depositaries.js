@@ -9,6 +9,11 @@ contract("Issuer.depositaries", ({web3, artifacts}) => {
     const instance = await artifacts.require("Issuer");
     const [, depositary] = artifacts.accounts;
 
+    assert.equal(
+      await instance.methods.hasDepositary(depositary).call(),
+      false,
+      "Invalid start state"
+    );
     const startSize = await instance.methods.size().call();
     await instance.methods.addDepositary(depositary).send({
       from: governor,
@@ -23,9 +28,14 @@ contract("Issuer.depositaries", ({web3, artifacts}) => {
       "End size invalid"
     );
     assert.equal(
-      endDepositaries.includes(depositary),
+      await instance.methods.hasDepositary(depositary).call(),
       true,
       "Depositary not added"
+    );
+    assert.equal(
+      endDepositaries.includes(depositary),
+      true,
+      "Depositary not added to list"
     );
   });
 

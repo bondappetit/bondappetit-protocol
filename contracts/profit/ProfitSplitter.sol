@@ -238,7 +238,7 @@ contract ProfitSplitter is OwnablePausable {
      */
     function split(uint256 amount) external whenNotPaused {
         if (amount > 0) {
-            incoming.safeTransferFrom(msg.sender, address(this), amount);
+            incoming.safeTransferFrom(_msgSender(), address(this), amount);
         }
 
         _payToBudget();

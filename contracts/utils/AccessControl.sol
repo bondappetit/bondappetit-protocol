@@ -42,7 +42,7 @@ contract AccessControl is Ownable {
      * @return Allowed address list.
      */
     function accessList() external view returns (address[] memory) {
-        address[] memory result = new address[](allowed.length() + 1);
+        address[] memory result = new address[](allowed.length());
 
         for (uint256 i = 0; i < allowed.length(); i++) {
             result[i] = allowed.at(i);

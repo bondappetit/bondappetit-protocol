@@ -172,7 +172,7 @@ contract Investment is OwnablePausable {
         require(investmentTokens[token], "Investment::invest: invalid investable token");
         uint256 reward = _governanceTokenPrice(amount);
 
-        ERC20(token).safeTransferFrom(msg.sender, address(this), amount);
+        ERC20(token).safeTransferFrom(_msgSender(), address(this), amount);
 
         if (token != address(cumulative)) {
             uint256 amountOut = _amountOut(token, amount);
@@ -183,9 +183,9 @@ contract Investment is OwnablePausable {
             uniswapRouter.swapExactTokensForTokens(amount, amountOut, _path(token), address(this), block.timestamp);
         }
 
-        governanceToken.transferLock(msg.sender, reward, governanceTokenLockDate);
+        governanceToken.transferLock(_msgSender(), reward, governanceTokenLockDate);
 
-        emit Invested(msg.sender, token, amount, reward);
+        emit Invested(_msgSender(), token, amount, reward);
         return true;
     }
 
@@ -205,9 +205,9 @@ contract Investment is OwnablePausable {
             uniswapRouter.swapExactETHForTokens{value: msg.value}(amountOut, _path(token), address(this), block.timestamp);
         }
 
-        governanceToken.transferLock(msg.sender, reward, governanceTokenLockDate);
+        governanceToken.transferLock(_msgSender(), reward, governanceTokenLockDate);
 
-        emit Invested(msg.sender, token, msg.value, reward);
+        emit Invested(_msgSender(), token, msg.value, reward);
         return true;
     }
 

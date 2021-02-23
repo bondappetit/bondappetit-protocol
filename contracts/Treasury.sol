@@ -48,6 +48,10 @@ contract Treasury is AccessControl {
         address recipient,
         uint256 amount
     ) external onlyAllowed returns (bool) {
+        uint256 allowance = ERC20(token).allowance(address(this), recipient);
+        if (allowance > 0) {
+            ERC20(token).safeApprove(recipient, 0);
+        }
         ERC20(token).safeApprove(recipient, amount);
         return true;
     }

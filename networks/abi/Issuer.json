@@ -175,6 +175,19 @@
             "inputs": [
                 {
                     "internalType": "address",
+                    "name": "_owner",
+                    "type": "address"
+                }
+            ],
+            "name": "changeStableTokenOwner",
+            "outputs": [],
+            "stateMutability": "nonpayable",
+            "type": "function"
+        },
+        {
+            "inputs": [
+                {
+                    "internalType": "address",
                     "name": "_treasury",
                     "type": "address"
                 }

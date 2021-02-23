@@ -50,7 +50,7 @@ contract Market is OwnablePausable {
     event TokenDenied(address token);
 
     /// @notice An event thats emitted when an account buyed token.
-    event Buy(address customer, address token, uint256 amount, uint256 buy);
+    event Buy(address customer, address token, uint256 amount, uint256 buy, uint256 reward);
 
     /// @notice An event thats emitted when an cumulative token withdrawal.
     event Withdrawal(address recipient, address token, uint256 amount);
@@ -239,7 +239,7 @@ contract Market is OwnablePausable {
         uint256 productTokenBalance = productToken.balanceOf(address(this));
         require(productTokenBalance > 0 && product <= productTokenBalance, "Market::buy: exceeds balance");
 
-        ERC20(currency).safeTransferFrom(msg.sender, address(this), payment);
+        ERC20(currency).safeTransferFrom(_msgSender(), address(this), payment);
 
         if (currency != address(cumulative)) {
             uint256 amountOut = _amountOut(currency, payment);
@@ -249,11 +249,11 @@ contract Market is OwnablePausable {
             uniswapRouter.swapExactTokensForTokens(payment, amountOut, _path(currency), address(this), block.timestamp);
         }
 
-        productToken.safeTransfer(msg.sender, product);
+        productToken.safeTransfer(_msgSender(), product);
         if (reward > 0) {
-            rewardToken.safeTransfer(msg.sender, reward);
+            rewardToken.safeTransfer(_msgSender(), reward);
         }
-        emit Buy(msg.sender, currency, payment, product);
+        emit Buy(_msgSender(), currency, payment, product, reward);
 
         return true;
     }
@@ -277,11 +277,11 @@ contract Market is OwnablePausable {
             uniswapRouter.swapExactETHForTokens{value: payment}(amountOut, _path(currency), address(this), block.timestamp);
         }
 
-        productToken.safeTransfer(msg.sender, product);
+        productToken.safeTransfer(_msgSender(), product);
         if (reward > 0) {
-            rewardToken.safeTransfer(msg.sender, reward);
+            rewardToken.safeTransfer(_msgSender(), reward);
         }
-        emit Buy(msg.sender, currency, payment, product);
+        emit Buy(_msgSender(), currency, payment, product, reward);
 
         return true;
     }

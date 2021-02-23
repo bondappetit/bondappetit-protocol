@@ -9,7 +9,7 @@ contract StableToken is ERC20, AccessControl {
      * @param initialSupply Total supply.
      */
     constructor(uint256 initialSupply) public ERC20("Appetite USD", "USDp") {
-        _mint(msg.sender, initialSupply);
+        _mint(_msgSender(), initialSupply);
     }
 
     /**

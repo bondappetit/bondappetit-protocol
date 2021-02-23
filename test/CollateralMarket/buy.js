@@ -6,18 +6,11 @@ contract("CollateralMarket.buy", ({web3, artifacts}) => {
   const governor = development.accounts.Governor.address;
 
   it("buy: should transfer tokens to depositary and return stable token", async () => {
-    const [
-      instance,
-      gov,
-      stable,
-      depositary,
-      issuer,
-    ] = await artifacts.requireAll(
+    const [instance, gov, stable, depositary] = await artifacts.requireAll(
       "CollateralMarket",
       "GovernanceToken",
       "StableToken",
-      "StableTokenDepositaryBalanceView",
-      "Issuer"
+      "StableTokenDepositaryBalanceView"
     );
     const amount = "1000";
     await instance.methods.allowToken(gov._address).send({from: governor});
@@ -46,6 +39,28 @@ contract("CollateralMarket.buy", ({web3, artifacts}) => {
       await depositary.methods.balance().call(),
       bn(startDepositaryBalance).add(bn(amount)).toString(),
       "Invalid end depositary"
+    );
+  });
+
+  it("buy: should revert tx if depositary not allowed", async () => {
+    const [instance, issuer, gov] = await artifacts.requireAll(
+      "CollateralMarket",
+      "Issuer",
+      "GovernanceToken"
+    );
+    const amount = "1000";
+
+    await issuer.methods.addDepositary(gov._address).send({from: governor});
+    await instance.methods
+      .changeDepositary(gov._address)
+      .send({from: governor});
+    await issuer.methods.removeDepositary(gov._address).send({from: governor});
+    await gov.methods.approve(instance._address, amount).send({from: governor});
+    await assertions.reverts(
+      instance.methods
+        .buy(gov._address, amount)
+        .send({from: governor, gas: 6000000}),
+      "CollateralMarket::buy: collateral depositary is not allowed"
     );
   });
 

@@ -108,6 +108,7 @@ contract CollateralMarket is OwnablePausable {
      * @param _depositary New address Depositary contract.
      */
     function changeDepositary(address _depositary) external onlyOwner {
+        require(issuer.hasDepositary(_depositary), "CollateralMarket::changeDepositary: collateral depositary is not allowed");
         depositary = _depositary;
         emit DepositaryChanged(depositary);
     }
@@ -119,6 +120,7 @@ contract CollateralMarket is OwnablePausable {
      */
     function buy(ERC20 token, uint256 amount) external whenNotPaused {
         require(_allowedTokens.contains(address(token)), "CollateralMarket::buy: token is not allowed");
+        require(issuer.hasDepositary(depositary), "CollateralMarket::buy: collateral depositary is not allowed");
 
         token.safeTransferFrom(_msgSender(), address(this), amount);
         token.transfer(depositary, amount);

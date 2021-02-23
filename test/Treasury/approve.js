@@ -6,7 +6,10 @@ contract("Treasury.approve", ({web3, artifacts}) => {
   const governor = development.accounts.Governor.address;
 
   it("approve: should approve target token", async () => {
-    const [instance, gov] = await artifacts.requireAll("Treasury", "GovernanceToken");
+    const [instance, gov] = await artifacts.requireAll(
+      "Treasury",
+      "GovernanceToken"
+    );
     const [, accountWithoutTokens] = artifacts.accounts;
     const amount = "10";
 
@@ -25,6 +28,35 @@ contract("Treasury.approve", ({web3, artifacts}) => {
       });
     const endAccountAllowance = await gov.methods
       .allowance(instance._address, accountWithoutTokens)
+      .call();
+    assert.equal(endAccountAllowance, amount, "Invalid end account allowance");
+  });
+
+  it("approve: should approve target token if allowance is greater than zero", async () => {
+    const [instance, gov] = await artifacts.requireAll(
+      "Treasury",
+      "GovernanceToken"
+    );
+    const [, spender] = artifacts.accounts;
+    const amount = "15";
+
+    await gov.methods
+      .transfer(instance._address, amount)
+      .send({from: governor});
+    const startAccountAllowance = await gov.methods
+      .allowance(instance._address, spender)
+      .call();
+    assert.equal(
+      startAccountAllowance > 0,
+      true,
+      "Invalid start account allowance"
+    );
+
+    await instance.methods.approve(gov._address, spender, amount).send({
+      from: governor,
+    });
+    const endAccountAllowance = await gov.methods
+      .allowance(instance._address, spender)
       .call();
     assert.equal(endAccountAllowance, amount, "Invalid end account allowance");
   });
