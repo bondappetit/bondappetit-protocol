@@ -26,7 +26,7 @@ module.exports = {
      */
     },
     ropsten: {
-      url: "https://ropsten.infura.io/v3/03d22d3114e54a6dbab0cb1c6163b48a",
+      url: "https://ropsten.bondappetit.io",
       chainId: 3,
       from: networks.ropsten.accounts.Governor.address,
       gasPrice: parseInt(networks.ropsten.gasPrice, 10),
@@ -35,7 +35,7 @@ module.exports = {
       },
     },
     mainnet: {
-      url: "https://mainnet.infura.io/v3/03d22d3114e54a6dbab0cb1c6163b48a",
+      url: "http://46.165.249.37:8545",
       chainId: 1,
       from: networks.main.accounts.Governor.address,
       gasPrice: parseInt(networks.main.gasPrice, 10),
