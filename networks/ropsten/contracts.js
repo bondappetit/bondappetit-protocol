@@ -987,6 +987,270 @@ module.exports = {
     address: "0x5C69bEe701ef814a2B6a3EDD4B1652CB9cc5aA6f",
     name: "UniswapV2Factory",
     voting: false,
-    abi: [{"inputs":[{"internalType":"address","name":"_feeToSetter","type":"address"}],"payable":false,"stateMutability":"nonpayable","type":"constructor"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"token0","type":"address"},{"indexed":true,"internalType":"address","name":"token1","type":"address"},{"indexed":false,"internalType":"address","name":"pair","type":"address"},{"indexed":false,"internalType":"uint256","name":"","type":"uint256"}],"name":"PairCreated","type":"event"},{"constant":true,"inputs":[{"internalType":"uint256","name":"","type":"uint256"}],"name":"allPairs","outputs":[{"internalType":"address","name":"","type":"address"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[],"name":"allPairsLength","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":false,"inputs":[{"internalType":"address","name":"tokenA","type":"address"},{"internalType":"address","name":"tokenB","type":"address"}],"name":"createPair","outputs":[{"internalType":"address","name":"pair","type":"address"}],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":true,"inputs":[],"name":"feeTo","outputs":[{"internalType":"address","name":"","type":"address"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[],"name":"feeToSetter","outputs":[{"internalType":"address","name":"","type":"address"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[{"internalType":"address","name":"","type":"address"},{"internalType":"address","name":"","type":"address"}],"name":"getPair","outputs":[{"internalType":"address","name":"","type":"address"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":false,"inputs":[{"internalType":"address","name":"_feeTo","type":"address"}],"name":"setFeeTo","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":false,"inputs":[{"internalType":"address","name":"_feeToSetter","type":"address"}],"name":"setFeeToSetter","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"}]
-  }
+    abi: [
+      {
+        inputs: [
+          {internalType: "address", name: "_feeToSetter", type: "address"},
+        ],
+        payable: false,
+        stateMutability: "nonpayable",
+        type: "constructor",
+      },
+      {
+        anonymous: false,
+        inputs: [
+          {
+            indexed: true,
+            internalType: "address",
+            name: "token0",
+            type: "address",
+          },
+          {
+            indexed: true,
+            internalType: "address",
+            name: "token1",
+            type: "address",
+          },
+          {
+            indexed: false,
+            internalType: "address",
+            name: "pair",
+            type: "address",
+          },
+          {indexed: false, internalType: "uint256", name: "", type: "uint256"},
+        ],
+        name: "PairCreated",
+        type: "event",
+      },
+      {
+        constant: true,
+        inputs: [{internalType: "uint256", name: "", type: "uint256"}],
+        name: "allPairs",
+        outputs: [{internalType: "address", name: "", type: "address"}],
+        payable: false,
+        stateMutability: "view",
+        type: "function",
+      },
+      {
+        constant: true,
+        inputs: [],
+        name: "allPairsLength",
+        outputs: [{internalType: "uint256", name: "", type: "uint256"}],
+        payable: false,
+        stateMutability: "view",
+        type: "function",
+      },
+      {
+        constant: false,
+        inputs: [
+          {internalType: "address", name: "tokenA", type: "address"},
+          {internalType: "address", name: "tokenB", type: "address"},
+        ],
+        name: "createPair",
+        outputs: [{internalType: "address", name: "pair", type: "address"}],
+        payable: false,
+        stateMutability: "nonpayable",
+        type: "function",
+      },
+      {
+        constant: true,
+        inputs: [],
+        name: "feeTo",
+        outputs: [{internalType: "address", name: "", type: "address"}],
+        payable: false,
+        stateMutability: "view",
+        type: "function",
+      },
+      {
+        constant: true,
+        inputs: [],
+        name: "feeToSetter",
+        outputs: [{internalType: "address", name: "", type: "address"}],
+        payable: false,
+        stateMutability: "view",
+        type: "function",
+      },
+      {
+        constant: true,
+        inputs: [
+          {internalType: "address", name: "", type: "address"},
+          {internalType: "address", name: "", type: "address"},
+        ],
+        name: "getPair",
+        outputs: [{internalType: "address", name: "", type: "address"}],
+        payable: false,
+        stateMutability: "view",
+        type: "function",
+      },
+      {
+        constant: false,
+        inputs: [{internalType: "address", name: "_feeTo", type: "address"}],
+        name: "setFeeTo",
+        outputs: [],
+        payable: false,
+        stateMutability: "nonpayable",
+        type: "function",
+      },
+      {
+        constant: false,
+        inputs: [
+          {internalType: "address", name: "_feeToSetter", type: "address"},
+        ],
+        name: "setFeeToSetter",
+        outputs: [],
+        payable: false,
+        stateMutability: "nonpayable",
+        type: "function",
+      },
+    ],
+  },
+  IOneSplit: {
+    address: "0x712E990ffB170BFe8C0de8B4f25918589a80bAbE",
+    name: "IOneSplit",
+    voting: false,
+    abi: [
+      {
+        inputs: [
+          {
+            internalType: "contract IERC20",
+            name: "fromToken",
+            type: "address",
+          },
+          {
+            internalType: "contract IERC20",
+            name: "destToken",
+            type: "address",
+          },
+          {
+            internalType: "uint256",
+            name: "amount",
+            type: "uint256",
+          },
+          {
+            internalType: "uint256",
+            name: "parts",
+            type: "uint256",
+          },
+          {
+            internalType: "uint256",
+            name: "flags",
+            type: "uint256",
+          },
+        ],
+        name: "getExpectedReturn",
+        outputs: [
+          {
+            internalType: "uint256",
+            name: "returnAmount",
+            type: "uint256",
+          },
+          {
+            internalType: "uint256[]",
+            name: "distribution",
+            type: "uint256[]",
+          },
+        ],
+        stateMutability: "view",
+        type: "function",
+      },
+      {
+        inputs: [
+          {
+            internalType: "contract IERC20",
+            name: "fromToken",
+            type: "address",
+          },
+          {
+            internalType: "contract IERC20",
+            name: "destToken",
+            type: "address",
+          },
+          {
+            internalType: "uint256",
+            name: "amount",
+            type: "uint256",
+          },
+          {
+            internalType: "uint256",
+            name: "parts",
+            type: "uint256",
+          },
+          {
+            internalType: "uint256",
+            name: "flags",
+            type: "uint256",
+          },
+          {
+            internalType: "uint256",
+            name: "destTokenEthPriceTimesGasPrice",
+            type: "uint256",
+          },
+        ],
+        name: "getExpectedReturnWithGas",
+        outputs: [
+          {
+            internalType: "uint256",
+            name: "returnAmount",
+            type: "uint256",
+          },
+          {
+            internalType: "uint256",
+            name: "estimateGasAmount",
+            type: "uint256",
+          },
+          {
+            internalType: "uint256[]",
+            name: "distribution",
+            type: "uint256[]",
+          },
+        ],
+        stateMutability: "view",
+        type: "function",
+      },
+      {
+        inputs: [
+          {
+            internalType: "contract IERC20",
+            name: "fromToken",
+            type: "address",
+          },
+          {
+            internalType: "contract IERC20",
+            name: "destToken",
+            type: "address",
+          },
+          {
+            internalType: "uint256",
+            name: "amount",
+            type: "uint256",
+          },
+          {
+            internalType: "uint256",
+            name: "minReturn",
+            type: "uint256",
+          },
+          {
+            internalType: "uint256[]",
+            name: "distribution",
+            type: "uint256[]",
+          },
+          {
+            internalType: "uint256",
+            name: "flags",
+            type: "uint256",
+          },
+        ],
+        name: "swap",
+        outputs: [
+          {
+            internalType: "uint256",
+            name: "returnAmount",
+            type: "uint256",
+          },
+        ],
+        stateMutability: "payable",
+        type: "function",
+      },
+    ],
+  },
 };

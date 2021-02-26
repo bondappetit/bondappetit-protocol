@@ -34,6 +34,9 @@ contract RealAssetDepositaryBalanceView is IDepositaryBalanceView, AccessControl
     /// @dev Assets list index.
     mapping(string => uint256) internal portfolioIndex;
 
+    /// @notice Block number of last update asset.
+    uint256 public lastUpdateBlockNumber;
+
     /// @notice An event thats emitted when asset updated in portfolio.
     event AssetUpdated(string id, uint256 updatedAt, Proof proof);
 
@@ -94,6 +97,9 @@ contract RealAssetDepositaryBalanceView is IDepositaryBalanceView, AccessControl
         } else {
             portfolio.push(Asset(id, amount, price));
             portfolioIndex[id] = size();
+        }
+        if (block.number > lastUpdateBlockNumber) {
+            lastUpdateBlockNumber = block.number;
         }
         emit AssetUpdated(id, updatedAt, Proof(proofData, proofSignature));
     }

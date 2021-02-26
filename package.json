@@ -12,7 +12,7 @@
     "test": "hardhat test",
     "console": "hardhat console",
     "docs": "solidity-docgen -i ./contracts -o ./docs/api -t ./docs/templates",
-    "etherscan-verify": "hardhat etherscan-verify"
+    "etherscan-verify": "scripts/etherscan-verify.sh"
   },
   "author": "",
   "license": "ISC",

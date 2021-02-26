@@ -180,6 +180,12 @@
     {
       "path": "artifacts/contracts/uniswap/IUniswapV2Pair.sol/IUniswapV2Pair.json"
     },
+    {
+      "path": "artifacts/contracts/1inch/IOneSplit.sol/IOneSplit.json"
+    },
+    {
+      "path": "artifacts/contracts/1inch/IOneSplit.sol/IOneSplitMulti.json"
+    },
     {"path": "artifacts/contracts/Timelock.sol/Timelock.json"},
     {"path": "artifacts/contracts/GovernanceToken.sol/GovernanceToken.json"},
     {"path": "artifacts/contracts/StableToken.sol/StableToken.json"},
