@@ -113,6 +113,7 @@ jobs:
         run: npm run etherscan-verify -- --network ropsten
         env:
           ETHERSCAN_API_KEY: ${{secrets.ETHERSCAN_API_KEY}}
+        working-directory: ./output
 
   publish-git-networks:
     needs: build
