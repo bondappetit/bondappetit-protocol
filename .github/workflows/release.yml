@@ -101,7 +101,7 @@ jobs:
         run: |
           git config --global user.name "${GITHUB_ACTOR}"
           git config --global user.email "${GITHUB_ACTOR}@https://users.noreply.github.com/"
-          git clone "https://${{ secrets.ACCESS_TOKEN }}@github.com/bondappetit/bondappetit-protocol-networks.git" --branch master --single-branch ./output
+          git clone "https://${{ secrets.ACCESS_TOKEN }}@github.com/$GITHUB_REPOSITORY.git" --branch master --single-branch ./output
 
       - name: Download artifacts
         uses: actions/download-artifact@v2
@@ -124,7 +124,7 @@ jobs:
     runs-on: ${{ matrix.platform }}
 
     steps:
-      - name: Clone master branch
+      - name: Clone networks
         run: |
           git config --global user.name "${GITHUB_ACTOR}"
           git config --global user.email "${GITHUB_ACTOR}@https://users.noreply.github.com/"
@@ -199,7 +199,7 @@ jobs:
     runs-on: ${{ matrix.platform }}
 
     steps:
-      - name: Clone master branch
+      - name: Clone api-docs
         run: |
           git config --global user.name "${GITHUB_ACTOR}"
           git config --global user.email "${GITHUB_ACTOR}@https://users.noreply.github.com/"
