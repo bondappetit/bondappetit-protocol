@@ -44,9 +44,6 @@ jobs:
       - name: npm docs
         run: npm run docs
 
-      - name: npm etherscan-verify
-        run: npm run etherscan-verify -- --network ropsten
-
       - name: Archive artifacts
         uses: actions/upload-artifact@v2
         with:
@@ -90,7 +87,7 @@ jobs:
           git push origin master
         working-directory: ./output
 
-  publish-git-networks:
+  etherscan-verify:
     needs: build
 
     strategy:
@@ -101,6 +98,34 @@ jobs:
 
     steps:
       - name: Clone master branch
+        run: |
+          git config --global user.name "${GITHUB_ACTOR}"
+          git config --global user.email "${GITHUB_ACTOR}@https://users.noreply.github.com/"
+          git clone "https://${{ secrets.ACCESS_TOKEN }}@github.com/$GITHUB_REPOSITORY.git" --branch master --single-branch ./output
+
+      - name: Download artifacts
+        uses: actions/download-artifact@v2
+        with:
+          name: build-${{ github.head_ref }}-${{ github.sha }}
+          path: ./output
+
+      - name: npm etherscan-verify
+        run: npm run etherscan-verify -- --network ropsten
+        env:
+          ETHERSCAN_API_KEY: ${{secrets.ETHERSCAN_API_KEY}}
+        working-directory: ./output
+
+  publish-git-networks:
+    needs: build
+
+    strategy:
+      matrix:
+        platform: [ubuntu-latest]
+        node-version: [12.x]
+    runs-on: ${{ matrix.platform }}
+
+    steps:
+      - name: Clone networks
         run: |
           git config --global user.name "${GITHUB_ACTOR}"
           git config --global user.email "${GITHUB_ACTOR}@https://users.noreply.github.com/"
@@ -175,7 +200,7 @@ jobs:
     runs-on: ${{ matrix.platform }}
 
     steps:
-      - name: Clone master branch
+      - name: Clone api-docs
         run: |
           git config --global user.name "${GITHUB_ACTOR}"
           git config --global user.email "${GITHUB_ACTOR}@https://users.noreply.github.com/"
