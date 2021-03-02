@@ -55,15 +55,15 @@ module.exports = migration("UsdcStableLPStaking", async (d) => {
   const weeks4Duration = blocksPerMinute * 60 * 24 * 28;
   const months6Duration = blocksPerMinute * 60 * 24 * 180;
   const rewardingTokens = [
-    //{
-    //  name: "GovStaking",
-    //  distributor: governor,
-    //  reward: gov.address,
-    //  staking: gov.address,
-    //  duration: weeks4Duration,
-    //  endStakingBlock: 0,
-    //  startUnstakingBlock: 0,
-    //},
+    {
+      name: "GovStaking",
+      distributor: governor,
+      reward: gov.address,
+      staking: gov.address,
+      duration: weeks4Duration,
+      endStakingBlock: 0,
+      startUnstakingBlock: 0,
+    },
     //{
     //  name: "StableStaking",
     //  distributor: governor,
