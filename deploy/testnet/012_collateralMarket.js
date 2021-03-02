@@ -4,13 +4,6 @@ module.exports = migration("CollateralMarket", async (d) => {
   let {
     assets: {USDC, USDN},
   } = d.getNetwork();
-  if (!USDN) {
-    await d.deploy("USDN", {
-      contract: "MockERC20",
-      args: ["Neutrino USD", "USDN", "1000000000000000000000000"],
-    });
-    [USDN] = await d.deployed("USDN");
-  }
 
   const [issuer, treasury, stableTokenDepositaryBalanceView] = await d.deployed(
     "Issuer",

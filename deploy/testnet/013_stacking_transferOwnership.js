@@ -18,10 +18,6 @@ module.exports = migration("UsdcStableLPStaking", async (d) => {
   } = d.getNetwork();
   const governor = d.getGovernor().address;
 
-  if (!USDN) {
-    [USDN] = await d.deployed("USDN");
-  }
-
   const currentBlock = await d.web3.eth.getBlockNumber();
   const [stable, gov] = await d.deployed("StableToken", "GovernanceToken");
   const UsdcGovLPAddress = await createUniswapPair(
@@ -29,16 +25,16 @@ module.exports = migration("UsdcStableLPStaking", async (d) => {
     USDC.address,
     gov.address
   );
-  const WethGovLPAddress = await createUniswapPair(
-    d,
-    WETH.address,
-    gov.address
-  );
-  const UsdnGovLPAddress = await createUniswapPair(
-    d,
-    USDN.address,
-    gov.address
-  );
+  //const WethGovLPAddress = await createUniswapPair(
+  //  d,
+  //  WETH.address,
+  //  gov.address
+  //);
+  //const UsdnGovLPAddress = await createUniswapPair(
+  //  d,
+  //  USDN.address,
+  //  gov.address
+  //);
   const UsdcStableLPAddress = await createUniswapPair(
     d,
     USDC.address,
@@ -49,34 +45,34 @@ module.exports = migration("UsdcStableLPStaking", async (d) => {
     USDN.address,
     stable.address
   );
-  const GovStableLPAddress = await createUniswapPair(
-    d,
-    gov.address,
-    stable.address
-  );
+  //const GovStableLPAddress = await createUniswapPair(
+  //  d,
+  //  gov.address,
+  //  stable.address
+  //);
 
   const blocksPerMinute = 4;
   const weeks4Duration = blocksPerMinute * 60 * 24 * 28;
   const months6Duration = blocksPerMinute * 60 * 24 * 180;
   const rewardingTokens = [
-    {
-      name: "GovStaking",
-      distributor: governor,
-      reward: gov.address,
-      staking: gov.address,
-      duration: weeks4Duration,
-      endStakingBlock: 0,
-      startUnstakingBlock: 0,
-    },
-    {
-      name: "StableStaking",
-      distributor: governor,
-      reward: gov.address,
-      staking: stable.address,
-      duration: weeks4Duration,
-      endStakingBlock: 0,
-      startUnstakingBlock: 0,
-    },
+    //{
+    //  name: "GovStaking",
+    //  distributor: governor,
+    //  reward: gov.address,
+    //  staking: gov.address,
+    //  duration: weeks4Duration,
+    //  endStakingBlock: 0,
+    //  startUnstakingBlock: 0,
+    //},
+    //{
+    //  name: "StableStaking",
+    //  distributor: governor,
+    //  reward: gov.address,
+    //  staking: stable.address,
+    //  duration: weeks4Duration,
+    //  endStakingBlock: 0,
+    //  startUnstakingBlock: 0,
+    //},
     {
       name: "UsdcGovLPStaking",
       distributor: governor,
@@ -86,51 +82,51 @@ module.exports = migration("UsdcStableLPStaking", async (d) => {
       endStakingBlock: 0,
       startUnstakingBlock: 0,
     },
-    {
-      name: "WethGovLPStaking",
-      distributor: governor,
-      reward: gov.address,
-      staking: WethGovLPAddress,
-      duration: weeks4Duration,
-      endStakingBlock: 0,
-      startUnstakingBlock: 0,
-    },
-    {
-      name: "UsdnGovLPStaking",
-      distributor: governor,
-      reward: gov.address,
-      staking: UsdnGovLPAddress,
-      duration: weeks4Duration,
-      endStakingBlock: 0,
-      startUnstakingBlock: 0,
-    },
-    {
-      name: "UsdcStableLPStaking",
-      distributor: governor,
-      reward: gov.address,
-      staking: UsdcStableLPAddress,
-      duration: weeks4Duration,
-      endStakingBlock: 0,
-      startUnstakingBlock: 0,
-    },
-    {
-      name: "UsdnStableLPStaking",
-      distributor: governor,
-      reward: gov.address,
-      staking: UsdnStableLPAddress,
-      duration: weeks4Duration,
-      endStakingBlock: 0,
-      startUnstakingBlock: 0,
-    },
-    {
-      name: "GovStableLPStaking",
-      distributor: governor,
-      reward: gov.address,
-      staking: GovStableLPAddress,
-      duration: weeks4Duration,
-      endStakingBlock: 0,
-      startUnstakingBlock: 0,
-    },
+    //{
+    //  name: "WethGovLPStaking",
+    //  distributor: governor,
+    //  reward: gov.address,
+    //  staking: WethGovLPAddress,
+    //  duration: weeks4Duration,
+    //  endStakingBlock: 0,
+    //  startUnstakingBlock: 0,
+    //},
+    //{
+    //  name: "UsdnGovLPStaking",
+    //  distributor: governor,
+    //  reward: gov.address,
+    //  staking: UsdnGovLPAddress,
+    //  duration: weeks4Duration,
+    //  endStakingBlock: 0,
+    //  startUnstakingBlock: 0,
+    //},
+    //{
+    //  name: "UsdcStableLPStaking",
+    //  distributor: governor,
+    //  reward: gov.address,
+    //  staking: UsdcStableLPAddress,
+    //  duration: weeks4Duration,
+    //  endStakingBlock: 0,
+    //  startUnstakingBlock: 0,
+    //},
+    //{
+    //  name: "UsdnStableLPStaking",
+    //  distributor: governor,
+    //  reward: gov.address,
+    //  staking: UsdnStableLPAddress,
+    //  duration: weeks4Duration,
+    //  endStakingBlock: 0,
+    //  startUnstakingBlock: 0,
+    //},
+    //{
+    //  name: "GovStableLPStaking",
+    //  distributor: governor,
+    //  reward: gov.address,
+    //  staking: GovStableLPAddress,
+    //  duration: weeks4Duration,
+    //  endStakingBlock: 0,
+    //  startUnstakingBlock: 0,
+    //},
     {
       name: "UsdcStableLPLockStaking",
       distributor: governor,

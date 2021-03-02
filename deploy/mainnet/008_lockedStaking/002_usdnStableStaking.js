@@ -1,20 +1,12 @@
 const {migration} = require("../../../utils/deploy");
 
 module.exports = migration("UsdnStableLPLockStaking", async (d) => {
-  let {
+  const {
     assets: {USDN},
   } = d.getNetwork();
   const [stable, gov, timelock] = await d.deployed("StableToken", "GovernanceToken", "Timelock");
   const currentBlock = await d.web3.eth.getBlockNumber();
   const blocksPerMinute = 4;
-
-  if (!USDN) {
-    await d.deploy("USDN", {
-      contract: "MockERC20",
-      args: ["Neutrino USD", "USDN", "1000000000000000000000000"],
-    });
-    [USDN] = await d.deployed("USDN");
-  }
 
   let UsdnStableLPAddress = await d.call("@UniswapV2Factory", "getPair", [
     USDN.address,
