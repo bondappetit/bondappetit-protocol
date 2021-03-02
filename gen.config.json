@@ -154,14 +154,6 @@
       "symbol": "USDp",
       "decimals": 18,
       "investing": false
-    },
-    {
-      "path": "deployments/%network%/USDN.json",
-      "key": "USDN",
-      "name": "Neutrino USD",
-      "symbol": "USDN",
-      "decimals": 18,
-      "investing": false
     }
   ],
   "abi": [

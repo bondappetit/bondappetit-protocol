@@ -1,16 +1,9 @@
 const {migration} = require("../../../utils/deploy");
 
 module.exports = migration("CollateralMarket.allowToken", async (d) => {
-  let {
+  const {
     assets: {USDC, USDN},
   } = d.getNetwork();
-  if (!USDN) {
-    await d.deploy("USDN", {
-      contract: "MockERC20",
-      args: ["Neutrino USD", "USDN", "1000000000000000000000000"],
-    });
-    [USDN] = await d.deployed("USDN");
-  }
   const allowedTokens = [USDC.address, USDN.address];
 
   const currentAllowedTokensSet = new Set(
