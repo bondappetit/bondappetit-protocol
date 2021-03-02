@@ -13,9 +13,9 @@ async function main() {
       GovStaking,
       StableStaking,
       UsdcGovLPStaking,
-      UsdcStableLPStaking,
+      UsdcStableLPLockStaking,
       UsdnGovLPStaking,
-      UsdnStableLPStaking,
+      UsdnStableLPLockStaking,
       GovStableLPStaking,
       WethGovLPStaking,
     },
@@ -39,14 +39,14 @@ async function main() {
   }
 
   const amount = "1000000000000000000000";
-  await addStakingReward(GovStaking, amount);
-  await addStakingReward(StableStaking, amount);
+  //await addStakingReward(GovStaking, amount);
+  //await addStakingReward(StableStaking, amount);
   await addStakingReward(UsdcGovLPStaking, amount);
-  await addStakingReward(UsdcStableLPStaking, amount);
+  await addStakingReward(UsdcStableLPLockStaking, amount);
   await addStakingReward(UsdnGovLPStaking, amount);
-  await addStakingReward(UsdnStableLPStaking, amount);
-  await addStakingReward(GovStableLPStaking, amount);
-  await addStakingReward(WethGovLPStaking, amount);
+  await addStakingReward(UsdnStableLPLockStaking, amount);
+  //await addStakingReward(GovStableLPStaking, amount);
+  //await addStakingReward(WethGovLPStaking, amount);
 
   const uniswapRouter = new web3.eth.Contract(
     UniswapRouter.abi,
@@ -113,15 +113,15 @@ async function main() {
   }
 
   await gov.methods
-    .mint(governor, "3000000000000000000")
+    .mint(governor, "1000000000000000000")
     .send({from: governor});
   await stable.methods
-    .mint(governor, "2000000000000000000")
+    .mint(governor, "1000000000000000000")
     .send({from: governor});
   await addLiquidity(gov, usdc, "1000000000000000000", "1000000");
   await addLiquidity(stable, usdc, "1000000000000000000", "1000000");
-  await addLiquidity(gov, stable, "1000000000000000000", "1000000000000000000");
-  await addLiquidityETH(gov, "1000000000000000000", "1000000000000000000");
+  //await addLiquidity(gov, stable, "1000000000000000000", "1000000000000000000");
+  //await addLiquidityETH(gov, "1000000000000000000", "1000000000000000000");
 }
 
 main()

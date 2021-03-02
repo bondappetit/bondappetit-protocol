@@ -30,11 +30,11 @@ module.exports = migration("UsdcStableLPStaking", async (d) => {
   //  WETH.address,
   //  gov.address
   //);
-  //const UsdnGovLPAddress = await createUniswapPair(
-  //  d,
-  //  USDN.address,
-  //  gov.address
-  //);
+  const UsdnGovLPAddress = await createUniswapPair(
+    d,
+    USDN.address,
+    gov.address
+  );
   const UsdcStableLPAddress = await createUniswapPair(
     d,
     USDC.address,
@@ -55,15 +55,15 @@ module.exports = migration("UsdcStableLPStaking", async (d) => {
   const weeks4Duration = blocksPerMinute * 60 * 24 * 28;
   const months6Duration = blocksPerMinute * 60 * 24 * 180;
   const rewardingTokens = [
-    //{
-    //  name: "GovStaking",
-    //  distributor: governor,
-    //  reward: gov.address,
-    //  staking: gov.address,
-    //  duration: weeks4Duration,
-    //  endStakingBlock: 0,
-    //  startUnstakingBlock: 0,
-    //},
+    {
+      name: "GovStaking",
+      distributor: governor,
+      reward: gov.address,
+      staking: gov.address,
+      duration: weeks4Duration,
+      endStakingBlock: 0,
+      startUnstakingBlock: 0,
+    },
     //{
     //  name: "StableStaking",
     //  distributor: governor,
@@ -91,15 +91,15 @@ module.exports = migration("UsdcStableLPStaking", async (d) => {
     //  endStakingBlock: 0,
     //  startUnstakingBlock: 0,
     //},
-    //{
-    //  name: "UsdnGovLPStaking",
-    //  distributor: governor,
-    //  reward: gov.address,
-    //  staking: UsdnGovLPAddress,
-    //  duration: weeks4Duration,
-    //  endStakingBlock: 0,
-    //  startUnstakingBlock: 0,
-    //},
+    {
+      name: "UsdnGovLPStaking",
+      distributor: governor,
+      reward: gov.address,
+      staking: UsdnGovLPAddress,
+      duration: weeks4Duration,
+      endStakingBlock: 0,
+      startUnstakingBlock: 0,
+    },
     //{
     //  name: "UsdcStableLPStaking",
     //  distributor: governor,
