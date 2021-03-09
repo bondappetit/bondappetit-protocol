@@ -4,7 +4,7 @@ const bn = require("bn.js");
 
 module.exports = migration("Investment", async (d) => {
   const {
-    assets: {USDC, USDT, DAI, WETH},
+    assets: {USDC, USDT, DAI, WETH, USDN},
     contracts: {UniswapV2Router02},
   } = d.getNetwork();
   const investmentTokens = [
@@ -12,6 +12,7 @@ module.exports = migration("Investment", async (d) => {
     USDC.address,
     DAI.address,
     WETH.address,
+    USDN.address
   ];
   const lockDate = dayjs().add(1, "year").unix();
   const govAmount = new bn(1200000)

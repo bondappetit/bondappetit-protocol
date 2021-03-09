@@ -155,9 +155,6 @@ module.exports = migration("UsdcStableLPStaking", async (d) => {
     },
   ];
 
-  const {networkName} = d.getNetwork();
-  const [timelock] = await d.deployed("Timelock");
-
   await rewardingTokens.reduce(
     async (
       tx,
@@ -183,24 +180,30 @@ module.exports = migration("UsdcStableLPStaking", async (d) => {
           startUnstakingBlock,
         ],
       });
-      if (networkName === "development") return;
-      await d.send(name, "transferOwnership", [timelock.address]);
     },
     Promise.resolve()
   );
 
-  if (networkName === "development") return;
-  await d.send("GovernanceToken", "transferOwnership", [timelock.address]);
-  await d.send("Investment", "transferOwnership", [timelock.address]);
-  await d.send("Vesting", "transferOwnership", [timelock.address]);
-  await d.send("Treasury", "transferOwnership", [timelock.address]);
-  await d.send("StableTokenDepositaryBalanceView", "transferOwnership", [
-    timelock.address,
-  ]);
-  await d.send("RealAssetDepositaryBalanceView", "transferOwnership", [
-    timelock.address,
-  ]);
-  await d.send("Issuer", "transferOwnership", [timelock.address]);
-  await d.send("CollateralMarket", "transferOwnership", [timelock.address]);
-  await d.send("Market", "transferOwnership", [timelock.address]);
+  await d.toValidator(
+    "Investment",
+    "Vesting",
+    "Issuer",
+    "CollateralMarket",
+    "Market",
+    ...rewardingTokens.map(({name}) => name)
+  );
+  if (!d.isDev) {
+    await d.toTimelock(
+      "GovernanceToken",
+      "Investment",
+      "Vesting",
+      "Treasury",
+      "StableTokenDepositaryBalanceView",
+      "RealAssetDepositaryBalanceView",
+      "Issuer",
+      "CollateralMarket",
+      "Market",
+      ...rewardingTokens.map(({name}) => name)
+    );
+  }
 });

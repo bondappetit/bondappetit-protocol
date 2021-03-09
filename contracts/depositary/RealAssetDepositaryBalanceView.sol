@@ -5,8 +5,9 @@ pragma experimental ABIEncoderV2;
 import "@openzeppelin/contracts/math/SafeMath.sol";
 import "../utils/AccessControl.sol";
 import "./IDepositaryBalanceView.sol";
+import "./IUpdatable.sol";
 
-contract RealAssetDepositaryBalanceView is IDepositaryBalanceView, AccessControl {
+contract RealAssetDepositaryBalanceView is IDepositaryBalanceView, IUpdatable, AccessControl {
     using SafeMath for uint256;
 
     /// @notice Signed data of asset information.
@@ -20,6 +21,7 @@ contract RealAssetDepositaryBalanceView is IDepositaryBalanceView, AccessControl
         string id;
         uint256 amount;
         uint256 price;
+        uint256 updatedBlockAt;
     }
 
     /// @notice The number of assets in depositary.
@@ -33,9 +35,6 @@ contract RealAssetDepositaryBalanceView is IDepositaryBalanceView, AccessControl
 
     /// @dev Assets list index.
     mapping(string => uint256) internal portfolioIndex;
-
-    /// @notice Block number of last update asset.
-    uint256 public lastUpdateBlockNumber;
 
     /// @notice An event thats emitted when asset updated in portfolio.
     event AssetUpdated(string id, uint256 updatedAt, Proof proof);
@@ -72,6 +71,16 @@ contract RealAssetDepositaryBalanceView is IDepositaryBalanceView, AccessControl
         return result;
     }
 
+    function lastUpdateBlockNumber() external view override returns (uint256) {
+        uint256 result;
+
+        for (uint256 i = 0; i < size(); i++) {
+            result = portfolio[i].updatedBlockAt > result ? portfolio[i].updatedBlockAt : result;
+        }
+
+        return result;
+    }
+
     /**
      * @notice Update information of asset.
      * @param id Asset identificator.
@@ -93,13 +102,10 @@ contract RealAssetDepositaryBalanceView is IDepositaryBalanceView, AccessControl
 
         uint256 valueIndex = portfolioIndex[id];
         if (valueIndex != 0) {
-            portfolio[valueIndex.sub(1)] = Asset(id, amount, price);
+            portfolio[valueIndex.sub(1)] = Asset(id, amount, price, block.number);
         } else {
-            portfolio.push(Asset(id, amount, price));
+            portfolio.push(Asset(id, amount, price, block.number));
             portfolioIndex[id] = size();
-        }
-        if (block.number > lastUpdateBlockNumber) {
-            lastUpdateBlockNumber = block.number;
         }
         emit AssetUpdated(id, updatedAt, Proof(proofData, proofSignature));
     }

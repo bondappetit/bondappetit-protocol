@@ -42,13 +42,18 @@ module.exports = migration("ProfitSplitter", async (d) => {
     await d.send("ProfitSplitter", "addRecipient", [recipient, share]);
   }, Promise.resolve());
 
-  const {networkName} = d.getNetwork();
-  if (networkName === "development") return;
-
-  const [timelock] = await d.deployed("Timelock");
-
-  await d.send("Budget", "transferOwnership", [timelock.address]);
-  await d.send("Buyback", "transferOwnership", [timelock.address]);
-  await d.send("UniswapMarketMaker", "transferOwnership", [timelock.address]);
-  await d.send("ProfitSplitter", "transferOwnership", [timelock.address]);
+  await d.toValidator(
+    "Budget",
+    "Buyback",
+    "UniswapMarketMaker",
+    "ProfitSplitter"
+  );
+  if (!d.isDev) {
+    await d.toTimelock(
+      "Budget",
+      "Buyback",
+      "UniswapMarketMaker",
+      "ProfitSplitter"
+    );
+  }
 });
