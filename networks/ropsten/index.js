@@ -3,7 +3,7 @@ module.exports = {
   networkUrl: 'https://ropsten.bondappetit.io',
   networkEtherscan: 'https://ropsten.etherscan.io',
   networkId: 3,
-  gasPrice: '60000000000',
+  gasPrice: '2000000000',
   accounts: {
     ...require("./accounts"),
   },
