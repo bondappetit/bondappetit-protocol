@@ -37,6 +37,10 @@ Network id: ${this.network.networkId}
     return this.network;
   }
 
+  get isDev() {
+    return this.network.networkName === "development";
+  }
+
   getGovernor() {
     return this.network.accounts.Governor;
   }
@@ -83,6 +87,31 @@ Network id: ${this.network.networkId}
 `);
 
     return tx;
+  }
+
+  async toTimelock(...contracts) {
+    const [timelock] = await this.deployed("Timelock");
+    if (!timelock) throw new Error("Timelock contract not deployed");
+
+    return contracts.reduce(async (prev, contractName) => {
+      await prev;
+      await this.send(contractName, "transferOwnership", [timelock.address]);
+    }, Promise.resolve());
+  }
+
+  async toValidator(...contracts) {
+    const [validator] = await this.deployed("ProtocolValidator");
+    if (!validator) throw new Error("ProtocolValidator contract not deployed");
+
+    return contracts.reduce(async (prev, contractName) => {
+      await prev;
+      const [contract] = await this.deployed(contractName);
+      if (!contract) throw new Error(`${contractName} contract not deployed`);
+      await this.send(contractName, "changePauser", [validator.address]);
+      await this.send("ProtocolValidator", "addProtocolContract", [
+        contract.address,
+      ]);
+    }, Promise.resolve());
   }
 
   async fetchIfDifferent(contract, options = {}) {
