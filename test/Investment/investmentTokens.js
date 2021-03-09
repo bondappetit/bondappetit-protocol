@@ -8,22 +8,25 @@ contract("Investment.investmentTokens", ({artifacts}) => {
   it("should allow invest tokens", async () => {
     const instance = await artifacts.require("Investment");
 
+    const startAllowedTokens = await instance.methods.allowedTokens().call();
     assert.equal(
-      await instance.methods.investmentTokens(USDC.address).call(),
+      startAllowedTokens.includes(USDC.address),
       true,
       "USDC allowed by default"
     );
 
     await instance.methods.denyToken(USDC.address).send({from: governor});
+    const firstAllowedTokens = await instance.methods.allowedTokens().call();
     assert.equal(
-      await instance.methods.investmentTokens(USDC.address).call(),
+      firstAllowedTokens.includes(USDC.address),
       false,
       "USDC should be denied"
     );
 
     await instance.methods.allowToken(USDC.address).send({from: governor});
+    const secondAllowedTokens = await instance.methods.allowedTokens().call();
     assert.equal(
-      await instance.methods.investmentTokens(USDC.address).call(),
+      secondAllowedTokens.includes(USDC.address),
       true,
       "USDC should be allowed"
     );

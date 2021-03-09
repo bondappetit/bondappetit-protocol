@@ -4,6 +4,7 @@ pragma solidity ^0.6.0;
 import "@openzeppelin/contracts/token/ERC20/ERC20.sol";
 import "@openzeppelin/contracts/token/ERC20/SafeERC20.sol";
 import "@openzeppelin/contracts/math/SafeMath.sol";
+import "@openzeppelin/contracts/utils/EnumerableSet.sol";
 import "./utils/OwnablePausable.sol";
 import "./uniswap/IUniswapV2Router02.sol";
 import "./GovernanceToken.sol";
@@ -11,6 +12,7 @@ import "./GovernanceToken.sol";
 contract Investment is OwnablePausable {
     using SafeMath for uint256;
     using SafeERC20 for ERC20;
+    using EnumerableSet for EnumerableSet.AddressSet;
 
     ///@notice Address of cumulative token
     ERC20 public cumulative;
@@ -24,13 +26,13 @@ contract Investment is OwnablePausable {
     uint8 internal constant GOVERNANCE_TOKEN_PRICE_DECIMALS = 6;
 
     ///@notice Price governance token
-    uint256 public governanceTokenPrice = 1000000;
+    uint256 public governanceTokenPrice;
 
     ///@dev Address of UniswapV2Router
     IUniswapV2Router02 internal uniswapRouter;
 
-    ///@notice Investment tokens list
-    mapping(address => bool) public investmentTokens;
+    /// @dev Allowed tokens list.
+    EnumerableSet.AddressSet private _allowedTokens;
 
     /// @notice An event thats emitted when an uniswap router contract address changed.
     event UniswapRouterChanged(address newUniswapRouter);
@@ -44,6 +46,9 @@ contract Investment is OwnablePausable {
     /// @notice An event thats emitted when an governance token price changed.
     event GovernanceTokenPriceChanged(uint256 newPrice);
 
+    /// @notice An event thats emitted when an governance token lock date changed.
+    event GovernanceTokenLockDateChanged(uint256 newLockDate);
+
     /// @notice An event thats emitted when an invested token.
     event Invested(address investor, address token, uint256 amount, uint256 reward);
 
@@ -53,17 +58,21 @@ contract Investment is OwnablePausable {
     /**
      * @param _cumulative Address of cumulative token
      * @param _governanceToken Address of governance token
+     * @param _governanceTokenLockDate Lock date of governance token
+     * @param _governanceTokenPrice Governance token price
      * @param _uniswapRouter Address of UniswapV2Router
      */
     constructor(
         address _cumulative,
         address _governanceToken,
         uint256 _governanceTokenLockDate,
+        uint256 _governanceTokenPrice,
         address _uniswapRouter
     ) public {
         cumulative = ERC20(_cumulative);
         governanceToken = GovernanceToken(_governanceToken);
         governanceTokenLockDate = _governanceTokenLockDate;
+        governanceTokenPrice = _governanceTokenPrice;
         uniswapRouter = IUniswapV2Router02(_uniswapRouter);
     }
 
@@ -81,7 +90,7 @@ contract Investment is OwnablePausable {
      * @param token Allowable token
      */
     function allowToken(address token) external onlyOwner {
-        investmentTokens[token] = true;
+        _allowedTokens.add(token);
         emit InvestTokenAllowed(token);
     }
 
@@ -90,8 +99,21 @@ contract Investment is OwnablePausable {
      * @param token Denied token
      */
     function denyToken(address token) external onlyOwner {
-        investmentTokens[token] = false;
+        _allowedTokens.remove(token);
         emit InvestTokenDenied(token);
+    }
+
+    /**
+     * @return Allowed tokens list.
+     */
+    function allowedTokens() external view returns (address[] memory) {
+        address[] memory result = new address[](_allowedTokens.length());
+
+        for (uint256 i = 0; i < _allowedTokens.length(); i++) {
+            result[i] = _allowedTokens.at(i);
+        }
+
+        return result;
     }
 
     /**
@@ -103,6 +125,15 @@ contract Investment is OwnablePausable {
 
         governanceTokenPrice = newPrice;
         emit GovernanceTokenPriceChanged(newPrice);
+    }
+
+    /**
+     * @notice Update governance token lock date.
+     * @param _governanceTokenLockDate New lock date of governance token.
+     */
+    function changeGovernanceTokenLockDate(uint256 _governanceTokenLockDate) external onlyOwner {
+        governanceTokenLockDate = _governanceTokenLockDate;
+        emit GovernanceTokenLockDateChanged(governanceTokenLockDate);
     }
 
     /**
@@ -153,7 +184,7 @@ contract Investment is OwnablePausable {
      * @return Amount governance token after swap
      */
     function price(address token, uint256 amount) external view returns (uint256) {
-        require(investmentTokens[token], "Investment::price: invalid investable token");
+        require(_allowedTokens.contains(token), "Investment::price: invalid investable token");
 
         uint256 amountOut = amount;
         if (token != address(cumulative)) {
@@ -169,7 +200,7 @@ contract Investment is OwnablePausable {
      * @param amount Invested amount
      */
     function invest(address token, uint256 amount) external whenNotPaused returns (bool) {
-        require(investmentTokens[token], "Investment::invest: invalid investable token");
+        require(_allowedTokens.contains(token), "Investment::invest: invalid investable token");
         uint256 reward = _governanceTokenPrice(amount);
 
         ERC20(token).safeTransferFrom(_msgSender(), address(this), amount);
@@ -194,7 +225,7 @@ contract Investment is OwnablePausable {
      */
     function investETH() external payable whenNotPaused returns (bool) {
         address token = uniswapRouter.WETH();
-        require(investmentTokens[token], "Investment::investETH: invalid investable token");
+        require(_allowedTokens.contains(token), "Investment::investETH: invalid investable token");
         uint256 reward = _governanceTokenPrice(msg.value);
 
         if (token != address(cumulative)) {

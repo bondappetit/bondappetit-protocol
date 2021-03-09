@@ -108,13 +108,6 @@ contract("Investment.invest", ({web3, artifacts}) => {
       .balanceOf(investor)
       .call();
     const reward = await instance.methods.price(USDC.address, amountIn).call();
-    assert.equal(
-      reward,
-      bn(amountIn)
-        .mul(bn("10").pow(bn("12")))
-        .toString(),
-      "Invalid reward"
-    );
 
     await usdcContract.methods
       .approve(instance._address, amountIn)
