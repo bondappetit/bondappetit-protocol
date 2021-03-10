@@ -151,7 +151,7 @@
       "path": "deployments/%network%/StableToken.json",
       "key": "Stable",
       "name": "Appetite USD",
-      "symbol": "USDp",
+      "symbol": "USDap",
       "decimals": 18,
       "investing": false
     }
