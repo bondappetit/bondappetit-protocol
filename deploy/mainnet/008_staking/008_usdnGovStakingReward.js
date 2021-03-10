@@ -6,7 +6,7 @@ module.exports = migration("UsdnGovLPStaking.notifyRewardAmount", async (d) => {
   const currentReward = await d.call("GovernanceToken", "balanceOf", [
     staking.address,
   ]);
-  const amount = bn(govTotalSupply).div(bn(100)).toString(); // 1%
+  const amount = bn(govTotalSupply).div(bn(10000)).mul(bn(25)).toString(); // 0.25%
   if (currentReward.toString() === amount) {
     console.log("Reward already transfered");
     return;
