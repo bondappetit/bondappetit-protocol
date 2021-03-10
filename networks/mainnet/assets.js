@@ -25,14 +25,14 @@ module.exports = {
     name: "Neutrino USD",
     symbol: "USDN",
     decimals: 18,
-    investing: true,
+    investing: false,
   },
   WBTC: {
     address: "0x2260fac5e5542a773aa44fbcfedf7c193bc2c599",
     name: "Wrapped BTC",
     symbol: "WBTC",
     decimals: 8,
-    investing: false,
+    investing: true,
   },
   WETH: {
     address: "0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2",

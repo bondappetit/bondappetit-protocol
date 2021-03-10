@@ -2,7 +2,7 @@ const {migration} = require("../../../utils/deploy");
 
 module.exports = migration("Investment.allowToken", async (d) => {
   const {
-    assets: {USDC, USDT, DAI, WETH, WBTC, USDN},
+    assets: {USDC, USDT, DAI, WETH, WBTC},
   } = d.getNetwork();
   const allowedTokens = [
     USDT.address,
@@ -10,7 +10,6 @@ module.exports = migration("Investment.allowToken", async (d) => {
     DAI.address,
     WETH.address,
     WBTC.address,
-    USDN.address,
   ];
 
   const currentAllowedTokensSet = new Set(
