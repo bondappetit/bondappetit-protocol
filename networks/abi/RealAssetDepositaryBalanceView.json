@@ -157,6 +157,11 @@
                             "internalType": "uint256",
                             "name": "price",
                             "type": "uint256"
+                        },
+                        {
+                            "internalType": "uint256",
+                            "name": "updatedBlockAt",
+                            "type": "uint256"
                         }
                     ],
                     "internalType": "struct RealAssetDepositaryBalanceView.Asset[]",
@@ -268,6 +273,11 @@
                 {
                     "internalType": "uint256",
                     "name": "price",
+                    "type": "uint256"
+                },
+                {
+                    "internalType": "uint256",
+                    "name": "updatedBlockAt",
                     "type": "uint256"
                 }
             ],

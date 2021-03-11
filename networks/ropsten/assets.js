@@ -25,7 +25,7 @@ module.exports = {
     name: "Wrapped BTC",
     symbol: "WBTC",
     decimals: 8,
-    investing: false,
+    investing: true,
   },
   WETH: {
     address: "0xc778417E063141139Fce010982780140Aa0cD5Ab",
@@ -39,6 +39,6 @@ module.exports = {
     name: "Neutrino USD",
     symbol: "USDN",
     decimals: 18,
-    investing: true,
+    investing: false,
   },
 };

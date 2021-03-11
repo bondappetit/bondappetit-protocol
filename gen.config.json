@@ -151,7 +151,7 @@
       "path": "deployments/%network%/StableToken.json",
       "key": "Stable",
       "name": "Appetite USD",
-      "symbol": "USDp",
+      "symbol": "USDap",
       "decimals": 18,
       "investing": false
     }
@@ -171,12 +171,6 @@
     },
     {
       "path": "artifacts/contracts/uniswap/IUniswapV2Pair.sol/IUniswapV2Pair.json"
-    },
-    {
-      "path": "artifacts/contracts/1inch/IOneSplit.sol/IOneSplit.json"
-    },
-    {
-      "path": "artifacts/contracts/1inch/IOneSplit.sol/IOneSplitMulti.json"
     },
     {"path": "artifacts/contracts/Timelock.sol/Timelock.json"},
     {"path": "artifacts/contracts/GovernanceToken.sol/GovernanceToken.json"},

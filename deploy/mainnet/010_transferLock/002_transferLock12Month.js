@@ -6,7 +6,7 @@ module.exports = migration("GovernanceToken.transferLock12Month", async (d) => {
   const [, recipient] = await d.web3.eth.getAccounts();
   const amount = bn(govTotalSupply).div(bn(100)).toString(); // 1%
   const date = Math.floor(
-    currentBlock + (new Date("2022-02-01 03:00:00") - Date.now()) / 15000
+    currentBlock + (new Date("2022-03-16 03:00:00") - Date.now()) / 15000
   );
 
   await d.send("GovernanceToken", "transferLock", [recipient, amount, date]);

@@ -8,9 +8,9 @@ contract("Investment.prices", ({artifacts}) => {
   it("price: should get governance token price for invest token without swap", async () => {
     const instance = await artifacts.require("Investment");
 
-    const price = await instance.methods.price(USDC.address, "1000000").call();
+    const price = await instance.methods.price(USDC.address, "2500000").call();
 
-    assert.equal(price, "1000000000000000000", "USDC price should be 1 governance token");
+    assert.equal(price, "1000000000000000000", "USDC price should be 2.5 governance token");
   });
 
   it("changeGovernanceTokenPrice: should get governance token price for invest token with updated governane token price", async () => {
