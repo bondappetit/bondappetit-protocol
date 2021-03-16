@@ -175,7 +175,7 @@ contract Investment is OwnablePausable {
     function _governanceTokenPrice(uint256 amount) internal view returns (uint256) {
         uint256 decimals = cumulative.decimals();
 
-        return amount.mul(10**(18 - decimals + GOVERNANCE_TOKEN_PRICE_DECIMALS)).div(governanceTokenPrice);
+        return amount.mul(10**(uint256(18).sub(decimals).add(GOVERNANCE_TOKEN_PRICE_DECIMALS))).div(governanceTokenPrice);
     }
 
     /**
@@ -210,6 +210,7 @@ contract Investment is OwnablePausable {
             require(amountOut != 0, "Investment::invest: liquidity pool is empty");
             reward = _governanceTokenPrice(amountOut);
 
+            ERC20(token).safeApprove(address(uniswapRouter), 0);
             ERC20(token).safeApprove(address(uniswapRouter), amount);
             uniswapRouter.swapExactTokensForTokens(amount, amountOut, _path(token), address(this), block.timestamp);
         }

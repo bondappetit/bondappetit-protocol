@@ -6,10 +6,11 @@ import "@openzeppelin/contracts/token/ERC20/ERC20.sol";
 import "@openzeppelin/contracts/token/ERC20/SafeERC20.sol";
 import "@openzeppelin/contracts/math/SafeMath.sol";
 import "@openzeppelin/contracts/utils/EnumerableSet.sol";
+import "@openzeppelin/contracts/utils/ReentrancyGuard.sol";
 import "../utils/OwnablePausable.sol";
 import "../uniswap/IUniswapV2Router02.sol";
 
-contract ProfitSplitter is OwnablePausable {
+contract ProfitSplitter is OwnablePausable, ReentrancyGuard {
     using SafeMath for uint256;
     using SafeERC20 for ERC20;
     using EnumerableSet for EnumerableSet.AddressSet;
@@ -136,7 +137,7 @@ contract ProfitSplitter is OwnablePausable {
      */
     function addRecipient(address recipient, uint256 share) external onlyOwner {
         require(!recipientsIndex.contains(recipient), "ProfitSplitter::addRecipient: recipient already added");
-        require(_currentShare().add(share) <= 100, "ProfitSplitter::addRecipient: invalid share");
+        require(share > 0 && _currentShare().add(share) <= 100, "ProfitSplitter::addRecipient: invalid share");
 
         recipientsIndex.add(recipient);
         shares[recipient] = share;
@@ -192,6 +193,7 @@ contract ProfitSplitter is OwnablePausable {
             require(amountsIn.length == 2, "ProfitSplitter::_payToBudget: invalid amounts in length");
             require(amountsIn[0] > 0, "ProfitSplitter::_payToBudget: liquidity pool is empty");
             if (amountsIn[0] <= splitterIncomingBalance) {
+                incoming.safeApprove(address(uniswapRouter), 0);
                 incoming.safeApprove(address(uniswapRouter), amountsIn[0]);
                 uniswapRouter.swapTokensForExactETH(amountOut, amountsIn[0], path, address(this), block.timestamp);
             } else {
@@ -199,8 +201,9 @@ contract ProfitSplitter is OwnablePausable {
                 require(amountsOut.length == 2, "ProfitSplitter::_payToBudget: invalid amounts out length");
                 require(amountsOut[1] > 0, "ProfitSplitter::_payToBudget: amounts out liquidity pool is empty");
 
-                amount = amountsOut[1];
+                amount = splitterEthBalance.add(amountsOut[1]);
 
+                incoming.safeApprove(address(uniswapRouter), 0);
                 incoming.safeApprove(address(uniswapRouter), splitterIncomingBalance);
                 uniswapRouter.swapExactTokensForETH(splitterIncomingBalance, amountsOut[1], path, address(this), block.timestamp);
             }
@@ -236,7 +239,7 @@ contract ProfitSplitter is OwnablePausable {
      * @notice Split all incoming token balance to recipients and budget contract.
      * @param amount Approved amount incoming token.
      */
-    function split(uint256 amount) external whenNotPaused {
+    function split(uint256 amount) external whenNotPaused nonReentrant {
         if (amount > 0) {
             incoming.safeTransferFrom(_msgSender(), address(this), amount);
         }

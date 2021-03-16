@@ -7,7 +7,7 @@ contract("Budget.deficit", ({web3, artifacts}) => {
   const expenditures = {
     [development.contracts.Treasury.address]: {
       min: "5",
-      target: "10",
+      target: "8",
     },
     [development.contracts.Timelock.address]: {
       min: "2",
@@ -49,7 +49,7 @@ contract("Budget.deficit", ({web3, artifacts}) => {
     const secondContractDeficit = await instance.methods
       .deficitTo(contractAddress)
       .call();
-    assert.equal(secondContractDeficit, min, "Invalid second contract deficit");
+    assert.equal(secondContractDeficit, bn(target).sub(bn(min)).toString(), "Invalid second contract deficit");
 
     await web3.eth.sendTransaction({
       from: governor,

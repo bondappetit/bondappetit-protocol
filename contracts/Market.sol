@@ -184,9 +184,11 @@ contract Market is OwnablePausable {
         uint256 tokenPrice = priceOracle.price(allowedTokens[currency]);
         uint256 cumulativePrice = priceOracle.price(cumulative.symbol());
 
-        product = payment.mul(10**productDecimals.sub(tokenDecimals));
-        if (address(productToken) != currency) {
-            product = tokenPrice.mul(10**PRICE_DECIMALS).div(cumulativePrice).mul(payment).div(10**PRICE_DECIMALS).mul(10**productDecimals.sub(tokenDecimals));
+        if (cumulativePrice != 0) {
+            product = payment.mul(10**productDecimals.sub(tokenDecimals));
+            if (address(productToken) != currency) {
+                product = tokenPrice.mul(10**PRICE_DECIMALS).div(cumulativePrice).mul(payment).div(10**PRICE_DECIMALS).mul(10**productDecimals.sub(tokenDecimals));
+            }
         }
 
         uint256 productTokenBalance = productToken.balanceOf(address(this));
@@ -245,6 +247,7 @@ contract Market is OwnablePausable {
             uint256 amountOut = _amountOut(currency, payment);
             require(amountOut != 0, "Market::buy: liquidity pool is empty");
 
+            ERC20(currency).safeApprove(address(uniswapRouter), 0);
             ERC20(currency).safeApprove(address(uniswapRouter), payment);
             uniswapRouter.swapExactTokensForTokens(payment, amountOut, _path(currency), address(this), block.timestamp);
         }
