@@ -23,6 +23,12 @@ contract Budget is OwnablePausable {
     /// @dev Recipients addresses list.
     EnumerableSet.AddressSet internal recipients;
 
+    /// @dev Withdrawal balance of recipients.
+    mapping(address => uint256) internal balances;
+
+    /// @notice Total withdrawal balance.
+    uint256 public totalSupply;
+
     /// @notice An event emitted when expenditure item changed.
     event ExpenditureChanged(address recipient, uint256 min, uint256 target);
 
@@ -49,8 +55,17 @@ contract Budget is OwnablePausable {
             recipients.add(recipient);
         } else {
             recipients.remove(recipient);
+            totalSupply = totalSupply.sub(balanceOf(recipient));
+            balances[recipient] = 0;
         }
         emit ExpenditureChanged(recipient, min, target);
+    }
+
+    /**
+     * @notice Get withdrawal balance of recipient.
+     */
+    function balanceOf(address recipient) public view returns (uint256) {
+        return balances[recipient];
     }
 
     /**
@@ -58,9 +73,10 @@ contract Budget is OwnablePausable {
      * @param recipient Recipient.
      * @param amount Transfer amount.
      */
-    function transferETH(address payable recipient, uint256 amount) external onlyOwner returns (bool) {
+    function transferETH(address payable recipient, uint256 amount) external onlyOwner {
+        require(address(this).balance.sub(totalSupply) >= amount, "Budget::transferETH: transfer amount exceeds balance");
+
         recipient.transfer(amount);
-        return true;
     }
 
     /**
@@ -84,9 +100,11 @@ contract Budget is OwnablePausable {
      */
     function deficitTo(address recipient) public view returns (uint256) {
         require(recipients.contains(recipient), "Budget::deficitTo: recipient not in expenditure item");
-        if (recipient.balance > expenditures[recipient].min) return 0;
 
-        return expenditures[recipient].target.sub(recipient.balance);
+        uint256 availableBalance = recipient.balance.add(balanceOf(recipient));
+        if (availableBalance > expenditures[recipient].min) return 0;
+
+        return expenditures[recipient].target.sub(availableBalance);
     }
 
     /**
@@ -108,13 +126,27 @@ contract Budget is OwnablePausable {
      */
     function pay() external {
         for (uint256 i = 0; i < recipients.length(); i++) {
-            uint256 balance = address(this).balance;
+            uint256 budgetBalance = address(this).balance.sub(totalSupply);
             address recipient = recipients.at(i);
             uint256 amount = deficitTo(recipient);
-            if (amount == 0 || balance < amount) continue;
+            if (amount == 0 || budgetBalance < amount) continue;
 
-            payable(recipient).transfer(amount);
-            emit Payed(recipient, amount);
+            balances[recipient] = balanceOf(recipient).add(amount);
+            totalSupply = totalSupply.add(amount);
         }
+    }
+
+    /**
+     * @notice Withdraw ETH to recipient.
+     */
+    function withdraw() external {
+        address payable recipient = _msgSender();
+        uint256 amount = balanceOf(recipient);
+        require(amount > 0, "Budget::withdraw: transfer amount exceeds balance");
+
+        balances[recipient] = 0;
+        totalSupply = totalSupply.sub(amount);
+        recipient.transfer(amount);
+        emit Payed(recipient, amount);
     }
 }

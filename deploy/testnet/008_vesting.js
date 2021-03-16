@@ -33,5 +33,7 @@ module.exports = migration("Vesting", async (d) => {
     }, Promise.resolve());
   }, Promise.resolve());
 
-  await d.deploy("VestingSplitter");
+  await d.deploy("VestingSplitter", {
+    args: [vesting.address],
+  });
 });

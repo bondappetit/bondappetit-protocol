@@ -8,14 +8,14 @@ contract("ProfitSplitter.recipients", ({web3, artifacts}) => {
 
   it("addRecipient: should add recipient", async () => {
     const instance = await artifacts.require("ProfitSplitter");
-    const share = "0";
+    const share = "10";
 
     const startRecipients = await instance.methods.getRecipients().call();
-    assert.equal(
-      startRecipients.includes(recipient),
-      false,
-      "Invalid start recipients"
-    );
+    await startRecipients.reduce(async (tx, recipient) => {
+      await tx;
+
+      return instance.methods.removeRecipient(recipient).send({from: governor});
+    }, Promise.resolve());
 
     await instance.methods
       .addRecipient(recipient, share)
@@ -29,6 +29,17 @@ contract("ProfitSplitter.recipients", ({web3, artifacts}) => {
       "Invalid end recipients"
     );
     assert.equal(endShare, share, "Invalid end share");
+  });
+
+  it("addRecipient: should revert tx for duplicate recipient", async () => {
+    const instance = await artifacts.require("ProfitSplitter");
+
+    await assertions.reverts(
+      instance.methods.addRecipient(recipient, 10).send({
+        from: governor,
+      }),
+      "ProfitSplitter::addRecipient: recipient already added"
+    );
   });
 
   it("addRecipient: should revert tx if sender not owner", async () => {
@@ -72,6 +83,24 @@ contract("ProfitSplitter.recipients", ({web3, artifacts}) => {
         from: notOwner,
       }),
       "Ownable: caller is not the owner"
+    );
+  });
+
+  it("addRecipient: should revert tx for zero share", async () => {
+    const instance = await artifacts.require("ProfitSplitter");
+
+    await assertions.reverts(
+      instance.methods.addRecipient(recipient, 0).send({
+        from: governor,
+      }),
+      "ProfitSplitter::addRecipient: invalid share"
+    );
+
+    await assertions.reverts(
+      instance.methods.addRecipient(recipient, 110).send({
+        from: governor,
+      }),
+      "ProfitSplitter::addRecipient: invalid share"
     );
   });
 });

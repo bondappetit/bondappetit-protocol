@@ -122,6 +122,7 @@ contract Buyback is OwnablePausable {
         uint256 amountOut = amountsOut[amountsOut.length - 1];
         require(amountOut > 0, "Buyback::buy: liquidity pool is empty");
 
+        incoming.safeApprove(address(uniswapRouter), 0);
         incoming.safeApprove(address(uniswapRouter), amountIn);
         uniswapRouter.swapExactTokensForTokens(amountIn, amountOut, path, recipient, block.timestamp);
         emit BuybackSuccessed(amountIn, amountOut);

@@ -85,6 +85,14 @@ contract UniswapMarketMaker is OwnablePausable {
     function changeIncoming(address _incoming, address _recipient) external onlyOwner {
         require(address(incoming) != _incoming, "UniswapMarketMaker::changeIncoming: duplicate incoming token address");
 
+        address pair = liquidityPair();
+        if (pair != address(0)) {
+            uint256 lpBalance = ERC20(pair).balanceOf(address(this));
+            if (lpBalance > 0) {
+                ERC20(pair).safeTransfer(_recipient, lpBalance);
+            }
+        }
+
         uint256 balance = incoming.balanceOf(address(this));
         if (balance > 0) {
             incoming.safeTransfer(_recipient, balance);
@@ -113,6 +121,7 @@ contract UniswapMarketMaker is OwnablePausable {
         uint256 amountOut = amountsOut[amountsOut.length - 1];
         require(amountOut > 0, "UniswapMarketMaker::buyLiquidity: liquidity pool is empty");
 
+        incoming.safeApprove(address(uniswapRouter), 0);
         incoming.safeApprove(address(uniswapRouter), amountIn);
         uniswapRouter.swapExactTokensForTokens(amountIn, amountOut, path, address(this), block.timestamp);
 
@@ -121,13 +130,12 @@ contract UniswapMarketMaker is OwnablePausable {
         uint256 supportBalance = support.balanceOf(address(this));
         require(supportBalance > 0, "UniswapMarketMaker::buyLiquidity: support token balance is empty");
 
+        incoming.safeApprove(address(uniswapRouter), 0);
         incoming.safeApprove(address(uniswapRouter), incomingBalance);
+        support.safeApprove(address(uniswapRouter), 0);
         support.safeApprove(address(uniswapRouter), supportBalance);
         (uint256 amountA, uint256 amountB, ) = uniswapRouter.addLiquidity(address(incoming), address(support), incomingBalance, supportBalance, 0, 0, address(this), block.timestamp);
         emit LiquidityIncreased(amountA, amountB);
-
-        incoming.safeApprove(address(uniswapRouter), 0);
-        support.safeApprove(address(uniswapRouter), 0);
     }
 
     /**
@@ -148,13 +156,12 @@ contract UniswapMarketMaker is OwnablePausable {
         uint256 supportBalance = support.balanceOf(address(this));
         require(supportBalance > 0, "UniswapMarketMaker::addLiquidity: support token balance is empty");
 
+        incoming.safeApprove(address(uniswapRouter), 0);
         incoming.safeApprove(address(uniswapRouter), incomingBalance);
+        support.safeApprove(address(uniswapRouter), 0);
         support.safeApprove(address(uniswapRouter), supportBalance);
         (uint256 amountA, uint256 amountB, ) = uniswapRouter.addLiquidity(address(incoming), address(support), incomingBalance, supportBalance, 0, 0, address(this), block.timestamp);
         emit LiquidityIncreased(amountA, amountB);
-
-        incoming.safeApprove(address(uniswapRouter), 0);
-        support.safeApprove(address(uniswapRouter), 0);
     }
 
     /**
@@ -178,6 +185,7 @@ contract UniswapMarketMaker is OwnablePausable {
         amount = lpBalance < amount ? lpBalance : amount;
         require(amount > 0, "UniswapMarketMaker::removeLiquidity: zero amount");
 
+        ERC20(pair).safeApprove(address(uniswapRouter), 0);
         ERC20(pair).safeApprove(address(uniswapRouter), amount);
         (uint256 incomingAmount, uint256 supportAmount) = uniswapRouter.removeLiquidity(address(incoming), address(support), amount, 0, 0, address(this), block.timestamp);
         emit LiquidityReduced(amount, incomingAmount, supportAmount);

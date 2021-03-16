@@ -41,6 +41,37 @@ contract("Budget.transferETH", ({web3, artifacts}) => {
     );
   });
 
+  it("transferETH: should revert tx if transfer amount exceeds balance", async () => {
+    const instance = await artifacts.require("Budget");
+    const contract = await artifacts.require("Treasury");
+    const contractAddress = development.contracts.Treasury.address;
+    const amount = "10";
+
+    const contractBalance = await web3.eth.getBalance(contractAddress);
+    if (contractBalance > 0) {
+      await contract.methods
+        .transferETH(governor, contractBalance)
+        .send({from: governor});
+    }
+
+    await instance.methods
+      .changeExpenditure(contractAddress, amount, amount)
+      .send({from: governor});
+    await web3.eth.sendTransaction({
+      from: governor,
+      to: instance._address,
+      value: amount,
+    });
+    await instance.methods.pay().send({from: governor, gas: 6000000});
+
+    await assertions.reverts(
+      instance.methods.transferETH(governor, amount).send({
+        from: governor,
+      }),
+      "Budget::transferETH: transfer amount exceeds balance"
+    );
+  });
+
   it("transferETH: should revert tx if sender not owner", async () => {
     const instance = await artifacts.require("Budget");
     const [, notOwner] = artifacts.accounts;

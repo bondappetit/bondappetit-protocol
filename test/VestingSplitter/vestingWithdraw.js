@@ -25,7 +25,7 @@ contract("VestingSplitter.vestingWithdraw", ({web3, artifacts}) => {
     const startBalance = await gov.methods.balanceOf(instance._address).call();
 
     await instance.methods
-      .vestingWithdraw(vesting._address, periodId)
+      .vestingWithdraw(periodId)
       .send({from: governor, gas: 6000000});
     const endBalance = await gov.methods.balanceOf(instance._address).call();
     assert.equal(

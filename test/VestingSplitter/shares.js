@@ -37,13 +37,29 @@ contract("VestingSplitter.changeShares", ({web3, artifacts}) => {
     );
   });
 
+  it("changeShares: should revert tx if accounts duplicate", async () => {
+    const instance = await artifacts.require("VestingSplitter");
+    const [, accountA] = artifacts.accounts;
+
+    await assertions.reverts(
+      instance.methods
+        .changeShares([accountA, accountA], ["80", "20"])
+        .send({from: governor, gas: 6000000}),
+      "VestingSplitter::changeShares: duplicate account"
+    );
+  });
+
   it("changeShares: should revert tx if too many accounts", async () => {
     const instance = await artifacts.require("VestingSplitter");
     const [, account] = artifacts.accounts;
 
     const maxAccounts = await instance.methods.getMaxAccounts().call();
-    const accounts = Array.from(new Array(parseInt(maxAccounts, 10) + 1).keys()).map(() => account);
-    const shares = Array.from(new Array(parseInt(maxAccounts, 10) + 1).keys()).map(() => '1');
+    const accounts = Array.from(
+      new Array(parseInt(maxAccounts, 10) + 1).keys()
+    ).map(() => account);
+    const shares = Array.from(
+      new Array(parseInt(maxAccounts, 10) + 1).keys()
+    ).map(() => "1");
 
     await assertions.reverts(
       instance.methods

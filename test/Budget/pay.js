@@ -15,17 +15,18 @@ contract("Budget.deficit", ({web3, artifacts}) => {
     },
   };
 
-  it("deficit: should return eth balance deficit to all expenditures addresses", async () => {
+  it("pay: should set withdrawal balances for all expenditures", async () => {
     const instance = await artifacts.require("Budget");
     const contractA = development.contracts.Treasury.address;
     const contractB = development.contracts.Timelock.address;
+    const amount = bn(expenditures[contractA].target)
+      .add(bn(expenditures[contractB].target))
+      .toString();
 
     await web3.eth.sendTransaction({
       from: governor,
       to: instance._address,
-      value: bn(expenditures[contractA].target)
-        .add(bn(expenditures[contractB].target))
-        .toString(),
+      value: amount,
     });
     await instance.methods
       .changeExpenditure(
@@ -44,8 +45,13 @@ contract("Budget.deficit", ({web3, artifacts}) => {
 
     await instance.methods.pay().send({from: governor});
 
-    const endBalanceContractA = await web3.eth.getBalance(contractA);
-    const endBalanceContractB = await web3.eth.getBalance(contractB);
+    const endBalanceContractA = await instance.methods
+      .balanceOf(contractA)
+      .call();
+    const endBalanceContractB = await instance.methods
+      .balanceOf(contractB)
+      .call();
+    const endTotalSupply = await instance.methods.totalSupply().call();
     assert.equal(
       endBalanceContractA,
       expenditures[contractA].target,
@@ -56,5 +62,6 @@ contract("Budget.deficit", ({web3, artifacts}) => {
       expenditures[contractB].target,
       "Invalid end balance to contract B"
     );
+    assert.equal(endTotalSupply, amount, "Invalid end total supply");
   });
 });
