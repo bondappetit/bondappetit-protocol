@@ -18,6 +18,11 @@
                     "type": "uint256"
                 },
                 {
+                    "internalType": "uint256",
+                    "name": "_governanceTokenPrice",
+                    "type": "uint256"
+                },
+                {
                     "internalType": "address",
                     "name": "_uniswapRouter",
                     "type": "address"
@@ -25,6 +30,19 @@
             ],
             "stateMutability": "nonpayable",
             "type": "constructor"
+        },
+        {
+            "anonymous": false,
+            "inputs": [
+                {
+                    "indexed": false,
+                    "internalType": "uint256",
+                    "name": "newLockDate",
+                    "type": "uint256"
+                }
+            ],
+            "name": "GovernanceTokenLockDateChanged",
+            "type": "event"
         },
         {
             "anonymous": false,
@@ -206,6 +224,32 @@
             "type": "function"
         },
         {
+            "inputs": [],
+            "name": "allowedTokens",
+            "outputs": [
+                {
+                    "internalType": "address[]",
+                    "name": "",
+                    "type": "address[]"
+                }
+            ],
+            "stateMutability": "view",
+            "type": "function"
+        },
+        {
+            "inputs": [
+                {
+                    "internalType": "uint256",
+                    "name": "_governanceTokenLockDate",
+                    "type": "uint256"
+                }
+            ],
+            "name": "changeGovernanceTokenLockDate",
+            "outputs": [],
+            "stateMutability": "nonpayable",
+            "type": "function"
+        },
+        {
             "inputs": [
                 {
                     "internalType": "uint256",
@@ -344,25 +388,6 @@
                 }
             ],
             "stateMutability": "payable",
-            "type": "function"
-        },
-        {
-            "inputs": [
-                {
-                    "internalType": "address",
-                    "name": "",
-                    "type": "address"
-                }
-            ],
-            "name": "investmentTokens",
-            "outputs": [
-                {
-                    "internalType": "bool",
-                    "name": "",
-                    "type": "bool"
-                }
-            ],
-            "stateMutability": "view",
             "type": "function"
         },
         {

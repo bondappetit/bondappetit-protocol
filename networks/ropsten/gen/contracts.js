@@ -1,6 +1,6 @@
 module.exports = {
     "Governance": {
-        "address": "0xa1Cd2A7b33F3679a5c2c1f0b89aCeDaB6b10C0D1",
+        "address": "0xe0b0b2b9641d38A61857bF0194fE0a72E8F6961A",
         "name": "GovernanceToken",
         "voting": true,
         "abi": [
@@ -675,7 +675,7 @@ module.exports = {
         ]
     },
     "Timelock": {
-        "address": "0x1122b22b5b154f8EACbA8DE881311C41e7605a71",
+        "address": "0x7366A3154928F7580bAF60DC887d0029002C36CE",
         "name": "Timelock",
         "voting": true,
         "abi": [
@@ -1124,7 +1124,7 @@ module.exports = {
         ]
     },
     "GovernorAlpha": {
-        "address": "0x59de0C58AC4bfc592920701810ed0076a26BcDBf",
+        "address": "0x1aCBC8a61b9731aFE9d0b3F80CA842951a1d6c02",
         "name": "GovernorAlpha",
         "voting": false,
         "abi": [
@@ -1796,7 +1796,7 @@ module.exports = {
         ]
     },
     "Investment": {
-        "address": "0x425F70a32E091DC9cF32F7c86BDd79159225EAC5",
+        "address": "0x6C449cE8e7703428C3e48F172a937653ca0a8a3C",
         "name": "Investment",
         "voting": true,
         "abi": [
@@ -1804,7 +1804,31 @@ module.exports = {
                 "inputs": [
                     {
                         "internalType": "address",
+<<<<<<< HEAD
                         "name": "_token",
+=======
+                        "name": "_cumulative",
+                        "type": "address"
+                    },
+                    {
+                        "internalType": "address",
+                        "name": "_governanceToken",
+                        "type": "address"
+                    },
+                    {
+                        "internalType": "uint256",
+                        "name": "_governanceTokenLockDate",
+                        "type": "uint256"
+                    },
+                    {
+                        "internalType": "uint256",
+                        "name": "_governanceTokenPrice",
+                        "type": "uint256"
+                    },
+                    {
+                        "internalType": "address",
+                        "name": "_uniswapRouter",
+>>>>>>> master
                         "type": "address"
                     }
                 ],
@@ -1816,6 +1840,48 @@ module.exports = {
                 "inputs": [
                     {
                         "indexed": false,
+<<<<<<< HEAD
+=======
+                        "internalType": "uint256",
+                        "name": "newLockDate",
+                        "type": "uint256"
+                    }
+                ],
+                "name": "GovernanceTokenLockDateChanged",
+                "type": "event"
+            },
+            {
+                "anonymous": false,
+                "inputs": [
+                    {
+                        "indexed": false,
+                        "internalType": "uint256",
+                        "name": "newPrice",
+                        "type": "uint256"
+                    }
+                ],
+                "name": "GovernanceTokenPriceChanged",
+                "type": "event"
+            },
+            {
+                "anonymous": false,
+                "inputs": [
+                    {
+                        "indexed": false,
+                        "internalType": "address",
+                        "name": "token",
+                        "type": "address"
+                    }
+                ],
+                "name": "InvestTokenAllowed",
+                "type": "event"
+            },
+            {
+                "anonymous": false,
+                "inputs": [
+                    {
+                        "indexed": false,
+>>>>>>> master
                         "internalType": "address",
                         "name": "delegatee",
                         "type": "address"
@@ -1935,7 +2001,50 @@ module.exports = {
                         "type": "address"
                     }
                 ],
+<<<<<<< HEAD
                 "name": "changePauser",
+=======
+                "name": "allowToken",
+                "outputs": [],
+                "stateMutability": "nonpayable",
+                "type": "function"
+            },
+            {
+                "inputs": [],
+                "name": "allowedTokens",
+                "outputs": [
+                    {
+                        "internalType": "address[]",
+                        "name": "",
+                        "type": "address[]"
+                    }
+                ],
+                "stateMutability": "view",
+                "type": "function"
+            },
+            {
+                "inputs": [
+                    {
+                        "internalType": "uint256",
+                        "name": "_governanceTokenLockDate",
+                        "type": "uint256"
+                    }
+                ],
+                "name": "changeGovernanceTokenLockDate",
+                "outputs": [],
+                "stateMutability": "nonpayable",
+                "type": "function"
+            },
+            {
+                "inputs": [
+                    {
+                        "internalType": "uint256",
+                        "name": "newPrice",
+                        "type": "uint256"
+                    }
+                ],
+                "name": "changeGovernanceTokenPrice",
+>>>>>>> master
                 "outputs": [],
                 "stateMutability": "nonpayable",
                 "type": "function"
@@ -2053,6 +2162,7 @@ module.exports = {
             },
             {
                 "inputs": [],
+<<<<<<< HEAD
                 "name": "maxPeriodsPerRecipient",
                 "outputs": [
                     {
@@ -2062,6 +2172,17 @@ module.exports = {
                     }
                 ],
                 "stateMutability": "pure",
+=======
+                "name": "investETH",
+                "outputs": [
+                    {
+                        "internalType": "bool",
+                        "name": "",
+                        "type": "bool"
+                    }
+                ],
+                "stateMutability": "payable",
+>>>>>>> master
                 "type": "function"
             },
             {
@@ -2184,7 +2305,7 @@ module.exports = {
         ]
     },
     "Vesting": {
-        "address": "0x1e3de795E0B1B6C6C8D137B5da23203748E1B7AF",
+        "address": "0x1293ABF5A28453C91B2e8A13F34D237C9DA7B1dc",
         "name": "Vesting",
         "voting": true,
         "abi": [
@@ -2633,10 +2754,21 @@ module.exports = {
         ]
     },
     "VestingSplitter": {
-        "address": "0x26F300A11bC4a3A41Bc07941Ea407dd9533b8e28",
+        "address": "0xa2924B65d6b8264a8093d050bA25100A1facbF2C",
         "name": "VestingSplitter",
         "voting": false,
         "abi": [
+            {
+                "inputs": [
+                    {
+                        "internalType": "address",
+                        "name": "_vesting",
+                        "type": "address"
+                    }
+                ],
+                "stateMutability": "nonpayable",
+                "type": "constructor"
+            },
             {
                 "anonymous": false,
                 "inputs": [
@@ -2679,6 +2811,19 @@ module.exports = {
             {
                 "inputs": [
                     {
+                        "internalType": "address",
+                        "name": "newVesting",
+                        "type": "address"
+                    }
+                ],
+                "name": "VestingChanged",
+                "type": "event"
+            },
+            {
+                "anonymous": false,
+                "inputs": [
+                    {
+                        "indexed": false,
                         "internalType": "address",
                         "name": "vesting",
                         "type": "address"
@@ -2761,6 +2906,19 @@ module.exports = {
                     }
                 ],
                 "name": "changeShares",
+                "outputs": [],
+                "stateMutability": "nonpayable",
+                "type": "function"
+            },
+            {
+                "inputs": [
+                    {
+                        "internalType": "address",
+                        "name": "_vesting",
+                        "type": "address"
+                    }
+                ],
+                "name": "changeVesting",
                 "outputs": [],
                 "stateMutability": "nonpayable",
                 "type": "function"
@@ -2883,12 +3041,20 @@ module.exports = {
                 "type": "function"
             },
             {
-                "inputs": [
+                "inputs": [],
+                "name": "vesting",
+                "outputs": [
                     {
-                        "internalType": "contract Vesting",
-                        "name": "vesting",
+                        "internalType": "address",
+                        "name": "",
                         "type": "address"
-                    },
+                    }
+                ],
+                "stateMutability": "view",
+                "type": "function"
+            },
+            {
+                "inputs": [
                     {
                         "internalType": "uint256",
                         "name": "periodId",
@@ -2916,7 +3082,7 @@ module.exports = {
         ]
     },
     "Stable": {
-        "address": "0xD46830597F98Bc7bdb43D4481FE2524b3DEf8c8e",
+        "address": "0x6C9eDe45edEeB98B5C48D7d5881Db4d837e763Ec",
         "name": "StableToken",
         "voting": true,
         "abi": [
@@ -3377,7 +3543,7 @@ module.exports = {
         ]
     },
     "Treasury": {
-        "address": "0xD048d525dd3582aDddC3936656f7EF4B27f1cd48",
+        "address": "0x4747b5B7964A4204c60B0aC712d24F6f2F7b0F0C",
         "name": "Treasury",
         "voting": true,
         "abi": [
@@ -3587,7 +3753,7 @@ module.exports = {
         ]
     },
     "StableTokenDepositaryBalanceView": {
-        "address": "0xd7CcdAB1B279F1498Bb3c07370A6f0c9439865F7",
+        "address": "0x9aE8c41AE010C16fa183FA72840f73cb2D4e016f",
         "name": "StableTokenDepositaryBalanceView",
         "voting": true,
         "abi": [
@@ -3760,7 +3926,7 @@ module.exports = {
         ]
     },
     "RealAssetDepositaryBalanceView": {
-        "address": "0x20CACfe0362d3fE9643519a90bCdC7A56C53e8f9",
+        "address": "0xFdfeE7baB2E8BB2A7703f8745f622D46cd6e9c43",
         "name": "RealAssetDepositaryBalanceView",
         "voting": true,
         "abi": [
@@ -4135,7 +4301,7 @@ module.exports = {
         ]
     },
     "Issuer": {
-        "address": "0xB1158C9C68a9690b118ED8309104EB09CD67A436",
+        "address": "0x8e48d187A284Ed90B7D527f24E5C254576B25e09",
         "name": "Issuer",
         "voting": true,
         "abi": [
@@ -4535,7 +4701,7 @@ module.exports = {
         ]
     },
     "CollateralMarket": {
-        "address": "0x664b6a52c5891742260126af4796d859Ddb28e84",
+        "address": "0x0b9ddBC2257380aa970c35cC61CCF9a08Fe60bC5",
         "name": "CollateralMarket",
         "voting": true,
         "abi": [
@@ -4938,7 +5104,7 @@ module.exports = {
         ]
     },
     "Market": {
-        "address": "0x48c58c49BAfD1F6bEfe52328EA22a127624eE7DA",
+        "address": "0x9BD6356F6F61ecb465626CE6F6940EE092eE4478",
         "name": "Market",
         "voting": true,
         "abi": [
@@ -5553,7 +5719,7 @@ module.exports = {
         ]
     },
     "GovStaking": {
-        "address": "0x2cd5238CD8316DC9f0AF7Bde6F45a2F50523685b",
+        "address": "0xeE86Ea4bE33fDa144c297B5E3a16fFC1db2CF55f",
         "name": "GovStaking",
         "voting": true,
         "abi": [
@@ -6236,7 +6402,7 @@ module.exports = {
         ]
     },
     "UsdcGovLPStaking": {
-        "address": "0x2c23BCDE15A881822621880075Bb5A749cC60B57",
+        "address": "0xB83A53E03Ad395b455802CDc0f287b51B0bcF463",
         "name": "UsdcGovLPStaking",
         "voting": true,
         "abi": [
@@ -6919,7 +7085,7 @@ module.exports = {
         ]
     },
     "UsdnGovLPStaking": {
-        "address": "0x0dE2188939213f828A11dAf3F560b47753af528a",
+        "address": "0xA1A8aA6114Daafb3B9771E06679f1612bf6Bc9e2",
         "name": "UsdnGovLPStaking",
         "voting": true,
         "abi": [
@@ -7602,7 +7768,7 @@ module.exports = {
         ]
     },
     "UsdcStableLPLockStaking": {
-        "address": "0x07818978137DFcD200De60DaCE8bD036667deEE9",
+        "address": "0xABbfb13C4cc43776388753F5F8d5c3507704cD2B",
         "name": "UsdcStableLPLockStaking",
         "voting": true,
         "abi": [
@@ -8285,7 +8451,7 @@ module.exports = {
         ]
     },
     "UsdnStableLPLockStaking": {
-        "address": "0x8690d9F567A36A1646F770aC92DCB94D1716CFa0",
+        "address": "0x985f28ddFB76D546Dc344ee16b278d6cD0165784",
         "name": "UsdnStableLPLockStaking",
         "voting": true,
         "abi": [
@@ -8968,7 +9134,7 @@ module.exports = {
         ]
     },
     "Budget": {
-        "address": "0xCF73C30BE312CA1139Df31EF90e4fF5f777c00c2",
+        "address": "0xa75e6E61b1492A0c0739E830ab315909C1830DF4",
         "name": "Budget",
         "voting": true,
         "abi": [
@@ -9073,6 +9239,25 @@ module.exports = {
                 ],
                 "name": "Unpaused",
                 "type": "event"
+            },
+            {
+                "inputs": [
+                    {
+                        "internalType": "address",
+                        "name": "recipient",
+                        "type": "address"
+                    }
+                ],
+                "name": "balanceOf",
+                "outputs": [
+                    {
+                        "internalType": "uint256",
+                        "name": "",
+                        "type": "uint256"
+                    }
+                ],
+                "stateMutability": "view",
+                "type": "function"
             },
             {
                 "inputs": [
@@ -9219,7 +9404,11 @@ module.exports = {
             },
             {
                 "inputs": [],
+<<<<<<< HEAD
                 "name": "size",
+                "outputs": [
+=======
+                "name": "totalSupply",
                 "outputs": [
                     {
                         "internalType": "uint256",
@@ -9227,6 +9416,24 @@ module.exports = {
                         "type": "uint256"
                     }
                 ],
+                "stateMutability": "view",
+                "type": "function"
+            },
+            {
+                "inputs": [
+                    {
+                        "internalType": "address payable",
+                        "name": "recipient",
+                        "type": "address"
+                    },
+>>>>>>> master
+                    {
+                        "internalType": "uint256",
+                        "name": "",
+                        "type": "uint256"
+                    }
+                ],
+<<<<<<< HEAD
                 "stateMutability": "view",
                 "type": "function"
             },
@@ -9241,6 +9448,11 @@ module.exports = {
                     }
                 ],
                 "stateMutability": "view",
+=======
+                "name": "transferETH",
+                "outputs": [],
+                "stateMutability": "nonpayable",
+>>>>>>> master
                 "type": "function"
             },
             {
@@ -9275,11 +9487,25 @@ module.exports = {
                 "outputs": [],
                 "stateMutability": "nonpayable",
                 "type": "function"
+<<<<<<< HEAD
+=======
+            },
+            {
+                "inputs": [],
+                "name": "withdraw",
+                "outputs": [],
+                "stateMutability": "nonpayable",
+                "type": "function"
+            },
+            {
+                "stateMutability": "payable",
+                "type": "receive"
+>>>>>>> master
             }
         ]
     },
     "Buyback": {
-        "address": "0xa661aC34B031CEAecC57A3710b905e0F8bBC871f",
+        "address": "0xb3e800168303b8C9766623CDd6C97335D182908d",
         "name": "Buyback",
         "voting": true,
         "abi": [
@@ -9682,7 +9908,7 @@ module.exports = {
         ]
     },
     "UniswapMarketMaker": {
-        "address": "0x34FFBa180b0e6a7c7b7F0230847F97afDE122C8D",
+        "address": "0x1C8E9f1CAbc1D157C139950b1df4Ba95ec53d99C",
         "name": "UniswapMarketMaker",
         "voting": true,
         "abi": [
@@ -10365,7 +10591,7 @@ module.exports = {
         ]
     },
     "ProfitSplitter": {
-        "address": "0x322b2EC96ca74a5376Fa73466609357B90865bD1",
+        "address": "0x0925E73B1c50BA407a8dD5fE38705b78bAfC95fC",
         "name": "ProfitSplitter",
         "voting": true,
         "abi": [
