@@ -1804,9 +1804,6 @@ module.exports = {
                 "inputs": [
                     {
                         "internalType": "address",
-<<<<<<< HEAD
-                        "name": "_token",
-=======
                         "name": "_cumulative",
                         "type": "address"
                     },
@@ -1828,7 +1825,6 @@ module.exports = {
                     {
                         "internalType": "address",
                         "name": "_uniswapRouter",
->>>>>>> master
                         "type": "address"
                     }
                 ],
@@ -1840,8 +1836,6 @@ module.exports = {
                 "inputs": [
                     {
                         "indexed": false,
-<<<<<<< HEAD
-=======
                         "internalType": "uint256",
                         "name": "newLockDate",
                         "type": "uint256"
@@ -1881,7 +1875,6 @@ module.exports = {
                 "inputs": [
                     {
                         "indexed": false,
->>>>>>> master
                         "internalType": "address",
                         "name": "delegatee",
                         "type": "address"
@@ -2001,9 +1994,6 @@ module.exports = {
                         "type": "address"
                     }
                 ],
-<<<<<<< HEAD
-                "name": "changePauser",
-=======
                 "name": "allowToken",
                 "outputs": [],
                 "stateMutability": "nonpayable",
@@ -2044,7 +2034,6 @@ module.exports = {
                     }
                 ],
                 "name": "changeGovernanceTokenPrice",
->>>>>>> master
                 "outputs": [],
                 "stateMutability": "nonpayable",
                 "type": "function"
@@ -2162,17 +2151,6 @@ module.exports = {
             },
             {
                 "inputs": [],
-<<<<<<< HEAD
-                "name": "maxPeriodsPerRecipient",
-                "outputs": [
-                    {
-                        "internalType": "uint256",
-                        "name": "",
-                        "type": "uint256"
-                    }
-                ],
-                "stateMutability": "pure",
-=======
                 "name": "investETH",
                 "outputs": [
                     {
@@ -2182,7 +2160,6 @@ module.exports = {
                     }
                 ],
                 "stateMutability": "payable",
->>>>>>> master
                 "type": "function"
             },
             {
@@ -9404,10 +9381,6 @@ module.exports = {
             },
             {
                 "inputs": [],
-<<<<<<< HEAD
-                "name": "size",
-                "outputs": [
-=======
                 "name": "totalSupply",
                 "outputs": [
                     {
@@ -9426,33 +9399,15 @@ module.exports = {
                         "name": "recipient",
                         "type": "address"
                     },
->>>>>>> master
                     {
                         "internalType": "uint256",
                         "name": "",
                         "type": "uint256"
                     }
                 ],
-<<<<<<< HEAD
-                "stateMutability": "view",
-                "type": "function"
-            },
-            {
-                "inputs": [],
-                "name": "stableToken",
-                "outputs": [
-                    {
-                        "internalType": "contract StableToken",
-                        "name": "",
-                        "type": "address"
-                    }
-                ],
-                "stateMutability": "view",
-=======
                 "name": "transferETH",
                 "outputs": [],
                 "stateMutability": "nonpayable",
->>>>>>> master
                 "type": "function"
             },
             {
@@ -9487,8 +9442,6 @@ module.exports = {
                 "outputs": [],
                 "stateMutability": "nonpayable",
                 "type": "function"
-<<<<<<< HEAD
-=======
             },
             {
                 "inputs": [],
@@ -9500,7 +9453,6 @@ module.exports = {
             {
                 "stateMutability": "payable",
                 "type": "receive"
->>>>>>> master
             }
         ]
     },
