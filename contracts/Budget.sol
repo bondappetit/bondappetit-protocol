@@ -55,8 +55,6 @@ contract Budget is OwnablePausable {
             recipients.add(recipient);
         } else {
             recipients.remove(recipient);
-            totalSupply = totalSupply.sub(balanceOf(recipient));
-            balances[recipient] = 0;
         }
         emit ExpenditureChanged(recipient, min, target);
     }
