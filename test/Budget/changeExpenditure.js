@@ -38,7 +38,7 @@ contract("Budget.changeExpenditure", ({web3, artifacts}) => {
     );
   });
 
-  it("changeExpenditure: should release withdrawal balance for removed recipient", async () => {
+  it("changeExpenditure: should save withdrawal balance for removed recipient", async () => {
     const instance = await artifacts.require("Budget");
 
     const deficit = await instance.methods.deficitTo(contract).call();
@@ -69,8 +69,8 @@ contract("Budget.changeExpenditure", ({web3, artifacts}) => {
       false,
       "Invalid end recipients list"
     );
-    assert.equal(endBalance, "0", "Invalid end balance");
-    assert.equal(endTotalSupply, "0", "Invalid end total supply");
+    assert.equal(endBalance, startBalance, "Invalid end balance");
+    assert.equal(endTotalSupply, startTotalSupply, "Invalid end total supply");
   });
 
   it("changeExpenditure: should revert tx if sender not owner", async () => {
