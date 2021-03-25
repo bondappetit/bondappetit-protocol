@@ -7,7 +7,7 @@ module.exports = migration("Investment", async (d) => {
     contracts: {UniswapV2Router02},
   } = d.getNetwork();
   const [gov] = await d.deployed("GovernanceToken");
-  const lockDate = dayjs().add(3, "month").unix();
+  const lockDate = dayjs("2021-10-01T03:00:00.000Z").unix();
   const govPrice = '2500000'
 
   await d.deploy("Investment", {

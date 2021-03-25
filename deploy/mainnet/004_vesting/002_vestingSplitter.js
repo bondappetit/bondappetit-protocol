@@ -7,5 +7,5 @@ module.exports = migration("VestingSplitter", async (d) => {
   await d.deploy("VestingSplitter", {
     args: [vesting.address],
   });
-  await d.send("VestingSplitter", "transferOwnership", [governor]);
+  await d.send("VestingSplitter", "transferOwnership", [governor]); // TODO change wallet for mainnet launch
 });
