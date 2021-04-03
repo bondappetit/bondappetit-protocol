@@ -4,9 +4,9 @@ module.exports = migration(
   "StableTokenDepositaryBalanceView.allowToken",
   async (d) => {
     const {
-      assets: {USDC, USDN},
+      assets: {USDC},
     } = d.getNetwork();
-    const allowedTokens = [USDC.address, USDN.address];
+    const allowedTokens = [USDC.address];
 
     const currentAllowedTokensSet = new Set(
       await d.call("StableTokenDepositaryBalanceView", "allowedTokens", [])

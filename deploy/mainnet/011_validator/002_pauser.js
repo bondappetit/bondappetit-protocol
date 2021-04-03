@@ -7,8 +7,6 @@ module.exports = migration("ProtocolValidator.pauser", async (d) => {
     "Issuer",
     "CollateralMarket",
     "UsdcStableLPLockStaking",
-    "UsdnStableLPLockStaking",
     "UsdcGovLPStaking",
-    "UsdnGovLPStaking"
   );
 });
