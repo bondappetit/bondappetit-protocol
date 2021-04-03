@@ -20,13 +20,6 @@ module.exports = {
     decimals: 6,
     investing: true,
   },
-  USDN: {
-    address: "0x674C6Ad92Fd080e4004b2312b45f796a192D27a0",
-    name: "Neutrino USD",
-    symbol: "USDN",
-    decimals: 18,
-    investing: false,
-  },
   WBTC: {
     address: "0x2260fac5e5542a773aa44fbcfedf7c193bc2c599",
     name: "Wrapped BTC",
