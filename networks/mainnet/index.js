@@ -3,7 +3,7 @@ module.exports = {
   networkUrl: "https://mainnet.bondappetit.io",
   networkEtherscan: "https://etherscan.io",
   networkId: 1,
-  gasPrice: "2000000000",
+  gasPrice: "105000000000",
   accounts: {
     ...require("./accounts"),
   },
