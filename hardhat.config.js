@@ -35,7 +35,7 @@ module.exports = {
       },
     },
     mainnet: {
-      url: "https://mainnet.bondappetit.io",
+      url: "https://mainnet.infura.io/v3/03d22d3114e54a6dbab0cb1c6163b48a",
       chainId: 1,
       from: networks.main.accounts.Governor.address,
       gasPrice: parseInt(networks.main.gasPrice, 10),
