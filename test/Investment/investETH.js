@@ -20,7 +20,7 @@ contract("Investment.investETH", ({web3, artifacts}) => {
       "GovernanceToken"
     );
 
-    const amountIn = "100";
+    const amountIn = `1${'0'.repeat(18)}`;
     const usdcInvestmentBalanceStart = await usdcContract.methods
       .balanceOf(instance._address)
       .call();
