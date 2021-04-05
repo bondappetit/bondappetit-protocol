@@ -1,6 +1,6 @@
 module.exports = {
     "Governance": {
-        "address": "0xaCeC42CCf4106F4B1BE6711bC3449017D5e8391F",
+        "address": "0xdeF4517d8762527B11B2dac65F89DD3DE05c5911",
         "name": "GovernanceToken",
         "voting": true,
         "abi": [
@@ -675,7 +675,7 @@ module.exports = {
         ]
     },
     "Timelock": {
-        "address": "0xe0cAE8BDa3Bdb1731E8Cf337BF19fDB3a0ddB454",
+        "address": "0x513Befa7c298E3e7D05237504E85e345b15D8070",
         "name": "Timelock",
         "voting": true,
         "abi": [
@@ -1124,7 +1124,7 @@ module.exports = {
         ]
     },
     "GovernorAlpha": {
-        "address": "0xf025BABB4A1cD9E71830c33202b54e978dC56A5E",
+        "address": "0xE2E470Bb5C8D88e93624aB6238Fb69C2139C3cE4",
         "name": "GovernorAlpha",
         "voting": false,
         "abi": [
@@ -1796,7 +1796,7 @@ module.exports = {
         ]
     },
     "Investment": {
-        "address": "0x4aE2A70899F8F1765A2F47feD2963727F5857B11",
+        "address": "0xd1A7e040473D1896dF4013F0606Bb5f5769FCC14",
         "name": "Investment",
         "voting": true,
         "abi": [
@@ -2303,7 +2303,7 @@ module.exports = {
         ]
     },
     "Vesting": {
-        "address": "0x3A37cf09124c00d672efb2631beb116FF05F69f4",
+        "address": "0x009f17bC00F4493482d674620959e2f33BC38afb",
         "name": "Vesting",
         "voting": true,
         "abi": [
@@ -2691,7 +2691,7 @@ module.exports = {
         ]
     },
     "VestingSplitter": {
-        "address": "0xa3Feb2F6D33fFba1608733808CE926872778ff2a",
+        "address": "0x94c4828F2bdBbAF48b35382878A7b0B1d4FeC964",
         "name": "VestingSplitter",
         "voting": false,
         "abi": [
@@ -3008,7 +3008,7 @@ module.exports = {
         ]
     },
     "Stable": {
-        "address": "0xA5705B25904c4Ad9731ae9235cc81404579EF809",
+        "address": "0x7d9E349820507a8eF49eE98d928e8dea732AB9c0",
         "name": "StableToken",
         "voting": true,
         "abi": [
@@ -3449,7 +3449,7 @@ module.exports = {
         ]
     },
     "Treasury": {
-        "address": "0x1b98E082f0975C2B7FC90C4078557E0964c7c814",
+        "address": "0xeAE5156C2668b51b4Eb88addcd00f1E0d7E5b16F",
         "name": "Treasury",
         "voting": true,
         "abi": [
@@ -3659,7 +3659,7 @@ module.exports = {
         ]
     },
     "StableTokenDepositaryBalanceView": {
-        "address": "0x4A8eFD13986Cc527342e325713ea3410b84aD555",
+        "address": "0xce41A2b0593E25bddb51B612c0a2C134958D744C",
         "name": "StableTokenDepositaryBalanceView",
         "voting": true,
         "abi": [
@@ -3832,7 +3832,7 @@ module.exports = {
         ]
     },
     "RealAssetDepositaryBalanceView": {
-        "address": "0xF3663fFB308112FC05E8c75be747C2Eb71d02Cd6",
+        "address": "0x2Aa170Dc475b4d4d7CB3a4bFE43261A4Cc399Bb9",
         "name": "RealAssetDepositaryBalanceView",
         "voting": true,
         "abi": [
@@ -4207,7 +4207,7 @@ module.exports = {
         ]
     },
     "Issuer": {
-        "address": "0x29c04C23dc4d6b93916d42672C3E9fe37007c012",
+        "address": "0x5c950EA9F1590dd571764C8888D88f5F7f31aB83",
         "name": "Issuer",
         "voting": true,
         "abi": [
@@ -4607,7 +4607,7 @@ module.exports = {
         ]
     },
     "CollateralMarket": {
-        "address": "0xF104E778C705449A636698cF93E364b961386173",
+        "address": "0x8347ea4cb2Ee3b7E8D650F7e65e2341f2665f175",
         "name": "CollateralMarket",
         "voting": true,
         "abi": [
@@ -5010,7 +5010,7 @@ module.exports = {
         ]
     },
     "Market": {
-        "address": "0x8f808bbB3d993571f2317d1a1Ff66900b078070b",
+        "address": "0x1e4b7da8ac28C2B06bca92266FF404f9C5287885",
         "name": "Market",
         "voting": true,
         "abi": [
@@ -5625,7 +5625,7 @@ module.exports = {
         ]
     },
     "GovStaking": {
-        "address": "0xd6663EAafaf4F3f7aC54B363363Ca45F0B3BD8EE",
+        "address": "0x7362Bd1093873F3e7f8400E19F1e673ef50aB294",
         "name": "GovStaking",
         "voting": true,
         "abi": [
@@ -6308,7 +6308,7 @@ module.exports = {
         ]
     },
     "UsdcGovLPStaking": {
-        "address": "0xF289e147a56d04237eC967DA333A5685cBA3cA45",
+        "address": "0x77C2Af36F69bFD5DeaE2609B9b48C0E19b704000",
         "name": "UsdcGovLPStaking",
         "voting": true,
         "abi": [
@@ -6991,7 +6991,7 @@ module.exports = {
         ]
     },
     "UsdnGovLPStaking": {
-        "address": "0xA19C3e6A3Ec83Df19295FD395a5bf09bF89a55aC",
+        "address": "0x3B1c6C0a5E059433038D5f41F9c45Bb37F1431d3",
         "name": "UsdnGovLPStaking",
         "voting": true,
         "abi": [
@@ -7674,7 +7674,7 @@ module.exports = {
         ]
     },
     "UsdcStableLPLockStaking": {
-        "address": "0x035B7Ac30CcB0BC025F8D1009D03a7194AbB7B8F",
+        "address": "0x657FF7Fe81325C65ae8B9e1eE7738EB8d71Aa458",
         "name": "UsdcStableLPLockStaking",
         "voting": true,
         "abi": [
@@ -8357,7 +8357,7 @@ module.exports = {
         ]
     },
     "UsdnStableLPLockStaking": {
-        "address": "0x262A21F54d58591c3c61c48E075850434b89C95f",
+        "address": "0x31c2a9D89e61Bbf7C0341DAE844C36c0A9EAA57E",
         "name": "UsdnStableLPLockStaking",
         "voting": true,
         "abi": [
@@ -9040,7 +9040,7 @@ module.exports = {
         ]
     },
     "Budget": {
-        "address": "0xd0A28560b7d5dB0Ac6293Ead5B1f777405A8Df90",
+        "address": "0x05f0892eCFaA0b15A169A02016e227a0CCcf7aEE",
         "name": "Budget",
         "voting": true,
         "abi": [
@@ -9400,7 +9400,7 @@ module.exports = {
         ]
     },
     "Buyback": {
-        "address": "0x373Fa0eC0E8b608e5C06AbEc02aB1E4972a4c8cC",
+        "address": "0x6BbDA54F026d84cb14b7dc678695c32909260366",
         "name": "Buyback",
         "voting": true,
         "abi": [
@@ -9781,7 +9781,7 @@ module.exports = {
         ]
     },
     "UniswapMarketMaker": {
-        "address": "0x0FEcb521A67dB45ddC2fb6B77C5400dF917D6655",
+        "address": "0x15563673AC73614DE841c326b5f0ACc4132881a8",
         "name": "UniswapMarketMaker",
         "voting": true,
         "abi": [
@@ -10198,7 +10198,7 @@ module.exports = {
         ]
     },
     "ProfitSplitter": {
-        "address": "0x193bE5C3A64a51409dD361cA37086e2326a8B5db",
+        "address": "0xc154F1DDDC16d468763BFb1e7eF9f394172B6B16",
         "name": "ProfitSplitter",
         "voting": true,
         "abi": [
