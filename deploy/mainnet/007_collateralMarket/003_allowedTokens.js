@@ -2,9 +2,9 @@ const {migration} = require("../../../utils/deploy");
 
 module.exports = migration("CollateralMarket.allowToken", async (d) => {
   const {
-    assets: {USDC, USDN},
+    assets: {USDC},
   } = d.getNetwork();
-  const allowedTokens = [USDC.address, USDN.address];
+  const allowedTokens = [USDC.address];
 
   const currentAllowedTokensSet = new Set(
     await d.call("CollateralMarket", "allowedTokens", [])
