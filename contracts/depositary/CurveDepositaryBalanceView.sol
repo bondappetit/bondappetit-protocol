@@ -44,7 +44,10 @@ contract CurveDepositaryBalanceView is Ownable, IDepositaryBalanceView {
     event Invested(address pool, address token, uint256 amount);
 
     /// @notice An event thats emitted when an withdrawal token.
-    event Withdrawal(address token, uint256 amount, uint256 profit, address investRecipient, address profitRecipient);
+    event Withdrawal(address token, uint256 amount, address recipient);
+
+    /// @notice An event thats emitted when an withdrawal proft token.
+    event Mint(address token, uint256 amount, address recipient);
 
     /**
      * @param _registry Curve registry contract address.
@@ -137,7 +140,7 @@ contract CurveDepositaryBalanceView is Ownable, IDepositaryBalanceView {
      * @param toToken Target token.
      * @param recipient Recipient.
      */
-    function mintCrv(
+    function mint(
         address pool,
         address toToken,
         address recipient
@@ -164,9 +167,12 @@ contract CurveDepositaryBalanceView is Ownable, IDepositaryBalanceView {
 
             crv.safeApprove(address(uniswapRouter), 0);
             crv.safeApprove(address(uniswapRouter), crvBalance);
-            uniswapRouter.swapExactTokensForTokens(crvBalance, amountOut, path, recipient, block.timestamp);
+            uint256[] memory profitAmount = uniswapRouter.swapExactTokensForTokens(crvBalance, amountOut, path, recipient, block.timestamp);
+
+            emit Mint(toToken, profitAmount[profitAmount.length - 1], recipient);
         } else {
             crv.safeTransfer(recipient, crvBalance);
+            emit Mint(address(crv), crvBalance, recipient);
         }
     }
 
@@ -209,14 +215,12 @@ contract CurveDepositaryBalanceView is Ownable, IDepositaryBalanceView {
      * @notice Withdraw invested token and reward.
      * @param pool Target liquidity pool.
      * @param tokenIndex Invested token index in the pool.
-     * @param investRecipient Recipient of invested token.
-     * @param profitRecipient Recipient of reward token.
+     * @param recipient Recipient of invested token.
      */
     function withdraw(
         address pool,
         uint256 tokenIndex,
-        address investRecipient,
-        address profitRecipient
+        address recipient
     ) external onlyOwner {
         require(tokenIndex < 3, "CurveDepositaryBalanceView::invest: invalid token index");
 
@@ -224,29 +228,18 @@ contract CurveDepositaryBalanceView is Ownable, IDepositaryBalanceView {
         require(tokenAddress != address(0), "CurveDepositaryBalanceView::withdraw: invalid withdraw token");
         ERC20 lpToken = _getPoolLiquidityToken(pool);
 
-        uint256 investAmount = balances[pool];
         balances[pool] = 0;
         pools.remove(pool);
 
         _unlock(pool);
         uint256 lpBalance = lpToken.balanceOf(address(this));
         IPool(pool).remove_liquidity_one_coin(lpBalance, int128(tokenIndex), 0);
-        mintCrv(pool, tokenAddress, address(this));
 
         ERC20 token = ERC20(tokenAddress);
         uint256 balance = token.balanceOf(address(this));
-        uint256 profitAmount;
-        if (balance >= investAmount) {
-            profitAmount = balance.sub(investAmount);
-        } else {
-            investAmount = balance;
-        }
-        token.safeTransfer(investRecipient, investAmount);
-        if (profitAmount > 0) {
-            token.safeTransfer(profitRecipient, profitAmount);
-        }
+        token.safeTransfer(recipient, balance);
 
-        emit Withdrawal(tokenAddress, investAmount, profitAmount, investRecipient, profitRecipient);
+        emit Withdrawal(tokenAddress, balance, recipient);
     }
 
     /**
