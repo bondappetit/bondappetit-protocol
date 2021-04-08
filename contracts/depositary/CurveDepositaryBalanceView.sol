@@ -7,12 +7,12 @@ import "@openzeppelin/contracts/math/SafeMath.sol";
 import "@openzeppelin/contracts/token/ERC20/ERC20.sol";
 import "@openzeppelin/contracts/token/ERC20/SafeERC20.sol";
 import "@openzeppelin/contracts/utils/EnumerableSet.sol";
+import "../curve/IRegistry.sol";
+import "../uniswap/IUniswapV2Router02.sol";
 import "./IDepositaryBalanceView.sol";
 import "../curve/IPool.sol";
-import "../curve/IRegistry.sol";
 import "../curve/ILiquidityGauge.sol";
 import "../curve/IMinter.sol";
-import "../uniswap/IUniswapV2Router02.sol";
 
 contract CurveDepositaryBalanceView is Ownable, IDepositaryBalanceView {
     using SafeMath for uint256;
@@ -20,13 +20,10 @@ contract CurveDepositaryBalanceView is Ownable, IDepositaryBalanceView {
     using EnumerableSet for EnumerableSet.AddressSet;
 
     /// @notice Curve registry contract.
-    address public registry;
-
-    /// @notice Curve minter contract.
-    address public minter;
+    IRegistry public registry;
 
     /// @notice Uniswap router contract.
-    address public uniswapRouter;
+    IUniswapV2Router02 public uniswapRouter;
 
     /// @dev Invested pools.
     EnumerableSet.AddressSet private pools;
@@ -40,9 +37,6 @@ contract CurveDepositaryBalanceView is Ownable, IDepositaryBalanceView {
     /// @notice An event thats emitted when an curve registry address changed.
     event RegistryChanged(address registry);
 
-    /// @notice An event thats emitted when an curve minter address changed.
-    event MinterChanged(address minter);
-
     /// @notice An event thats emitted when an uniswap router address changed.
     event UniswapRouterChanged(address uniswapRouter);
 
@@ -50,21 +44,18 @@ contract CurveDepositaryBalanceView is Ownable, IDepositaryBalanceView {
     event Invested(address pool, address token, uint256 amount);
 
     /// @notice An event thats emitted when an withdrawal token.
-    event Withdrawal(address token, uint256 amount, uint256 profit, address investRecipient, address profitRecipient);
+    event Withdrawal(address token, uint256 amount, address recipient);
+
+    /// @notice An event thats emitted when an withdrawal proft token.
+    event Mint(address token, uint256 amount, address recipient);
 
     /**
      * @param _registry Curve registry contract address.
-     * @param _minter Curve minter contract address.
      * @param _uniswapRouter Uniswap router contract address.
      */
-    constructor(
-        address _registry,
-        address _minter,
-        address _uniswapRouter
-    ) public {
-        registry = _registry;
-        minter = _minter;
-        uniswapRouter = _uniswapRouter;
+    constructor(address _registry, address _uniswapRouter) public {
+        registry = IRegistry(_registry);
+        uniswapRouter = IUniswapV2Router02(_uniswapRouter);
     }
 
     /**
@@ -73,18 +64,8 @@ contract CurveDepositaryBalanceView is Ownable, IDepositaryBalanceView {
     function changeRegistry(address _registry) external onlyOwner {
         require(_registry != address(0), "CurveDepositaryBalanceView::changeRegistry: invalid registry address");
 
-        registry = _registry;
-        emit RegistryChanged(registry);
-    }
-
-    /**
-     * @param _minter New Curve minter contract address.
-     */
-    function changeMinter(address _minter) external onlyOwner {
-        require(_minter != address(0), "CurveDepositaryBalanceView::changeMinter: invalid minter address");
-
-        minter = _minter;
-        emit MinterChanged(minter);
+        registry = IRegistry(_registry);
+        emit RegistryChanged(_registry);
     }
 
     /**
@@ -93,8 +74,30 @@ contract CurveDepositaryBalanceView is Ownable, IDepositaryBalanceView {
     function changeUniswap(address _uniswapRouter) external onlyOwner {
         require(_uniswapRouter != address(0), "CurveDepositaryBalanceView::changeUniswap: invalid uniswap address");
 
-        uniswapRouter = _uniswapRouter;
-        emit UniswapRouterChanged(uniswapRouter);
+        uniswapRouter = IUniswapV2Router02(_uniswapRouter);
+        emit UniswapRouterChanged(_uniswapRouter);
+    }
+
+    /**
+     * @param pool Target liquidity pool address.
+     * @return Liquidity pool token.
+     */
+    function _getPoolLiquidityToken(address pool) internal view returns (ERC20) {
+        address tokenAddress = registry.get_lp_token(pool);
+        require(tokenAddress != address(0), "CurveDepositaryBalanceView::_getPoolLiquidityToken: liquidity token not found");
+
+        return ERC20(tokenAddress);
+    }
+
+    /**
+     * @param pool Target liquidity pool address.
+     * @return Liquidity gauge.
+     */
+    function _getPoolLiquidityGauge(address pool) internal view returns (ILiquidityGauge) {
+        (address[10] memory gauges, ) = registry.get_gauges(pool);
+        require(gauges[0] != address(0), "CurveDepositaryBalanceView::_getPoolLiquidityGauge: liquidity gauge not found");
+
+        return ILiquidityGauge(gauges[0]);
     }
 
     /**
@@ -105,27 +108,30 @@ contract CurveDepositaryBalanceView is Ownable, IDepositaryBalanceView {
         return balances[pool];
     }
 
-    function lock(address pool) internal {
-        (address[10] memory gauges, ) = IRegistry(registry).get_gauges(pool);
-        address gaugeAddress = gauges[0];
-        if (gaugeAddress == address(0)) return;
-
-        address lpTokenAddress = IRegistry(registry).get_lp_token(pool);
-        ERC20 lpToken = ERC20(lpTokenAddress);
+    /**
+     * @notice Lock all liquidity pool token in liquidity gauge.
+     * @param pool Target liquidity pool address.
+     */
+    function _lock(address pool) internal {
+        ILiquidityGauge gauge = _getPoolLiquidityGauge(pool);
+        ERC20 lpToken = _getPoolLiquidityToken(pool);
         uint256 balance = lpToken.balanceOf(address(this));
         if (balance == 0) return;
 
-        lpToken.approve(gaugeAddress, balance);
-        ILiquidityGauge(gaugeAddress).deposit(balance);
+        lpToken.safeApprove(address(gauge), 0);
+        lpToken.safeApprove(address(gauge), balance);
+        gauge.deposit(balance);
     }
 
-    function unlock(address pool) internal {
-        (address[10] memory gauges, ) = IRegistry(registry).get_gauges(pool);
-        address gaugeAddress = gauges[0];
-        if (gaugeAddress == address(0)) return;
+    /**
+     * @notice Unlock all liquidity pool token from liquidity gauge.
+     * @param pool Target liquidity pool address.
+     */
+    function _unlock(address pool) internal {
+        ILiquidityGauge gauge = _getPoolLiquidityGauge(pool);
+        uint256 balance = ERC20(address(gauge)).balanceOf(address(this));
 
-        uint256 gaugeBalance = ERC20(gaugeAddress).balanceOf(address(this));
-        ILiquidityGauge(gaugeAddress).withdraw(gaugeBalance);
+        gauge.withdraw(balance);
     }
 
     /**
@@ -134,20 +140,18 @@ contract CurveDepositaryBalanceView is Ownable, IDepositaryBalanceView {
      * @param toToken Target token.
      * @param recipient Recipient.
      */
-    function mintCrv(
+    function mint(
         address pool,
         address toToken,
         address recipient
     ) public onlyOwner {
         require(toToken != address(0), "CurveDepositaryBalanceView::mintCrv: invalid target token address");
 
-        (address[10] memory gauges, ) = IRegistry(registry).get_gauges(pool);
-        address gaugeAddress = gauges[0];
-        if (gaugeAddress == address(0)) return;
+        ILiquidityGauge gauge = _getPoolLiquidityGauge(pool);
+        IMinter minter = IMinter(gauge.minter());
+        minter.mint(address(gauge));
 
-        IMinter(minter).mint(gaugeAddress);
-
-        ERC20 crv = ERC20(IMinter(minter).token());
+        ERC20 crv = ERC20(minter.token());
         uint256 crvBalance = crv.balanceOf(address(this));
         if (crvBalance == 0) return;
 
@@ -156,15 +160,19 @@ contract CurveDepositaryBalanceView is Ownable, IDepositaryBalanceView {
             path[0] = address(address(crv));
             path[1] = address(toToken);
 
-            uint256[] memory amountsOut = IUniswapV2Router02(uniswapRouter).getAmountsOut(crvBalance, path);
-            if (amountsOut.length == 0) return;
+            uint256[] memory amountsOut = uniswapRouter.getAmountsOut(crvBalance, path);
+            require(amountsOut.length == 2, "CurveDepositaryBalanceView::mintCrv: invalid amount out");
             uint256 amountOut = amountsOut[amountsOut.length - 1];
-            if (amountOut == 0) return;
+            require(amountOut > 0, "CurveDepositaryBalanceView::mintCrv: liquidity pool is empty");
 
-            crv.approve(uniswapRouter, crvBalance);
-            IUniswapV2Router02(uniswapRouter).swapExactTokensForTokens(crvBalance, amountOut, path, recipient, block.timestamp);
+            crv.safeApprove(address(uniswapRouter), 0);
+            crv.safeApprove(address(uniswapRouter), crvBalance);
+            uint256[] memory profitAmount = uniswapRouter.swapExactTokensForTokens(crvBalance, amountOut, path, recipient, block.timestamp);
+
+            emit Mint(toToken, profitAmount[profitAmount.length - 1], recipient);
         } else {
             crv.safeTransfer(recipient, crvBalance);
+            emit Mint(address(crv), crvBalance, recipient);
         }
     }
 
@@ -180,7 +188,7 @@ contract CurveDepositaryBalanceView is Ownable, IDepositaryBalanceView {
         uint256 amount
     ) external onlyOwner {
         require(amount > 0, "CurveDepositaryBalanceView::invest: invalid amount");
-        require(tokenIndex >= 0 && tokenIndex < 3, "CurveDepositaryBalanceView::invest: invalid token index");
+        require(tokenIndex < 3, "CurveDepositaryBalanceView::invest: invalid token index");
 
         address tokenAddress = IPool(pool).coins(tokenIndex);
         require(tokenAddress != address(0), "CurveDepositaryBalanceView::invest: invalid invest token");
@@ -190,15 +198,16 @@ contract CurveDepositaryBalanceView is Ownable, IDepositaryBalanceView {
         require(tokenDecimals <= decimals, "CurveDepositaryBalanceView::invest: invalid token decimals");
         token.safeTransferFrom(_msgSender(), address(this), amount);
 
+        balances[pool] = balances[pool].add(amount.mul(10**(decimals.sub(tokenDecimals)))); // Only stable token sum
+        pools.add(pool);
+
         token.safeApprove(pool, 0);
         token.safeApprove(pool, amount);
         uint256[3] memory deposit;
         deposit[tokenIndex] = amount;
         IPool(pool).add_liquidity(deposit, 0);
-        lock(pool);
+        _lock(pool);
 
-        balances[pool] = balances[pool].add(amount.mul(10**(decimals.sub(tokenDecimals))));
-        pools.add(pool);
         emit Invested(pool, tokenAddress, amount);
     }
 
@@ -206,46 +215,31 @@ contract CurveDepositaryBalanceView is Ownable, IDepositaryBalanceView {
      * @notice Withdraw invested token and reward.
      * @param pool Target liquidity pool.
      * @param tokenIndex Invested token index in the pool.
-     * @param investRecipient Recipient of invested token.
-     * @param profitRecipient Recipient of reward token.
+     * @param recipient Recipient of invested token.
      */
     function withdraw(
         address pool,
         uint256 tokenIndex,
-        address investRecipient,
-        address profitRecipient
+        address recipient
     ) external onlyOwner {
-        require(tokenIndex >= 0 && tokenIndex < 3, "CurveDepositaryBalanceView::invest: invalid token index");
+        require(tokenIndex < 3, "CurveDepositaryBalanceView::invest: invalid token index");
 
         address tokenAddress = IPool(pool).coins(tokenIndex);
         require(tokenAddress != address(0), "CurveDepositaryBalanceView::withdraw: invalid withdraw token");
+        ERC20 lpToken = _getPoolLiquidityToken(pool);
 
-        address lpTokenAddress = IRegistry(registry).get_lp_token(pool);
-        require(lpTokenAddress != address(0), "CurveDepositaryBalanceView::withdraw: liquidity pool token address not found");
-
-        uint256 investAmount = balances[pool];
         balances[pool] = 0;
         pools.remove(pool);
 
-        unlock(pool);
-        uint256 lpBalance = ERC20(lpTokenAddress).balanceOf(address(this));
+        _unlock(pool);
+        uint256 lpBalance = lpToken.balanceOf(address(this));
         IPool(pool).remove_liquidity_one_coin(lpBalance, int128(tokenIndex), 0);
-        mintCrv(pool, tokenAddress, address(this));
 
         ERC20 token = ERC20(tokenAddress);
         uint256 balance = token.balanceOf(address(this));
-        uint256 profitAmount;
-        if (balance >= investAmount) {
-            profitAmount = balance.sub(investAmount);
-        } else {
-            investAmount = balance;
-        }
-        token.safeTransfer(investRecipient, investAmount);
-        if (profitAmount > 0) {
-            token.safeTransfer(profitRecipient, profitAmount);
-        }
+        token.safeTransfer(recipient, balance);
 
-        emit Withdrawal(tokenAddress, investAmount, profitAmount, investRecipient, profitRecipient);
+        emit Withdrawal(tokenAddress, balance, recipient);
     }
 
     /**
