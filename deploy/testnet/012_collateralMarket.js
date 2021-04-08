@@ -2,7 +2,7 @@ const {migration} = require("../../utils/deploy");
 
 module.exports = migration("CollateralMarket", async (d) => {
   let {
-    assets: {USDC, USDN},
+    assets: {USDC},
   } = d.getNetwork();
 
   const [issuer, treasury, stableTokenDepositaryBalanceView] = await d.deployed(
@@ -10,7 +10,7 @@ module.exports = migration("CollateralMarket", async (d) => {
     "Treasury",
     "StableTokenDepositaryBalanceView"
   );
-  const allowedTokens = [USDC.address, USDN.address];
+  const allowedTokens = [USDC.address];
 
   await d.deploy("CollateralMarket", {
     args: [
