@@ -1,9 +1,9 @@
 const assertions = require("truffle-assertions");
 const {contract, assert} = require("../../utils/test");
-const {development} = require("../../networks");
 
 contract("Staking.stake", ({web3, artifacts}) => {
-  const governor = development.accounts.Governor.address;
+  const network = artifacts.network;
+  const governor = network.accounts.Governor.address;
 
   it("stake: should stake token", async () => {
     const [instance, gov] = await artifacts.requireAll("GovStaking", "GovernanceToken");

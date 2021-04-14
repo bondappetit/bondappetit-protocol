@@ -1,15 +1,14 @@
-const {utils} = require("web3");
 const {contract, assert, bn} = require("../../utils/test");
-const {development} = require("../../networks");
 
 contract("Budget.deficit", ({web3, artifacts}) => {
-  const governor = development.accounts.Governor.address;
+  const network = artifacts.network;
+  const governor = network.accounts.Governor.address;
   const expenditures = {
-    [development.contracts.Treasury.address]: {
+    [network.contracts.Treasury.address]: {
       min: "5",
       target: "10",
     },
-    [development.contracts.Timelock.address]: {
+    [network.contracts.Timelock.address]: {
       min: "2",
       target: "4",
     },
@@ -17,8 +16,8 @@ contract("Budget.deficit", ({web3, artifacts}) => {
 
   it("pay: should set withdrawal balances for all expenditures", async () => {
     const instance = await artifacts.require("Budget");
-    const contractA = development.contracts.Treasury.address;
-    const contractB = development.contracts.Timelock.address;
+    const contractA = network.contracts.Treasury.address;
+    const contractB = network.contracts.Timelock.address;
     const amount = bn(expenditures[contractA].target)
       .add(bn(expenditures[contractB].target))
       .toString();

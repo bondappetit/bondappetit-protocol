@@ -1,12 +1,12 @@
 const {contract, assert} = require("../../utils/test");
-const {development} = require("../../networks");
 
 contract("Budget.getRecipients", ({artifacts}) => {
-  const governor = development.accounts.Governor.address;
+  const network = artifacts.network;
+  const governor = network.accounts.Governor.address;
 
   it("getRecipients: should get all recipients addresses", async () => {
     const instance = await artifacts.require("Budget");
-    const contract = development.contracts.Governance.address;
+    const contract = network.contracts.Governance.address;
 
     const firstRecipients = await instance.methods.getRecipients().call();
     assert.equal(

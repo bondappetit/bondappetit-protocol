@@ -1,20 +1,20 @@
 const assertions = require("truffle-assertions");
 const {contract, assert, bn} = require("../../../utils/test");
-const {development} = require("../../../networks");
 
 contract(
   "BuybackDepositaryBalanceView.transferProductToken",
   ({web3, artifacts}) => {
-    const governor = development.accounts.Governor.address;
+    const network = artifacts.network;
+    const governor = network.accounts.Governor.address;
     const donor = "0x876A207aD9f6f0fA2C58A7902B2E7568a41c299f";
-    const {USDC} = development.assets;
+    const {USDC} = network.assets;
 
     it("transferProductToken: should transfer product token", async () => {
       const [instance] = await artifacts.requireAll(
         "UsdcBuybackDepositaryBalanceView"
       );
       const usdc = new web3.eth.Contract(
-        development.contracts.Stable.abi,
+        network.contracts.Stable.abi,
         USDC.address
       );
       const amount = "100";

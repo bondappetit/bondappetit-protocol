@@ -1,13 +1,13 @@
 const assertions = require("truffle-assertions");
 const {contract, assert, bn} = require("../../utils/test");
-const {development} = require("../../networks");
 
 contract("Buyback.changeIncoming", ({web3, artifacts}) => {
-  const governor = development.accounts.Governor.address;
+  const network = artifacts.network;
+  const governor = network.accounts.Governor.address;
 
   it("changeIncoming: should change incoming token address", async () => {
     const [instance, gov] = await artifacts.requireAll("Buyback", "GovernanceToken");
-    const stableAddress = development.contracts.Stable.address;
+    const stableAddress = network.contracts.Stable.address;
     const amount = "5";
 
     await instance.methods

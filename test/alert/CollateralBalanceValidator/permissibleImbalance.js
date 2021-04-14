@@ -1,11 +1,11 @@
 const assertions = require("truffle-assertions");
 const {contract, assert} = require("../../../utils/test");
-const {development} = require("../../../networks");
 
 contract(
   "CollateralBalanceValidator.changePermissibleImbalance",
   ({web3, artifacts}) => {
-    const governor = development.accounts.Governor.address;
+    const network = artifacts.network;
+    const governor = network.accounts.Governor.address;
     const permissibleImbalance = "50";
 
     it("changePermissibleImbalance: should change permissible imbalance limit", async () => {

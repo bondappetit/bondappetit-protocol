@@ -1,13 +1,13 @@
 const assertions = require("truffle-assertions");
 const {contract, assert, bn} = require("../../utils/test");
-const {development} = require("../../networks");
 
 contract("ProfitSplitter.changeBudget", ({web3, artifacts}) => {
-  const governor = development.accounts.Governor.address;
+  const network = artifacts.network;
+  const governor = network.accounts.Governor.address;
 
   it("changeBudget: should change budget address", async () => {
     const instance = await artifacts.require("ProfitSplitter");
-    const contract = development.contracts.Governance.address;
+    const contract = network.contracts.Governance.address;
     const balance = "99";
 
     const startBudgetAddress = await instance.methods.budget().call();

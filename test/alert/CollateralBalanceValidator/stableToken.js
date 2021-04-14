@@ -1,12 +1,12 @@
 const assertions = require("truffle-assertions");
 const {contract, assert} = require("../../../utils/test");
-const {development} = require("../../../networks");
 
 contract(
   "CollateralBalanceValidator.changeStableToken",
   ({web3, artifacts}) => {
-    const governor = development.accounts.Governor.address;
-    const token = development.contracts.Governance.address;
+    const network = artifacts.network;
+    const governor = network.accounts.Governor.address;
+    const token = network.contracts.Governance.address;
 
     it("changeStableToken: should change stable token address", async () => {
       const instance = await artifacts.require("CollateralBalanceValidator");

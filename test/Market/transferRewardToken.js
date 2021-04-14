@@ -1,9 +1,9 @@
 const assertions = require("truffle-assertions");
 const {contract, assert} = require("../../utils/test");
-const {development} = require("../../networks");
 
 contract("Market.transferRewardToken", ({web3, artifacts}) => {
-  const governor = development.accounts.Governor.address;
+  const network = artifacts.network;
+  const governor = network.accounts.Governor.address;
 
   it("transferRewardToken: should transfer reward token", async () => {
     const [instance, gov] = await artifacts.requireAll(

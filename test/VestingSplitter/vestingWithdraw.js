@@ -1,8 +1,8 @@
 const {contract, assert, bn} = require("../../utils/test");
-const {development} = require("../../networks");
 
 contract("VestingSplitter.vestingWithdraw", ({web3, artifacts}) => {
-  const governor = development.accounts.Governor.address;
+  const network = artifacts.network;
+  const governor = network.accounts.Governor.address;
 
   it("changeShares: should update shares list", async () => {
     const [instance, vesting, gov] = await artifacts.requireAll(

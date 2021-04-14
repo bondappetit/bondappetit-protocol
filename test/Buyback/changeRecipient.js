@@ -1,13 +1,13 @@
 const assertions = require("truffle-assertions");
 const {contract, assert} = require("../../utils/test");
-const {development} = require("../../networks");
 
 contract("Buyback.changeRecipient", ({web3, artifacts}) => {
-  const governor = development.accounts.Governor.address;
+  const network = artifacts.network;
+  const governor = network.accounts.Governor.address;
 
   it("changeRecipient: should change recipient address", async () => {
     const instance = await artifacts.require("Buyback");
-    const contract = development.contracts.Governance.address;
+    const contract = network.contracts.Governance.address;
 
     const startRecipient = await instance.methods.recipient().call();
     assert.equal(startRecipient != contract, true, "Invalid start recipient");

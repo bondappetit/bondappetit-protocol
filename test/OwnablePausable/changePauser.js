@@ -1,9 +1,9 @@
 const assertions = require("truffle-assertions");
 const {contract} = require("../../utils/test");
-const {development} = require("../../networks");
 
-contract("OwnablePausable.pause", ({web3, artifacts}) => {
-  const governor = development.accounts.Governor.address;
+contract("OwnablePausable.changePauser", ({web3, artifacts}) => {
+  const network = artifacts.network;
+  const governor = network.accounts.Governor.address;
 
   it("changePauser: should change pauser address", async () => {
     const instance = await artifacts.require("Investment");

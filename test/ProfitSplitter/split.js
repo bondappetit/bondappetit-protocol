@@ -1,15 +1,15 @@
 const assertions = require("truffle-assertions");
 const {contract, assert, bn} = require("../../utils/test");
-const {development} = require("../../networks");
 
 contract("ProfitSplitter.split", ({web3, artifacts}) => {
-  const governor = development.accounts.Governor.address;
+  const network = artifacts.network;
+  const governor = network.accounts.Governor.address;
   const {
     UniswapV2Router02,
     UniswapMarketMaker,
     Buyback,
     Budget,
-  } = development.contracts;
+  } = network.contracts;
 
   it("split: should split incoming tokens to all recipients ", async () => {
     const [instance, stable] = await artifacts.requireAll("ProfitSplitter", "StableToken");

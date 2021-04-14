@@ -1,9 +1,9 @@
 const assertions = require("truffle-assertions");
 const {contract, assert, bn} = require("../../utils/test");
-const {development} = require("../../networks");
 
 contract("VestingSplitter.split", ({web3, artifacts}) => {
-  const governor = development.accounts.Governor.address;
+  const network = artifacts.network;
+  const governor = network.accounts.Governor.address;
 
   it("split: should split balance to accounts", async () => {
     const [instance, gov] = await artifacts.requireAll(

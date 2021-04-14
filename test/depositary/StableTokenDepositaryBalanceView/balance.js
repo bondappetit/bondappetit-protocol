@@ -1,8 +1,8 @@
 const {contract, assert, bn} = require("../../../utils/test");
-const {development} = require("../../../networks");
 
 contract("StableTokenDepositaryBalanceView.balance", ({web3, artifacts}) => {
-  const governor = development.accounts.Governor.address;
+  const network = artifacts.network;
+  const governor = network.accounts.Governor.address;
 
   it("balance: should return balances of all allowed tokens in contract", async () => {
     const [instance, gov, stable] = await artifacts.requireAll("StableTokenDepositaryBalanceView", "GovernanceToken", "StableToken");

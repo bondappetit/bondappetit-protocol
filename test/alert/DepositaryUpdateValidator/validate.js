@@ -1,9 +1,9 @@
 const assertions = require("truffle-assertions");
 const {contract, assert} = require("../../../utils/test");
-const {development} = require("../../../networks");
 
 contract("DepositaryUpdateValidator.validate", ({web3, artifacts}) => {
-  const governor = development.accounts.Governor.address;
+  const network = artifacts.network;
+  const governor = network.accounts.Governor.address;
 
   it("validate: should return true for new depositary", async () => {
     const [instance, depositary] = await artifacts.requireAll(

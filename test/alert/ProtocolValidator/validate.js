@@ -1,6 +1,5 @@
 const assertions = require("truffle-assertions");
 const {contract, assert, bn} = require("../../../utils/test");
-const {development} = require("../../../networks");
 
 const pausedAbi = [
   {
@@ -19,7 +18,8 @@ const pausedAbi = [
 ];
 
 contract("ProtocolValidator.validate", ({web3, artifacts}) => {
-  const governor = development.accounts.Governor.address;
+  const network = artifacts.network;
+  const governor = network.accounts.Governor.address;
 
   it("validate: should pause all protocol contracts if state invalid", async () => {
     const [instance, validator, stable] = await artifacts.requireAll(

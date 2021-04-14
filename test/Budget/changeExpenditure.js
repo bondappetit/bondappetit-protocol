@@ -1,10 +1,10 @@
 const assertions = require("truffle-assertions");
 const {contract, assert} = require("../../utils/test");
-const {development} = require("../../networks");
 
 contract("Budget.changeExpenditure", ({web3, artifacts}) => {
-  const governor = development.accounts.Governor.address;
-  const contract = development.contracts.Treasury.address;
+  const network = artifacts.network;
+  const governor = network.accounts.Governor.address;
+  const contract = network.contracts.Treasury.address;
   const min = "10";
   const target = "20";
 

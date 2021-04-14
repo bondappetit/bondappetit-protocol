@@ -1,8 +1,8 @@
 const {contract, assert, bn} = require("../../../utils/test");
-const {development} = require("../../../networks");
 
 contract("RealAssetDepositaryBalanceView.balance", ({web3, artifacts}) => {
-  const governor = development.accounts.Governor.address;
+  const network = artifacts.network;
+  const governor = network.accounts.Governor.address;
 
   it("balance: get real asset depositary balance", async () => {
     const instance = await artifacts.require("RealAssetDepositaryBalanceView");

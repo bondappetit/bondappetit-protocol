@@ -1,11 +1,11 @@
 const assertions = require("truffle-assertions");
 const {contract, assert} = require("../../utils/test");
-const {development} = require("../../networks");
 
 contract(
   "CollateralMarket.allowedTokens",
   ({web3, artifacts}) => {
-    const governor = development.accounts.Governor.address;
+    const network = artifacts.network;
+    const governor = network.accounts.Governor.address;
 
     it("allowToken: should add target token to allowed list", async () => {
       const [instance, gov] = await artifacts.requireAll(

@@ -1,8 +1,8 @@
 const {contract, assert, bn} = require("../../utils/test");
-const {development} = require("../../networks");
 
 contract("Issuer.rebalance", ({web3, artifacts}) => {
-  const governor = development.accounts.Governor.address;
+  const network = artifacts.network;
+  const governor = network.accounts.Governor.address;
   const isin = "test bond";
   const amount = "10";
   const nominalValue = bn("1000").mul(bn("10").pow(bn("6")));

@@ -23,8 +23,7 @@ module.exports = migration("Issuer", async (d) => {
   ]);
 
   const [issuer] = await d.deployed("Issuer");
-  const {networkName} = d.getNetwork();
-  if (networkName === "development") {
+  if (d.isDev) {
     await d.send("StableToken", "allowAccess", [d.getGovernor().address]);
   }
   await d.send("StableToken", "transferOwnership", [issuer.address]);

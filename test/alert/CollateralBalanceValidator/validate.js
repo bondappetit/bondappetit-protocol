@@ -1,16 +1,15 @@
 const assertions = require("truffle-assertions");
 const {contract, assert} = require("../../../utils/test");
-const {development} = require("../../../networks");
 
 contract("CollateralBalanceValidator.validate", ({web3, artifacts}) => {
-  const governor = development.accounts.Governor.address;
+  const network = artifacts.network;
+  const governor = network.accounts.Governor.address;
 
   it("validate: should return true for balance protocol and false for imbalance protocol", async () => {
-    const [instance, depositary, stable, issuer] = await artifacts.requireAll(
+    const [instance, depositary, stable] = await artifacts.requireAll(
       "CollateralBalanceValidator",
       "RealAssetDepositaryBalanceView",
-      "StableToken",
-      "Issuer"
+      "StableToken"
     );
     const permissibleImbalance = "10";
     const stableBalance = "100000000000000000000";

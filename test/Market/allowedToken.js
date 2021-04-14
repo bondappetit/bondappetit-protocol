@@ -1,8 +1,8 @@
 const {contract, assert} = require("../../utils/test");
-const {development} = require("../../networks");
 
 contract("Market.allowedToken", ({web3, artifacts}) => {
-  const governor = development.accounts.Governor.address;
+  const network = artifacts.network;
+  const governor = network.accounts.Governor.address;
   const token = governor;
 
   it("allowToken: should allow tokens", async () => {

@@ -1,15 +1,15 @@
 const assertions = require("truffle-assertions");
 const {contract, assert, bn} = require("../../utils/test");
-const {development} = require("../../networks");
 
 contract("Budget.deficit", ({web3, artifacts}) => {
-  const governor = development.accounts.Governor.address;
+  const network = artifacts.network;
+  const governor = network.accounts.Governor.address;
   const expenditures = {
-    [development.contracts.Treasury.address]: {
+    [network.contracts.Treasury.address]: {
       min: "5",
       target: "8",
     },
-    [development.contracts.Timelock.address]: {
+    [network.contracts.Timelock.address]: {
       min: "2",
       target: "4",
     },
@@ -18,7 +18,7 @@ contract("Budget.deficit", ({web3, artifacts}) => {
   it("deficitTo: should return eth balance deficit to target address", async () => {
     const instance = await artifacts.require("Budget");
     const contract = await artifacts.require("Treasury");
-    const contractAddress = development.contracts.Treasury.address;
+    const contractAddress = network.contracts.Treasury.address;
     const {min, target} = expenditures[contractAddress];
 
     const contractBalance = await web3.eth.getBalance(contractAddress);
@@ -73,8 +73,8 @@ contract("Budget.deficit", ({web3, artifacts}) => {
 
   it("deficit: should return eth balance deficit to all expenditures addresses", async () => {
     const instance = await artifacts.require("Budget");
-    const contractA = development.contracts.Treasury.address;
-    const contractB = development.contracts.Timelock.address;
+    const contractA = network.contracts.Treasury.address;
+    const contractB = network.contracts.Timelock.address;
 
     await instance.methods
       .changeExpenditure(

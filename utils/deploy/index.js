@@ -38,7 +38,7 @@ Network id: ${this.network.networkId}
   }
 
   get isDev() {
-    return this.network.networkName === "development";
+    return this.network.networkName.indexOf("development") !== -1;
   }
 
   getGovernor() {

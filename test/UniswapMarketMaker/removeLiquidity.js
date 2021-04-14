@@ -1,9 +1,9 @@
 const assertions = require("truffle-assertions");
 const {contract, assert, bn} = require("../../utils/test");
-const {development} = require("../../networks");
 
 contract("UniswapMarketMaker.removeLiquidity", ({web3, artifacts}) => {
-  const governor = development.accounts.Governor.address;
+  const network = artifacts.network;
+  const governor = network.accounts.Governor.address;
 
   it("removeLiquidity: should add liquidity to pool", async () => {
     const [instance, stable, gov] = await artifacts.requireAll(
@@ -32,7 +32,7 @@ contract("UniswapMarketMaker.removeLiquidity", ({web3, artifacts}) => {
       .addLiquidity(0, 0)
       .send({from: governor, gas: 6000000});
     const lpAddress = await instance.methods.liquidityPair().call();
-    const lp = new web3.eth.Contract(development.contracts.Stable.abi, lpAddress);
+    const lp = new web3.eth.Contract(network.contracts.Stable.abi, lpAddress);
     const startLpBalance = await lp.methods.balanceOf(instance._address).call();
 
     const tx = await instance.methods.removeLiquidity(startLpBalance).send({

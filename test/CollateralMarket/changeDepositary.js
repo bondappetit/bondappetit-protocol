@@ -1,9 +1,9 @@
 const assertions = require("truffle-assertions");
 const {contract, assert} = require("../../utils/test");
-const {development} = require("../../networks");
 
 contract("CollateralMarket.changeDepositary", ({web3, artifacts}) => {
-  const governor = development.accounts.Governor.address;
+  const network = artifacts.network;
+  const governor = network.accounts.Governor.address;
 
   it("changeDepositary: should change depositary contract address", async () => {
     const [instance, issuer, gov] = await artifacts.requireAll(

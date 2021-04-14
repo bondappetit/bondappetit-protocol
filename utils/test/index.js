@@ -3,12 +3,14 @@ const Web3 = require("web3");
 const {network} = require("hardhat");
 const {readFile} = require("fs").promises;
 const assert = require("assert").strict;
+const networks = require("../../networks");
 
 class ArtifactList {
-  constructor(web3, deployments, artifacts) {
+  constructor(web3, deployments, artifacts, network) {
     this.web3 = web3;
     this.deployments = deployments;
     this.artifacts = artifacts;
+    this.network = network;
     this.cache = new Map();
     this.accounts = [];
   }
@@ -73,7 +75,8 @@ async function contract(name, test) {
   const artifacts = new ArtifactList(
     web3,
     `deployments/${network.name}`,
-    "artifacts"
+    "artifacts",
+    networks[network.name]
   );
 
   before(async () => {

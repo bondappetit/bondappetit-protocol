@@ -1,9 +1,9 @@
 const assertions = require("truffle-assertions");
 const {contract, assert} = require("../../../utils/test");
-const {development} = require("../../../networks");
 
 contract("DepositaryUpdateValidator.changeBlockLimit", ({web3, artifacts}) => {
-  const governor = development.accounts.Governor.address;
+  const network = artifacts.network;
+  const governor = network.accounts.Governor.address;
 
   it("changeBlockLimit: should change block limit", async () => {
     const instance = await artifacts.require("DepositaryUpdateValidator");

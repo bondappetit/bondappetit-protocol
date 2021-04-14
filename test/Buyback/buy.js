@@ -1,10 +1,10 @@
 const {utils} = require("web3");
 const {contract, assert, bn} = require("../../utils/test");
-const {development} = require("../../networks");
 
 contract("Buyback.buy", ({web3, artifacts}) => {
-  const governor = development.accounts.Governor.address;
-  const UniswapRouter = development.contracts.UniswapV2Router02;
+  const network = artifacts.network;
+  const governor = network.accounts.Governor.address;
+  const UniswapRouter = network.contracts.UniswapV2Router02;
 
   it("buy: should buyback outcoming token", async () => {
     const [instance, stable, gov] = await artifacts.requireAll(

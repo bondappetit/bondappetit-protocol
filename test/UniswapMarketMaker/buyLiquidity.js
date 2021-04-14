@@ -1,9 +1,9 @@
 const {contract, assert, bn} = require("../../utils/test");
-const {development} = require("../../networks");
 
 contract("UniswapMarketMaker.buyLiquidity", ({web3, artifacts}) => {
-  const governor = development.accounts.Governor.address;
-  const UniswapRouter = development.contracts.UniswapV2Router02;
+  const network = artifacts.network;
+  const governor = network.accounts.Governor.address;
+  const UniswapRouter = network.contracts.UniswapV2Router02;
 
   it("buyLiquidity: should buy support token and add liquidity to pool", async () => {
     const [instance, stable, gov] = await artifacts.requireAll(

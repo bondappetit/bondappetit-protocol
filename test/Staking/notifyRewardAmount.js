@@ -1,9 +1,9 @@
 const assertions = require("truffle-assertions");
 const {contract, assert} = require("../../utils/test");
-const {development} = require("../../networks");
 
 contract("Staking.notifyRewardAmount", ({web3, artifacts}) => {
-  const governor = development.accounts.Governor.address;
+  const network = artifacts.network;
+  const governor = network.accounts.Governor.address;
 
   it("notifyRewardAmount: should change reward of stacking token", async () => {
     const [instance, gov] = await artifacts.requireAll("GovStaking", "GovernanceToken");

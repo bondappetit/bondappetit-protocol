@@ -1,16 +1,16 @@
 const assertions = require("truffle-assertions");
 const {contract, assert, bn} = require("../../utils/test");
-const {development} = require("../../networks");
 
 contract("Market.buyFromETH", ({web3, artifacts}) => {
-  const governor = development.accounts.Governor.address;
+  const network = artifacts.network;
+  const governor = network.accounts.Governor.address;
   const customer = "0x876A207aD9f6f0fA2C58A7902B2E7568a41c299f";
-  const {UniswapV2Router02} = development.contracts;
+  const {UniswapV2Router02} = network.contracts;
   const uniswap = new web3.eth.Contract(
     UniswapV2Router02.abi,
     UniswapV2Router02.address
   );
-  const {USDC, WETH} = development.assets;
+  const {USDC, WETH} = network.assets;
 
   it("buyFromETH: should buy stable token", async () => {
     const [instance, gov, stable] = await artifacts.requireAll(
@@ -19,7 +19,7 @@ contract("Market.buyFromETH", ({web3, artifacts}) => {
       "StableToken"
     );
     const usdc = new web3.eth.Contract(
-      development.contracts.Stable.abi,
+      network.contracts.Stable.abi,
       USDC.address
     );
     const startStableToken = bn("1000")

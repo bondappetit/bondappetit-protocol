@@ -25,6 +25,16 @@ module.exports = {
      ]
      */
     },
+    developmentBSC: {
+      url: "http://127.0.0.1:8546",
+      chainId: 998,
+      from: networks.developmentBSC.accounts.Governor.address,
+      gasPrice: parseInt(networks.developmentBSC.gasPrice, 10),
+      accounts: {
+        mnemonic: process.env.MNENOMIC,
+        unlocked: ["0x876A207aD9f6f0fA2C58A7902B2E7568a41c299f"],
+      },
+    },
     ropsten: {
       url: "https://ropsten.bondappetit.io",
       chainId: 3,

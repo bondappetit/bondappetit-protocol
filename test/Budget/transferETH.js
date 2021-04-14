@@ -1,13 +1,13 @@
 const assertions = require("truffle-assertions");
 const {contract, assert, bn} = require("../../utils/test");
-const {development} = require("../../networks");
 
 contract("Budget.transferETH", ({web3, artifacts}) => {
-  const governor = development.accounts.Governor.address;
+  const network = artifacts.network;
+  const governor = network.accounts.Governor.address;
 
   it("transferETH: should transfer eth to recipient", async () => {
     const instance = await artifacts.require("Budget");
-    const contract = development.contracts.Treasury.address;
+    const contract = network.contracts.Treasury.address;
     const amount = "10";
 
     const startBudgetBalance = await web3.eth.getBalance(instance._address);
@@ -44,7 +44,7 @@ contract("Budget.transferETH", ({web3, artifacts}) => {
   it("transferETH: should revert tx if transfer amount exceeds balance", async () => {
     const instance = await artifacts.require("Budget");
     const contract = await artifacts.require("Treasury");
-    const contractAddress = development.contracts.Treasury.address;
+    const contractAddress = network.contracts.Treasury.address;
     const amount = "10";
 
     const contractBalance = await web3.eth.getBalance(contractAddress);
@@ -75,7 +75,7 @@ contract("Budget.transferETH", ({web3, artifacts}) => {
   it("transferETH: should revert tx if sender not owner", async () => {
     const instance = await artifacts.require("Budget");
     const [, notOwner] = artifacts.accounts;
-    const contract = development.contracts.Treasury.address;
+    const contract = network.contracts.Treasury.address;
 
     await assertions.reverts(
       instance.methods.transferETH(contract, "10").send({

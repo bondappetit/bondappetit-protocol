@@ -1,15 +1,15 @@
 const assertions = require("truffle-assertions");
 const {contract, assert, bn} = require("../../utils/test");
-const {development} = require("../../networks");
 
 contract("Market.price", ({web3, artifacts}) => {
-  const governor = development.accounts.Governor.address;
-  const {UniswapAnchoredView} = development.contracts;
+  const network = artifacts.network;
+  const governor = network.accounts.Governor.address;
+  const {UniswapAnchoredView} = network.contracts;
   const priceOracle = new web3.eth.Contract(
     UniswapAnchoredView.abi,
     UniswapAnchoredView.address
   );
-  const {USDC, DAI} = development.assets;
+  const {USDC, DAI} = network.assets;
 
   it("price: should get product token price and reward amount", async () => {
     const [instance, gov, stable] = await artifacts.requireAll(
