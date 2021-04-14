@@ -1,29 +1,29 @@
-export interface Named {
+interface Named {
   name: string;
 }
 
-export interface Wallet {
+interface Wallet {
   address: string;
 }
 
-export interface Account extends Named, Wallet {}
+interface Account extends Named, Wallet {}
 
-export interface Asset extends Named, Wallet {
+interface Asset extends Named, Wallet {
   symbol: string;
   decimals: number;
   investing: boolean;
 }
 
-export interface Contract extends Named, Wallet {
+interface Contract extends Named, Wallet {
   abi: any;
   voting: boolean;
 }
 
-export interface Config<T> {
+interface Config<T> {
   [name: string]: T;
 }
 
-export interface Network {
+interface Network {
   networkName: string;
   networkUrl: string;
   networkEtherscan: string;
