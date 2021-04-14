@@ -35,7 +35,7 @@ contract(
         .buy(USDC.address, amount)
         .send({from: governor, gas: 6000000});
       await stable.methods
-        .transfer(instance._address, amount)
+        .transfer(instance._address, `${amount}${'0'.repeat(12)}`)
         .send({from: governor, gas: 6000000});
 
       await instance.methods
