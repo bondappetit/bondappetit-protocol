@@ -4,6 +4,7 @@ module.exports = {
   networkEtherscan: 'https://ropsten.etherscan.io',
   networkId: 3,
   gasPrice: '2000000000',
+  averageBlockTime: '13.2',
   accounts: {
     ...require("./accounts"),
   },
