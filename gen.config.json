@@ -136,6 +136,11 @@
       "path": "deployments/%network%/ProfitSplitter.json",
       "name": "ProfitSplitter",
       "voting": true
+    },
+    {
+      "path": "deployments/%network%/UsdcBuybackDepositaryBalanceView.json",
+      "name": "UsdcBuybackDepositaryBalanceView",
+      "voting": true
     }
   ],
   "assets": [
@@ -197,6 +202,9 @@
     },
     {
       "path": "artifacts/contracts/profit/ProfitSplitter.sol/ProfitSplitter.json"
+    },
+    {
+      "path": "artifacts/contracts/depositary/BuybackDepositaryBalanceView.sol/BuybackDepositaryBalanceView.json"
     }
   ]
 }
