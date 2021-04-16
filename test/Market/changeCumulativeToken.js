@@ -6,6 +6,7 @@ contract("Market.changeCumulativeToken", ({web3, artifacts}) => {
   const governor = development.accounts.Governor.address;
   const customer = "0x876A207aD9f6f0fA2C58A7902B2E7568a41c299f";
   const {USDC, USDT} = development.assets;
+  const {UsdtUsdPriceFeed} = development.contracts;
 
   it("changeCumulativeToken: should change cumulative token", async () => {
     const instance = await artifacts.require("Market");
@@ -14,6 +15,7 @@ contract("Market.changeCumulativeToken", ({web3, artifacts}) => {
       USDC.address
     );
     const newToken = USDT.address.toLowerCase();
+    const newPriceFeed = UsdtUsdPriceFeed.address;
     const amount = "1000000";
 
     const startGovernorUSDCBalance = await usdc.methods
@@ -34,7 +36,7 @@ contract("Market.changeCumulativeToken", ({web3, artifacts}) => {
     assert.equal(startBalance, amount, "Invalid market start balance");
 
     await instance.methods
-      .changeCumulativeToken(newToken, governor)
+      .changeCumulativeToken(newToken, [newPriceFeed], governor)
       .send({from: governor});
     const endBalance = await usdc.methods.balanceOf(instance._address).call();
     const endGovernorUSDCBalance = await usdc.methods
@@ -59,7 +61,11 @@ contract("Market.changeCumulativeToken", ({web3, artifacts}) => {
 
     await assertions.reverts(
       instance.methods
-        .changeCumulativeToken(USDT.address, governor)
+        .changeCumulativeToken(
+          USDT.address,
+          [UsdtUsdPriceFeed.address],
+          governor
+        )
         .send({from: notOwner}),
       "Ownable: caller is not the owner"
     );

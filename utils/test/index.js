@@ -1,6 +1,6 @@
 const ganache = require("ganache-core");
 const Web3 = require("web3");
-const {network} = require("hardhat");
+const {network, deployments} = require("hardhat");
 const {readFile} = require("fs").promises;
 const assert = require("assert").strict;
 
@@ -32,6 +32,16 @@ class ArtifactList {
 
   async requireAll(...contracts) {
     return Promise.all(contracts.map((contract) => this.require(contract)));
+  }
+
+  async deploy(name, args = [], options = {}) {
+    const {bytecode, abi} = await deployments.getArtifact(name);
+    return new this.web3.eth.Contract(abi)
+      .deploy({
+        data: bytecode,
+        arguments: args,
+      })
+      .send(options);
   }
 
   async new(dir, contractFileName, name, args, options = {}) {

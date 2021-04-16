@@ -3,14 +3,21 @@ const {migration} = require("../../utils/deploy");
 module.exports = migration("Market", async (d) => {
   const {
     assets: {USDC, USDT, DAI, WBTC, WETH},
-    contracts: {UniswapV2Router02, UniswapAnchoredView},
+    contracts: {
+      UniswapV2Router02,
+      UsdtUsdPriceFeed,
+      UsdcUsdPriceFeed,
+      DaiUsdPriceFeed,
+      BtcUsdPriceFeed,
+      EthUsdPriceFeed,
+    },
   } = d.getNetwork();
   const allowedTokens = [
-    {address: USDT.address, symbol: USDT.symbol},
-    {address: USDC.address, symbol: USDC.symbol},
-    {address: DAI.address, symbol: DAI.symbol},
-    {address: WBTC.address, symbol: "BTC"},
-    {address: WETH.address, symbol: "ETH"},
+    {address: USDT.address, priceFeed: [UsdtUsdPriceFeed.address]},
+    {address: USDC.address, priceFeed: [UsdcUsdPriceFeed.address]},
+    {address: DAI.address, priceFeed: [DaiUsdPriceFeed.address]},
+    {address: WBTC.address, priceFeed: [BtcUsdPriceFeed.address]},
+    {address: WETH.address, priceFeed: [EthUsdPriceFeed.address]},
   ];
 
   const [stable, gov] = await d.deployed("StableToken", "GovernanceToken");
@@ -20,12 +27,12 @@ module.exports = migration("Market", async (d) => {
       stable.address,
       gov.address,
       UniswapV2Router02.address,
-      UniswapAnchoredView.address,
+      [UsdcUsdPriceFeed.address]
     ],
   });
 
-  await allowedTokens.reduce(async (tx, {address, symbol}) => {
+  await allowedTokens.reduce(async (tx, {address, priceFeed}) => {
     await tx;
-    await d.send("Market", "allowToken", [address, symbol]);
+    await d.send("Market", "allowToken", [address, priceFeed]);
   }, Promise.resolve());
 });
