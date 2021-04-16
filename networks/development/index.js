@@ -4,6 +4,7 @@ module.exports = {
   networkEtherscan: '',
   networkId: 999,
   gasPrice: '20000000000',
+  averageBlockTime: '13.2',
   accounts: {
     ...require("./accounts"),
   },

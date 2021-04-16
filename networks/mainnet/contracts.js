@@ -1104,4 +1104,839 @@ module.exports = {
       },
     ],
   },
+  UsdtUsdPriceFeed: {
+    address: "0x3e7d1eab13ad0104d2750b8863b489d65364e32d",
+    name: "EACAggregatorProxy",
+    voting: false,
+    abi: [
+      {
+        inputs: [
+          {
+            internalType: "uint8",
+            name: "_decimals",
+            type: "uint8",
+          },
+          {
+            internalType: "uint256",
+            name: "_version",
+            type: "uint256",
+          },
+        ],
+        stateMutability: "nonpayable",
+        type: "constructor",
+      },
+      {
+        inputs: [
+          {
+            internalType: "uint80",
+            name: "roundId",
+            type: "uint80",
+          },
+          {
+            internalType: "int256",
+            name: "answer",
+            type: "int256",
+          },
+          {
+            internalType: "uint256",
+            name: "startedAt",
+            type: "uint256",
+          },
+          {
+            internalType: "uint256",
+            name: "updatedAt",
+            type: "uint256",
+          },
+          {
+            internalType: "uint80",
+            name: "answeredInRound",
+            type: "uint80",
+          },
+        ],
+        name: "addRound",
+        outputs: [],
+        stateMutability: "nonpayable",
+        type: "function",
+      },
+      {
+        inputs: [],
+        name: "decimals",
+        outputs: [
+          {
+            internalType: "uint8",
+            name: "",
+            type: "uint8",
+          },
+        ],
+        stateMutability: "view",
+        type: "function",
+      },
+      {
+        inputs: [
+          {
+            internalType: "uint80",
+            name: "_roundId",
+            type: "uint80",
+          },
+        ],
+        name: "getRoundData",
+        outputs: [
+          {
+            internalType: "uint80",
+            name: "roundId",
+            type: "uint80",
+          },
+          {
+            internalType: "int256",
+            name: "answer",
+            type: "int256",
+          },
+          {
+            internalType: "uint256",
+            name: "startedAt",
+            type: "uint256",
+          },
+          {
+            internalType: "uint256",
+            name: "updatedAt",
+            type: "uint256",
+          },
+          {
+            internalType: "uint80",
+            name: "answeredInRound",
+            type: "uint80",
+          },
+        ],
+        stateMutability: "view",
+        type: "function",
+      },
+      {
+        inputs: [],
+        name: "latestRoundData",
+        outputs: [
+          {
+            internalType: "uint80",
+            name: "roundId",
+            type: "uint80",
+          },
+          {
+            internalType: "int256",
+            name: "answer",
+            type: "int256",
+          },
+          {
+            internalType: "uint256",
+            name: "startedAt",
+            type: "uint256",
+          },
+          {
+            internalType: "uint256",
+            name: "updatedAt",
+            type: "uint256",
+          },
+          {
+            internalType: "uint80",
+            name: "answeredInRound",
+            type: "uint80",
+          },
+        ],
+        stateMutability: "view",
+        type: "function",
+      },
+      {
+        inputs: [],
+        name: "latestRoundId",
+        outputs: [
+          {
+            internalType: "uint80",
+            name: "",
+            type: "uint80",
+          },
+        ],
+        stateMutability: "view",
+        type: "function",
+      },
+      {
+        inputs: [],
+        name: "version",
+        outputs: [
+          {
+            internalType: "uint256",
+            name: "",
+            type: "uint256",
+          },
+        ],
+        stateMutability: "view",
+        type: "function",
+      },
+    ],
+  },
+  UsdcUsdPriceFeed: {
+    address: "0x8fffffd4afb6115b954bd326cbe7b4ba576818f6",
+    name: "EACAggregatorProxy",
+    voting: false,
+    abi: [
+      {
+        inputs: [
+          {
+            internalType: "uint8",
+            name: "_decimals",
+            type: "uint8",
+          },
+          {
+            internalType: "uint256",
+            name: "_version",
+            type: "uint256",
+          },
+        ],
+        stateMutability: "nonpayable",
+        type: "constructor",
+      },
+      {
+        inputs: [
+          {
+            internalType: "uint80",
+            name: "roundId",
+            type: "uint80",
+          },
+          {
+            internalType: "int256",
+            name: "answer",
+            type: "int256",
+          },
+          {
+            internalType: "uint256",
+            name: "startedAt",
+            type: "uint256",
+          },
+          {
+            internalType: "uint256",
+            name: "updatedAt",
+            type: "uint256",
+          },
+          {
+            internalType: "uint80",
+            name: "answeredInRound",
+            type: "uint80",
+          },
+        ],
+        name: "addRound",
+        outputs: [],
+        stateMutability: "nonpayable",
+        type: "function",
+      },
+      {
+        inputs: [],
+        name: "decimals",
+        outputs: [
+          {
+            internalType: "uint8",
+            name: "",
+            type: "uint8",
+          },
+        ],
+        stateMutability: "view",
+        type: "function",
+      },
+      {
+        inputs: [
+          {
+            internalType: "uint80",
+            name: "_roundId",
+            type: "uint80",
+          },
+        ],
+        name: "getRoundData",
+        outputs: [
+          {
+            internalType: "uint80",
+            name: "roundId",
+            type: "uint80",
+          },
+          {
+            internalType: "int256",
+            name: "answer",
+            type: "int256",
+          },
+          {
+            internalType: "uint256",
+            name: "startedAt",
+            type: "uint256",
+          },
+          {
+            internalType: "uint256",
+            name: "updatedAt",
+            type: "uint256",
+          },
+          {
+            internalType: "uint80",
+            name: "answeredInRound",
+            type: "uint80",
+          },
+        ],
+        stateMutability: "view",
+        type: "function",
+      },
+      {
+        inputs: [],
+        name: "latestRoundData",
+        outputs: [
+          {
+            internalType: "uint80",
+            name: "roundId",
+            type: "uint80",
+          },
+          {
+            internalType: "int256",
+            name: "answer",
+            type: "int256",
+          },
+          {
+            internalType: "uint256",
+            name: "startedAt",
+            type: "uint256",
+          },
+          {
+            internalType: "uint256",
+            name: "updatedAt",
+            type: "uint256",
+          },
+          {
+            internalType: "uint80",
+            name: "answeredInRound",
+            type: "uint80",
+          },
+        ],
+        stateMutability: "view",
+        type: "function",
+      },
+      {
+        inputs: [],
+        name: "latestRoundId",
+        outputs: [
+          {
+            internalType: "uint80",
+            name: "",
+            type: "uint80",
+          },
+        ],
+        stateMutability: "view",
+        type: "function",
+      },
+      {
+        inputs: [],
+        name: "version",
+        outputs: [
+          {
+            internalType: "uint256",
+            name: "",
+            type: "uint256",
+          },
+        ],
+        stateMutability: "view",
+        type: "function",
+      },
+    ],
+  },
+  DaiUsdPriceFeed: {
+    address: "0xaed0c38402a5d19df6e4c03f4e2dced6e29c1ee9",
+    name: "EACAggregatorProxy",
+    voting: false,
+    abi: [
+      {
+        inputs: [
+          {
+            internalType: "uint8",
+            name: "_decimals",
+            type: "uint8",
+          },
+          {
+            internalType: "uint256",
+            name: "_version",
+            type: "uint256",
+          },
+        ],
+        stateMutability: "nonpayable",
+        type: "constructor",
+      },
+      {
+        inputs: [
+          {
+            internalType: "uint80",
+            name: "roundId",
+            type: "uint80",
+          },
+          {
+            internalType: "int256",
+            name: "answer",
+            type: "int256",
+          },
+          {
+            internalType: "uint256",
+            name: "startedAt",
+            type: "uint256",
+          },
+          {
+            internalType: "uint256",
+            name: "updatedAt",
+            type: "uint256",
+          },
+          {
+            internalType: "uint80",
+            name: "answeredInRound",
+            type: "uint80",
+          },
+        ],
+        name: "addRound",
+        outputs: [],
+        stateMutability: "nonpayable",
+        type: "function",
+      },
+      {
+        inputs: [],
+        name: "decimals",
+        outputs: [
+          {
+            internalType: "uint8",
+            name: "",
+            type: "uint8",
+          },
+        ],
+        stateMutability: "view",
+        type: "function",
+      },
+      {
+        inputs: [
+          {
+            internalType: "uint80",
+            name: "_roundId",
+            type: "uint80",
+          },
+        ],
+        name: "getRoundData",
+        outputs: [
+          {
+            internalType: "uint80",
+            name: "roundId",
+            type: "uint80",
+          },
+          {
+            internalType: "int256",
+            name: "answer",
+            type: "int256",
+          },
+          {
+            internalType: "uint256",
+            name: "startedAt",
+            type: "uint256",
+          },
+          {
+            internalType: "uint256",
+            name: "updatedAt",
+            type: "uint256",
+          },
+          {
+            internalType: "uint80",
+            name: "answeredInRound",
+            type: "uint80",
+          },
+        ],
+        stateMutability: "view",
+        type: "function",
+      },
+      {
+        inputs: [],
+        name: "latestRoundData",
+        outputs: [
+          {
+            internalType: "uint80",
+            name: "roundId",
+            type: "uint80",
+          },
+          {
+            internalType: "int256",
+            name: "answer",
+            type: "int256",
+          },
+          {
+            internalType: "uint256",
+            name: "startedAt",
+            type: "uint256",
+          },
+          {
+            internalType: "uint256",
+            name: "updatedAt",
+            type: "uint256",
+          },
+          {
+            internalType: "uint80",
+            name: "answeredInRound",
+            type: "uint80",
+          },
+        ],
+        stateMutability: "view",
+        type: "function",
+      },
+      {
+        inputs: [],
+        name: "latestRoundId",
+        outputs: [
+          {
+            internalType: "uint80",
+            name: "",
+            type: "uint80",
+          },
+        ],
+        stateMutability: "view",
+        type: "function",
+      },
+      {
+        inputs: [],
+        name: "version",
+        outputs: [
+          {
+            internalType: "uint256",
+            name: "",
+            type: "uint256",
+          },
+        ],
+        stateMutability: "view",
+        type: "function",
+      },
+    ],
+  },
+  BtcUsdPriceFeed: {
+    address: "0xf4030086522a5beea4988f8ca5b36dbc97bee88c",
+    name: "EACAggregatorProxy",
+    voting: false,
+    abi: [
+      {
+        inputs: [
+          {
+            internalType: "uint8",
+            name: "_decimals",
+            type: "uint8",
+          },
+          {
+            internalType: "uint256",
+            name: "_version",
+            type: "uint256",
+          },
+        ],
+        stateMutability: "nonpayable",
+        type: "constructor",
+      },
+      {
+        inputs: [
+          {
+            internalType: "uint80",
+            name: "roundId",
+            type: "uint80",
+          },
+          {
+            internalType: "int256",
+            name: "answer",
+            type: "int256",
+          },
+          {
+            internalType: "uint256",
+            name: "startedAt",
+            type: "uint256",
+          },
+          {
+            internalType: "uint256",
+            name: "updatedAt",
+            type: "uint256",
+          },
+          {
+            internalType: "uint80",
+            name: "answeredInRound",
+            type: "uint80",
+          },
+        ],
+        name: "addRound",
+        outputs: [],
+        stateMutability: "nonpayable",
+        type: "function",
+      },
+      {
+        inputs: [],
+        name: "decimals",
+        outputs: [
+          {
+            internalType: "uint8",
+            name: "",
+            type: "uint8",
+          },
+        ],
+        stateMutability: "view",
+        type: "function",
+      },
+      {
+        inputs: [
+          {
+            internalType: "uint80",
+            name: "_roundId",
+            type: "uint80",
+          },
+        ],
+        name: "getRoundData",
+        outputs: [
+          {
+            internalType: "uint80",
+            name: "roundId",
+            type: "uint80",
+          },
+          {
+            internalType: "int256",
+            name: "answer",
+            type: "int256",
+          },
+          {
+            internalType: "uint256",
+            name: "startedAt",
+            type: "uint256",
+          },
+          {
+            internalType: "uint256",
+            name: "updatedAt",
+            type: "uint256",
+          },
+          {
+            internalType: "uint80",
+            name: "answeredInRound",
+            type: "uint80",
+          },
+        ],
+        stateMutability: "view",
+        type: "function",
+      },
+      {
+        inputs: [],
+        name: "latestRoundData",
+        outputs: [
+          {
+            internalType: "uint80",
+            name: "roundId",
+            type: "uint80",
+          },
+          {
+            internalType: "int256",
+            name: "answer",
+            type: "int256",
+          },
+          {
+            internalType: "uint256",
+            name: "startedAt",
+            type: "uint256",
+          },
+          {
+            internalType: "uint256",
+            name: "updatedAt",
+            type: "uint256",
+          },
+          {
+            internalType: "uint80",
+            name: "answeredInRound",
+            type: "uint80",
+          },
+        ],
+        stateMutability: "view",
+        type: "function",
+      },
+      {
+        inputs: [],
+        name: "latestRoundId",
+        outputs: [
+          {
+            internalType: "uint80",
+            name: "",
+            type: "uint80",
+          },
+        ],
+        stateMutability: "view",
+        type: "function",
+      },
+      {
+        inputs: [],
+        name: "version",
+        outputs: [
+          {
+            internalType: "uint256",
+            name: "",
+            type: "uint256",
+          },
+        ],
+        stateMutability: "view",
+        type: "function",
+      },
+    ],
+  },
+  EthUsdPriceFeed: {
+    address: "0x5f4ec3df9cbd43714fe2740f5e3616155c5b8419",
+    name: "EACAggregatorProxy",
+    voting: false,
+    abi: [
+      {
+        inputs: [
+          {
+            internalType: "uint8",
+            name: "_decimals",
+            type: "uint8",
+          },
+          {
+            internalType: "uint256",
+            name: "_version",
+            type: "uint256",
+          },
+        ],
+        stateMutability: "nonpayable",
+        type: "constructor",
+      },
+      {
+        inputs: [
+          {
+            internalType: "uint80",
+            name: "roundId",
+            type: "uint80",
+          },
+          {
+            internalType: "int256",
+            name: "answer",
+            type: "int256",
+          },
+          {
+            internalType: "uint256",
+            name: "startedAt",
+            type: "uint256",
+          },
+          {
+            internalType: "uint256",
+            name: "updatedAt",
+            type: "uint256",
+          },
+          {
+            internalType: "uint80",
+            name: "answeredInRound",
+            type: "uint80",
+          },
+        ],
+        name: "addRound",
+        outputs: [],
+        stateMutability: "nonpayable",
+        type: "function",
+      },
+      {
+        inputs: [],
+        name: "decimals",
+        outputs: [
+          {
+            internalType: "uint8",
+            name: "",
+            type: "uint8",
+          },
+        ],
+        stateMutability: "view",
+        type: "function",
+      },
+      {
+        inputs: [
+          {
+            internalType: "uint80",
+            name: "_roundId",
+            type: "uint80",
+          },
+        ],
+        name: "getRoundData",
+        outputs: [
+          {
+            internalType: "uint80",
+            name: "roundId",
+            type: "uint80",
+          },
+          {
+            internalType: "int256",
+            name: "answer",
+            type: "int256",
+          },
+          {
+            internalType: "uint256",
+            name: "startedAt",
+            type: "uint256",
+          },
+          {
+            internalType: "uint256",
+            name: "updatedAt",
+            type: "uint256",
+          },
+          {
+            internalType: "uint80",
+            name: "answeredInRound",
+            type: "uint80",
+          },
+        ],
+        stateMutability: "view",
+        type: "function",
+      },
+      {
+        inputs: [],
+        name: "latestRoundData",
+        outputs: [
+          {
+            internalType: "uint80",
+            name: "roundId",
+            type: "uint80",
+          },
+          {
+            internalType: "int256",
+            name: "answer",
+            type: "int256",
+          },
+          {
+            internalType: "uint256",
+            name: "startedAt",
+            type: "uint256",
+          },
+          {
+            internalType: "uint256",
+            name: "updatedAt",
+            type: "uint256",
+          },
+          {
+            internalType: "uint80",
+            name: "answeredInRound",
+            type: "uint80",
+          },
+        ],
+        stateMutability: "view",
+        type: "function",
+      },
+      {
+        inputs: [],
+        name: "latestRoundId",
+        outputs: [
+          {
+            internalType: "uint80",
+            name: "",
+            type: "uint80",
+          },
+        ],
+        stateMutability: "view",
+        type: "function",
+      },
+      {
+        inputs: [],
+        name: "version",
+        outputs: [
+          {
+            internalType: "uint256",
+            name: "",
+            type: "uint256",
+          },
+        ],
+        stateMutability: "view",
+        type: "function",
+      },
+    ],
+  },
 };

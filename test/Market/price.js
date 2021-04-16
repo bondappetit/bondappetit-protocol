@@ -4,10 +4,14 @@ const {contract, assert, bn} = require("../../utils/test");
 contract("Market.price", ({web3, artifacts}) => {
   const network = artifacts.network;
   const governor = network.accounts.Governor.address;
-  const {UniswapAnchoredView} = network.contracts;
-  const priceOracle = new web3.eth.Contract(
-    UniswapAnchoredView.abi,
-    UniswapAnchoredView.address
+  const {UsdcUsdPriceFeed, DaiUsdPriceFeed} = development.contracts;
+  const usdcPriceOracle = new web3.eth.Contract(
+    UsdcUsdPriceFeed.abi,
+    UsdcUsdPriceFeed.address
+  );
+  const daiPriceOracle = new web3.eth.Contract(
+    DaiUsdPriceFeed.abi,
+    DaiUsdPriceFeed.address
   );
   const {USDC, DAI} = network.assets;
 
@@ -21,10 +25,7 @@ contract("Market.price", ({web3, artifacts}) => {
       .mul(bn(10).pow(bn(6)))
       .toString();
     const rewardBalance = "100000";
-    const usdcPrice = await priceOracle.methods.price(USDC.symbol).call();
-    const expectedProduct = bn(usdcPrice)
-      .mul(bn(10).pow(bn(12)))
-      .toString();
+    const expectedProduct = `1${"0".repeat(18)}`;
 
     await stable.methods
       .mint(instance._address, bn(expectedProduct).mul(bn(10)).toString())
@@ -46,12 +47,14 @@ contract("Market.price", ({web3, artifacts}) => {
 
   it("price: should get product token price for other token", async () => {
     const instance = await artifacts.require("Market");
-    const amount = bn(1)
-      .mul(bn(10).pow(bn(6)))
-      .toString();
+    const amount = `1${"0".repeat(6)}`;
 
-    const usdcPrice = await priceOracle.methods.price(USDC.symbol).call();
-    const daiPrice = await priceOracle.methods.price(DAI.symbol).call();
+    const {
+      answer: usdcPrice,
+    } = await usdcPriceOracle.methods.latestRoundData().call();
+    const {
+      answer: daiPrice,
+    } = await daiPriceOracle.methods.latestRoundData().call();
     const priceAccuracy = bn("1000000");
     const expectedPrice = bn(daiPrice)
       .mul(priceAccuracy)

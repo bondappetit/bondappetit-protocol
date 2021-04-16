@@ -1,23 +1,28 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.6.0;
+pragma experimental ABIEncoderV2;
 
 import "@openzeppelin/contracts/math/SafeMath.sol";
 import "@openzeppelin/contracts/token/ERC20/ERC20.sol";
 import "@openzeppelin/contracts/token/ERC20/SafeERC20.sol";
 import "./utils/OwnablePausable.sol";
 import "./uniswap/IUniswapV2Router02.sol";
-import "./uniswap/IUniswapAnchoredView.sol";
+import "./chainlink/CrossPriceFeed.sol";
 
 contract Market is OwnablePausable {
     using SafeMath for uint256;
     using SafeERC20 for ERC20;
+    using CrossPriceFeed for address[];
 
-    uint256 public constant PRICE_DECIMALS = 6;
+    uint8 public constant PRICE_DECIMALS = 6;
 
     uint256 public constant REWARD_DECIMALS = 12;
 
     /// @notice Address of cumulative token.
     ERC20 public cumulative;
+
+    /// @dev Addresses of cumulative token price feed chain.
+    address[] internal cumulativePriceFeed;
 
     /// @notice Address of product token contract.
     ERC20 public productToken;
@@ -28,23 +33,17 @@ contract Market is OwnablePausable {
     /// @dev Address of UniswapV2Router.
     IUniswapV2Router02 public uniswapRouter;
 
-    /// @dev Address of IUniswapAnchoredView.
-    IUniswapAnchoredView public priceOracle;
-
     /// @dev Allowed tokens symbols list.
-    mapping(address => string) internal allowedTokens;
-
-    /// @notice An event thats emitted when an price oracle contract address changed.
-    event PriceOracleChanged(address newPriceOracle);
+    mapping(address => address[]) internal allowedTokens;
 
     /// @notice An event thats emitted when an uniswap router contract address changed.
     event UniswapRouterChanged(address newUniswapRouter);
 
     /// @notice An event thats emitted when an cumulative token changed.
-    event CumulativeChanged(address newToken);
+    event CumulativeChanged(address newToken, address[] priceFeed);
 
     /// @notice An event thats emitted when an token allowed.
-    event TokenAllowed(address token, string symbol);
+    event TokenAllowed(address token, address[] priceFeed);
 
     /// @notice An event thats emitted when an token denied.
     event TokenDenied(address token);
@@ -60,20 +59,20 @@ contract Market is OwnablePausable {
      * @param _productToken Address of product token.
      * @param _rewardToken Address of reward token.
      * @param _uniswapRouter Address of Uniswap router contract.
-     * @param _priceOracle Address of Price oracle contract.
+     * @param _cumulativePriceFeed Price feeds chain of cumulative token.
      */
     constructor(
         address _cumulative,
         address _productToken,
         address _rewardToken,
         address _uniswapRouter,
-        address _priceOracle
+        address[] memory _cumulativePriceFeed
     ) public {
         cumulative = ERC20(_cumulative);
+        cumulativePriceFeed = _cumulativePriceFeed;
         productToken = ERC20(_productToken);
         rewardToken = ERC20(_rewardToken);
         uniswapRouter = IUniswapV2Router02(_uniswapRouter);
-        priceOracle = IUniswapAnchoredView(_priceOracle);
     }
 
     /**
@@ -86,33 +85,30 @@ contract Market is OwnablePausable {
     }
 
     /**
-     * @notice Changed price oracle contract address.
-     * @param _priceOracle Address new price oracle contract.
-     */
-    function changePriceOracle(address _priceOracle) external onlyOwner {
-        priceOracle = IUniswapAnchoredView(_priceOracle);
-        emit PriceOracleChanged(_priceOracle);
-    }
-
-    /**
      * @notice Changed cumulative token address.
      * @param newToken Address new cumulative token.
+     * @param newCumulativePriceFeed Address new price oracle contract.
      * @param recipient Address of recipient for withdraw current cumulative balance.
      */
-    function changeCumulativeToken(address newToken, address recipient) external onlyOwner {
+    function changeCumulativeToken(
+        address newToken,
+        address[] memory newCumulativePriceFeed,
+        address recipient
+    ) external onlyOwner {
         withdraw(recipient);
         cumulative = ERC20(newToken);
-        emit CumulativeChanged(newToken);
+        cumulativePriceFeed = newCumulativePriceFeed;
+        emit CumulativeChanged(newToken, cumulativePriceFeed);
     }
 
     /**
      * @notice Add token to tokens white list.
      * @param token Allowable token.
-     * @param symbol Symbol target token of price oracle contract.
+     * @param priceFeed Price feed chain.
      */
-    function allowToken(address token, string calldata symbol) external onlyOwner {
-        allowedTokens[token] = symbol;
-        emit TokenAllowed(token, symbol);
+    function allowToken(address token, address[] memory priceFeed) external onlyOwner {
+        allowedTokens[token] = priceFeed;
+        emit TokenAllowed(token, priceFeed);
     }
 
     /**
@@ -120,7 +116,7 @@ contract Market is OwnablePausable {
      * @param token Denied token.
      */
     function denyToken(address token) external onlyOwner {
-        allowedTokens[token] = "";
+        allowedTokens[token] = new address[](0);
         emit TokenDenied(token);
     }
 
@@ -129,7 +125,7 @@ contract Market is OwnablePausable {
      * @return Is target token allowed.
      */
     function isAllowedToken(address token) public view returns (bool) {
-        return bytes(allowedTokens[token]).length != 0;
+        return allowedTokens[token].length != 0;
     }
 
     /**
@@ -170,6 +166,18 @@ contract Market is OwnablePausable {
     }
 
     /**
+     * @param token Target token.
+     * @return Price token at USD.
+     */
+    function _priceUSD(address token) public view returns (uint256) {
+        address[] memory priceFeed = token == address(cumulative) ? cumulativePriceFeed : allowedTokens[token];
+        int256 price = priceFeed.getAmountOut(int128(10)**PRICE_DECIMALS);
+        if (price <= 0) return 0;
+
+        return uint256(price);
+    }
+
+    /**
      * @notice Get token price.
      * @param currency Currency token.
      * @param payment Amount of payment.
@@ -181,13 +189,13 @@ contract Market is OwnablePausable {
 
         uint256 tokenDecimals = ERC20(currency).decimals();
         uint256 productDecimals = productToken.decimals();
-        uint256 tokenPrice = priceOracle.price(allowedTokens[currency]);
-        uint256 cumulativePrice = priceOracle.price(cumulative.symbol());
+        uint256 tokenPrice = _priceUSD(currency);
+        uint256 cumulativePrice = _priceUSD(address(cumulative));
 
         if (cumulativePrice != 0) {
             product = payment.mul(10**productDecimals.sub(tokenDecimals));
             if (address(productToken) != currency) {
-                product = tokenPrice.mul(10**PRICE_DECIMALS).div(cumulativePrice).mul(payment).div(10**PRICE_DECIMALS).mul(10**productDecimals.sub(tokenDecimals));
+                product = tokenPrice.mul(uint256(int128(10)**PRICE_DECIMALS)).div(cumulativePrice).mul(payment).div(uint256(int128(10)**PRICE_DECIMALS)).mul(10**productDecimals.sub(tokenDecimals));
             }
         }
 

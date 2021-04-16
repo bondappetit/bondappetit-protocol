@@ -14,7 +14,7 @@ contract("Market.allowedToken", ({web3, artifacts}) => {
       "Invalid allowed token by default"
     );
 
-    await instance.methods.allowToken(token, "test").send({from: governor});
+    await instance.methods.allowToken(token, [token]).send({from: governor});
     assert.equal(
       await instance.methods.isAllowedToken(token).call(),
       true,

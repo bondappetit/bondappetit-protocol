@@ -26,7 +26,7 @@ contract("Market.buyFromETH", ({web3, artifacts}) => {
       .mul(bn(10).pow(bn(18)))
       .toString();
     const amount = bn(1)
-      .mul(bn(10).pow(bn(18)))
+      .mul(bn(10).pow(bn(6)))
       .toString();
     const usdcSwapAmount = (
       await uniswap.methods

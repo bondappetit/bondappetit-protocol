@@ -14,7 +14,7 @@ async function createUniswapPair(d, token0, token1) {
 
 module.exports = migration("UsdcStableLPStaking", async (d) => {
   let {
-    assets: {USDC, WETH, USDN},
+    assets: {USDC},
   } = d.getNetwork();
   const governor = d.getGovernor().address;
 
@@ -30,19 +30,9 @@ module.exports = migration("UsdcStableLPStaking", async (d) => {
   //  WETH.address,
   //  gov.address
   //);
-  const UsdnGovLPAddress = await createUniswapPair(
-    d,
-    USDN.address,
-    gov.address
-  );
   const UsdcStableLPAddress = await createUniswapPair(
     d,
     USDC.address,
-    stable.address
-  );
-  const UsdnStableLPAddress = await createUniswapPair(
-    d,
-    USDN.address,
     stable.address
   );
   //const GovStableLPAddress = await createUniswapPair(
@@ -91,29 +81,11 @@ module.exports = migration("UsdcStableLPStaking", async (d) => {
     //  endStakingBlock: 0,
     //  startUnstakingBlock: 0,
     //},
-    {
-      name: "UsdnGovLPStaking",
-      distributor: governor,
-      reward: gov.address,
-      staking: UsdnGovLPAddress,
-      duration: weeks4Duration,
-      endStakingBlock: 0,
-      startUnstakingBlock: 0,
-    },
     //{
     //  name: "UsdcStableLPStaking",
     //  distributor: governor,
     //  reward: gov.address,
     //  staking: UsdcStableLPAddress,
-    //  duration: weeks4Duration,
-    //  endStakingBlock: 0,
-    //  startUnstakingBlock: 0,
-    //},
-    //{
-    //  name: "UsdnStableLPStaking",
-    //  distributor: governor,
-    //  reward: gov.address,
-    //  staking: UsdnStableLPAddress,
     //  duration: weeks4Duration,
     //  endStakingBlock: 0,
     //  startUnstakingBlock: 0,
@@ -134,25 +106,12 @@ module.exports = migration("UsdcStableLPStaking", async (d) => {
       staking: UsdcStableLPAddress,
       duration: months6Duration,
       endStakingBlock: Math.floor(
-        currentBlock + (new Date("2021-04-01 00:00:00") - Date.now()) / 15000
+        currentBlock + (new Date("2021-06-01 00:00:00") - Date.now()) / 15000
       ),
       startUnstakingBlock: Math.floor(
         currentBlock + (new Date("2021-07-01 00:00:00") - Date.now()) / 15000
       ),
-    },
-    {
-      name: "UsdnStableLPLockStaking",
-      distributor: governor,
-      reward: gov.address,
-      staking: UsdnStableLPAddress,
-      duration: months6Duration,
-      endStakingBlock: Math.floor(
-        currentBlock + (new Date("2021-04-01 00:00:00") - Date.now()) / 15000
-      ),
-      startUnstakingBlock: Math.floor(
-        currentBlock + (new Date("2021-07-01 00:00:00") - Date.now()) / 15000
-      ),
-    },
+    }
   ];
 
   await rewardingTokens.reduce(
