@@ -28,7 +28,7 @@ module.exports = {
     investing: true,
   },
   WETH: {
-    address: "0x2170ed0880ac9a755fd29b2688956bd959f933f8",
+    address: "0xbb4cdb9cbd36b01bd1cbaebf2de08d9173bc095c",
     name: "Ether",
     symbol: "ETH",
     decimals: 18,
