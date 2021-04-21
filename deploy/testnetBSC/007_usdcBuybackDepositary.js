@@ -15,6 +15,6 @@ module.exports = migration("UsdcBuybackDepositaryBalanceView", async (d) => {
   await d.send("Issuer", "addDepositary", [depositary.address]);
 
   if (!d.isDev) {
-    await d.toTimelock("BuybackDepositaryBalanceView");
+    await d.toTimelock("UsdcBuybackDepositaryBalanceView");
   }
 });
