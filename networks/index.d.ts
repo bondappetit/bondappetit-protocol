@@ -40,6 +40,7 @@ declare const _exports: {
   "development-fork": Network;
   ropsten: Network;
   "ropsten-fork": Network;
+  testnetBSC: Network;
   main: Network;
   "main-form": Network;
 };
