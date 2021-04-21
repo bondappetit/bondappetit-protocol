@@ -49,9 +49,7 @@ module.exports = {
       chainId: 97,
       from: networks.testnetBSC.accounts.Governor.address,
       gasPrice: parseInt(networks.testnetBSC.gasPrice, 10),
-      accounts: {
-        mnemonic: process.env.MNENOMIC,
-      },
+      accounts: process.env.GOVERNOR_PK ? [process.env.GOVERNOR_PK] : [],
     },
     mainnet: {
       url: "https://mainnet.infura.io/v3/03d22d3114e54a6dbab0cb1c6163b48a",
