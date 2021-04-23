@@ -42,6 +42,7 @@ declare const _exports: {
   "ropsten-fork": Network;
   main: Network;
   "main-form": Network;
+  mainBSC: Network;
 };
 
 export = _exports;
