@@ -23,9 +23,9 @@
                     "type": "address"
                 },
                 {
-                    "internalType": "address",
-                    "name": "_priceOracle",
-                    "type": "address"
+                    "internalType": "address[]",
+                    "name": "_cumulativePriceFeed",
+                    "type": "address[]"
                 }
             ],
             "stateMutability": "nonpayable",
@@ -76,6 +76,12 @@
                     "internalType": "address",
                     "name": "newToken",
                     "type": "address"
+                },
+                {
+                    "indexed": false,
+                    "internalType": "address[]",
+                    "name": "priceFeed",
+                    "type": "address[]"
                 }
             ],
             "name": "CumulativeChanged",
@@ -132,27 +138,14 @@
                 {
                     "indexed": false,
                     "internalType": "address",
-                    "name": "newPriceOracle",
-                    "type": "address"
-                }
-            ],
-            "name": "PriceOracleChanged",
-            "type": "event"
-        },
-        {
-            "anonymous": false,
-            "inputs": [
-                {
-                    "indexed": false,
-                    "internalType": "address",
                     "name": "token",
                     "type": "address"
                 },
                 {
                     "indexed": false,
-                    "internalType": "string",
-                    "name": "symbol",
-                    "type": "string"
+                    "internalType": "address[]",
+                    "name": "priceFeed",
+                    "type": "address[]"
                 }
             ],
             "name": "TokenAllowed",
@@ -227,9 +220,9 @@
             "name": "PRICE_DECIMALS",
             "outputs": [
                 {
-                    "internalType": "uint256",
+                    "internalType": "uint8",
                     "name": "",
-                    "type": "uint256"
+                    "type": "uint8"
                 }
             ],
             "stateMutability": "view",
@@ -254,11 +247,30 @@
                     "internalType": "address",
                     "name": "token",
                     "type": "address"
+                }
+            ],
+            "name": "_priceUSD",
+            "outputs": [
+                {
+                    "internalType": "uint256",
+                    "name": "",
+                    "type": "uint256"
+                }
+            ],
+            "stateMutability": "view",
+            "type": "function"
+        },
+        {
+            "inputs": [
+                {
+                    "internalType": "address",
+                    "name": "token",
+                    "type": "address"
                 },
                 {
-                    "internalType": "string",
-                    "name": "symbol",
-                    "type": "string"
+                    "internalType": "address[]",
+                    "name": "priceFeed",
+                    "type": "address[]"
                 }
             ],
             "name": "allowToken",
@@ -311,6 +323,11 @@
                     "type": "address"
                 },
                 {
+                    "internalType": "address[]",
+                    "name": "newCumulativePriceFeed",
+                    "type": "address[]"
+                },
+                {
                     "internalType": "address",
                     "name": "recipient",
                     "type": "address"
@@ -330,19 +347,6 @@
                 }
             ],
             "name": "changePauser",
-            "outputs": [],
-            "stateMutability": "nonpayable",
-            "type": "function"
-        },
-        {
-            "inputs": [
-                {
-                    "internalType": "address",
-                    "name": "_priceOracle",
-                    "type": "address"
-                }
-            ],
-            "name": "changePriceOracle",
             "outputs": [],
             "stateMutability": "nonpayable",
             "type": "function"
@@ -475,19 +479,6 @@
                     "internalType": "uint256",
                     "name": "reward",
                     "type": "uint256"
-                }
-            ],
-            "stateMutability": "view",
-            "type": "function"
-        },
-        {
-            "inputs": [],
-            "name": "priceOracle",
-            "outputs": [
-                {
-                    "internalType": "contract IUniswapAnchoredView",
-                    "name": "",
-                    "type": "address"
                 }
             ],
             "stateMutability": "view",
