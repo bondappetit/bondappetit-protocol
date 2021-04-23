@@ -41,5 +41,12 @@ module.exports = {
       gasPrice: parseInt(networks.main.gasPrice, 10),
       accounts: process.env.GOVERNOR_PK ? [process.env.GOVERNOR_PK] : [],
     },
+    mainnetBSC: {
+      url: "https://bsc-dataseed.binance.org",
+      chainId: 56,
+      from: networks.mainBSC.accounts.Governor.address,
+      gasPrice: parseInt(networks.mainBSC.gasPrice, 10),
+      accounts: process.env.GOVERNOR_PK ? [process.env.GOVERNOR_PK] : [],
+    },
   },
 };

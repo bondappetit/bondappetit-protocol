@@ -1,0 +1,58 @@
+module.exports = {
+  bBAG: {
+    address: "0x1ad0132d8b5ef3cebda1a9692f36ac30be871b6b",
+    name: "BondAppetit Governance",
+    symbol: "bBAG",
+    decimals: 18,
+    investing: false,
+  },
+  bBagBnbLP: {
+    address: "",
+    name: "",
+    symbol: "",
+    decimals: 18,
+    investing: false,
+  },
+  DAI: {
+    address: "0x1af3f329e8be154074d8769d1ffa4ee058b1dbc3",
+    name: "Dai Stablecoin",
+    symbol: "DAI",
+    decimals: 18,
+    investing: false,
+  },
+  USDT: {
+    address: "0x55d398326f99059ff775485246999027b3197955",
+    name: "Tether USD",
+    symbol: "USDT",
+    decimals: 18,
+    investing: false,
+  },
+  USDC: {
+    address: "0x8ac76a51cc950d9822d68b83fe1ad97b32cd580d",
+    name: "USD Coin",
+    symbol: "USDC",
+    decimals: 18,
+    investing: false,
+  },
+  WBTC: {
+    address: "0x7130d2a12b9bcbfae4f2634d864a1ee1ce3ead9c",
+    name: "Wrapped BTC",
+    symbol: "WBTC",
+    decimals: 18,
+    investing: false,
+  },
+  WETH: {
+    address: "0xbb4cdb9cbd36b01bd1cbaebf2de08d9173bc095c",
+    name: "Wrapped BNB",
+    symbol: "WBNB",
+    decimals: 18,
+    investing: false,
+  },
+  USDN: {
+    address: "0xc4b6f32b84657e9f6a73fe119f0967be5ba8cf05",
+    name: "Neutrino USD",
+    symbol: "USDN",
+    decimals: 18,
+    investing: false,
+  },
+};

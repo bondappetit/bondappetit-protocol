@@ -5,4 +5,5 @@ module.exports = {
   "ropsten-fork": require("./ropsten"),
   main: require("./mainnet"),
   "main-fork": require("./mainnet"),
+  mainBSC: require("./mainnetBSC"),
 };
