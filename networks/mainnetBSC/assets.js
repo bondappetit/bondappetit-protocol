@@ -7,9 +7,9 @@ module.exports = {
     investing: false,
   },
   bBagBnbLP: {
-    address: "",
-    name: "",
-    symbol: "",
+    address: "0x4a1b35c2e8d73dab72c2240e31427205fbfdd0c3",
+    name: "Pancake LPs",
+    symbol: "Cake-LP",
     decimals: 18,
     investing: false,
   },

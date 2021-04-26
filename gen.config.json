@@ -118,6 +118,11 @@
       "voting": true
     },
     {
+      "path": "deployments/%network%/BnbGovLPStaking.json",
+      "name": "BnbGovLPStaking",
+      "voting": true
+    },
+    {
       "path": "deployments/%network%/Budget.json",
       "name": "Budget",
       "voting": true
