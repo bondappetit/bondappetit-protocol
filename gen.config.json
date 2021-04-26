@@ -103,6 +103,11 @@
       "voting": true
     },
     {
+      "path": "deployments/%network%/UsdtGovLPStaking.json",
+      "name": "UsdtGovLPStaking",
+      "voting": true
+    },
+    {
       "path": "deployments/%network%/UsdnStableLPStaking.json",
       "name": "UsdnStableLPStaking",
       "voting": true
