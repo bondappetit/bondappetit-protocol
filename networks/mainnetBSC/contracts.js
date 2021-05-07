@@ -1,6 +1,6 @@
 module.exports = {
   UniswapV2Router02: {
-    address: "0x05ff2b0db69458a0750badebc4f9e13add608c7f",
+    address: "0x10ed43c718714eb63d5aa57b78b54704e256024e",
     name: "PancakeRouter",
     voting: false,
     abi: [
@@ -958,7 +958,7 @@ module.exports = {
     ],
   },
   UniswapV2Factory: {
-    address: "0xbcfccbde45ce874adcb698cc183debcf17952812",
+    address: "0xca143ce32fe78f1f7019d7d551a6402fc5350c73",
     name: "PancakeFactory",
     voting: false,
     abi: [
