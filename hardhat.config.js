@@ -29,6 +29,13 @@ module.exports = {
         mnemonic: process.env.MNENOMIC,
       },
     },
+    testnetBSC: {
+      url: "https://data-seed-prebsc-1-s1.binance.org:8545",
+      chainId: 97,
+      from: networks.testnetBSC.accounts.Governor.address,
+      gasPrice: parseInt(networks.testnetBSC.gasPrice, 10),
+      accounts: process.env.GOVERNOR_PK ? [process.env.GOVERNOR_PK] : [],
+    },
     mainnet: {
       url: `https://mainnet.infura.io/v3/${process.env.INFURA_API_KEY}`,
       chainId: 1,

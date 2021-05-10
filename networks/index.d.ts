@@ -37,11 +37,9 @@ interface Network {
 
 declare const _exports: {
   development: Network;
-  "development-fork": Network;
   ropsten: Network;
-  "ropsten-fork": Network;
+  testnetBSC: Network;
   main: Network;
-  "main-form": Network;
   mainBSC: Network;
 };
 
