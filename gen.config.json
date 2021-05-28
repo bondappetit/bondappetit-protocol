@@ -53,6 +53,11 @@
       "voting": true
     },
     {
+      "path": "deployments/%network%/BuybackDepositaryBalanceView.json",
+      "name": "BuybackDepositaryBalanceView",
+      "voting": true
+    },
+    {
       "path": "deployments/%network%/Issuer.json",
       "name": "Issuer",
       "voting": true
@@ -200,6 +205,9 @@
     },
     {
       "path": "artifacts/contracts/depositary/RealAssetDepositaryBalanceView.sol/RealAssetDepositaryBalanceView.json"
+    },
+    {
+      "path": "artifacts/contracts/depositary/BuybackDepositaryBalanceView.sol/BuybackDepositaryBalanceView.json"
     },
     {"path": "artifacts/contracts/Issuer.sol/Issuer.json"},
     {"path": "artifacts/contracts/CollateralMarket.sol/CollateralMarket.json"},
