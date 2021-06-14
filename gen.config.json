@@ -166,6 +166,11 @@
       "path": "deployments/%network%/BuybackDepositaryBalanceView.json",
       "name": "BuybackDepositaryBalanceView",
       "voting": true
+    },
+    {
+      "path": "deployments/%network%/DepositorCollateral.json",
+      "name": "DepositorCollateral",
+      "voting": true
     }
   ],
   "assets": [
@@ -233,6 +238,9 @@
     },
     {
       "path": "artifacts/contracts/depositary/BuybackDepositaryBalanceView.sol/BuybackDepositaryBalanceView.json"
+    },
+    {
+      "path": "artifacts/contracts/depositary/DepositorCollateral.sol/DepositorCollateral.json"
     }
   ]
 }
