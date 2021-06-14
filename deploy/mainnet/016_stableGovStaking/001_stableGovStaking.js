@@ -6,7 +6,7 @@ module.exports = migration("StableGovLPStaking", async (d) => {
     "StableToken",
     "Timelock"
   );
-  const blocksPerMinute = d.getNetwork().averageBlockTime;
+  const blocksPerMinute = 60 / d.getNetwork().averageBlockTime;
 
   let StableGovLPAddress = await d.call("@UniswapV2Factory", "getPair", [
     stable.address,
