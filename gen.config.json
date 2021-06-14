@@ -98,6 +98,11 @@
       "voting": true
     },
     {
+      "path": "deployments/%network%/StableGovLPStaking.json",
+      "name": "StableGovLPStaking",
+      "voting": true
+    },
+    {
       "path": "deployments/%network%/WethGovLPStaking.json",
       "name": "WethGovLPStaking",
       "voting": true
@@ -155,6 +160,11 @@
     {
       "path": "deployments/%network%/UsdcBuybackDepositaryBalanceView.json",
       "name": "UsdcBuybackDepositaryBalanceView",
+      "voting": true
+    },
+    {
+      "path": "deployments/%network%/BuybackDepositaryBalanceView.json",
+      "name": "BuybackDepositaryBalanceView",
       "voting": true
     }
   ],
