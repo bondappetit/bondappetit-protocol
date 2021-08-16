@@ -39,9 +39,9 @@ module.exports = migration("ProfitDistributor", async (d) => {
       dayDuration * 7,
     ],
   });
-  //if (!d.isDev) {
+  if (!d.isDev) {
     await d.toTimelock("ProfitDistributor3");
     await d.toTimelock("ProfitDistributor6");
     await d.toTimelock("ProfitDistributor12");
-  //}
+  }
 });
