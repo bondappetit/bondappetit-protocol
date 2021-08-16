@@ -21,7 +21,7 @@ module.exports = {
       },
     },
     ropsten: {
-      url: "https://ropsten.bondappetit.io",
+      url: `https://ropsten.infura.io/v3/${process.env.INFURA_API_KEY}`,
       chainId: 3,
       from: networks.ropsten.accounts.Governor.address,
       gasPrice: parseInt(networks.ropsten.gasPrice, 10),
