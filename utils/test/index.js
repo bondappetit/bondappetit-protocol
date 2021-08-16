@@ -44,17 +44,18 @@ class ArtifactList {
       .send(options);
   }
 
-  async new(dir, contractFileName, name, args, options = {}) {
+  async artifact(dir, contractFileName) {
     const path = `${this.artifacts}/${dir}/${contractFileName}.sol/${contractFileName}.json`;
 
-    let json;
     try {
-      json = await readFile(path);
+      return JSON.parse(await readFile(path));
     } catch (e) {
       throw new Error(`Artifact "${contractFileName}" not found in "${path}"`);
     }
+  }
 
-    const {abi, bytecode} = JSON.parse(json);
+  async new(dir, contractFileName, name, args, options = {}) {
+    const {abi, bytecode} = await this.artifact(dir, contractFileName);
 
     try {
       let contract = new this.web3.eth.Contract(abi);

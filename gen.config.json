@@ -171,6 +171,11 @@
       "path": "deployments/%network%/DepositorCollateral.json",
       "name": "DepositorCollateral",
       "voting": true
+    },
+    {
+      "path": "deployments/%network%/YieldEscrow.json",
+      "name": "YieldEscrow",
+      "voting": true
     }
   ],
   "assets": [
@@ -241,6 +246,15 @@
     },
     {
       "path": "artifacts/contracts/depositary/DepositorCollateral.sol/DepositorCollateral.json"
+    },
+    {
+      "path": "artifacts/contracts/YieldEscrow.sol/YieldEscrow.json"
+    },
+    {
+      "path": "artifacts/contracts/VoteDelegator.sol/VoteDelegator.json"
+    },
+    {
+      "path": "artifacts/contracts/ProfitDistributor.sol/ProfitDistributor.json"
     }
   ]
 }
