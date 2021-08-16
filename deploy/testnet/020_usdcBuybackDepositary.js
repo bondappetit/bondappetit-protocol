@@ -14,7 +14,7 @@ module.exports = migration("UsdcBuybackDepositaryBalanceView", async (d) => {
   const [depositary] = await d.deployed("UsdcBuybackDepositaryBalanceView");
 
   if (!d.isDev) {
-    await d.toTimelock("BuybackDepositaryBalanceView");
+    await d.toTimelock("UsdcBuybackDepositaryBalanceView");
   } else {
     await d.send("Issuer", "addDepositary", [depositary.address]);
   }
