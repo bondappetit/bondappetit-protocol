@@ -176,6 +176,21 @@
       "path": "deployments/%network%/YieldEscrow.json",
       "name": "YieldEscrow",
       "voting": true
+    },
+    {
+      "path": "deployments/%network%/ProfitDistributor3.json",
+      "name": "ProfitDistributor3",
+      "voting": true
+    },
+    {
+      "path": "deployments/%network%/ProfitDistributor6.json",
+      "name": "ProfitDistributor6",
+      "voting": true
+    },
+    {
+      "path": "deployments/%network%/ProfitDistributor12.json",
+      "name": "ProfitDistributor12",
+      "voting": true
     }
   ],
   "assets": [
