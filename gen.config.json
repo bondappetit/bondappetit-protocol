@@ -209,6 +209,14 @@
       "symbol": "USDap",
       "decimals": 18,
       "investing": false
+    },
+    {
+      "path": "deployments/%network%/YieldEscrow.json",
+      "key": "yGovernance",
+      "name": "BondAppetit Governance yield",
+      "symbol": "yBAG",
+      "decimals": 18,
+      "investing": false
     }
   ],
   "abi": [

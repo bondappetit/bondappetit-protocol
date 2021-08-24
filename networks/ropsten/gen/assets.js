@@ -12,5 +12,12 @@ module.exports = {
         "symbol": "USDap",
         "decimals": 18,
         "investing": false
+    },
+    "yGovernance": {
+        "address": "0xD15d555Da70AA43b28afFc141aF49EfABCBbB2e6",
+        "name": "BondAppetit Governance yield",
+        "symbol": "yBAG",
+        "decimals": 18,
+        "investing": false
     }
 }
