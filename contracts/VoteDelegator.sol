@@ -2,46 +2,38 @@
 pragma solidity ^0.6.0;
 pragma experimental ABIEncoderV2;
 
-import "@openzeppelin/contracts/access/Ownable.sol";
-import "@openzeppelin/contracts/token/ERC20/ERC20.sol";
-import "@openzeppelin/contracts/token/ERC20/SafeERC20.sol";
+import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 import "./YieldEscrow.sol";
 import "./GovernanceToken.sol";
 
-contract VoteDelegator is Ownable {
-    using SafeERC20 for ERC20;
+contract VoteDelegator {
+    /// @notice Contract owner.
+    address public owner;
 
     /// @notice Yield escrow contract address.
     address public yieldEscrow;
 
+    /// @notice Governance token contract address.
+    address public governanceToken;
+
+    /**
+     * @dev Throws if called by any account other than the owner.
+     */
+    modifier onlyOwner() {
+        require(owner == msg.sender, "Ownable: caller is not the owner");
+        _;
+    }
+
     /**
      * @param _owner Owner account address.
      */
-    constructor(address _owner) public {
-        yieldEscrow = _msgSender();
-        if (yieldEscrow != _owner) transferOwnership(_owner);
-        GovernanceToken(governanceToken()).delegate(owner());
-    }
-
-    /**
-     * @notice Destroy contract and transfer governance token to voting escrow.
-     */
-    function destroy() external {
-        require(_msgSender() == yieldEscrow, "VoteDelegator::destroy: caller is not the voting escrow");
-
-        ERC20 gov = ERC20(governanceToken());
-        uint256 balance = gov.balanceOf(address(this));
-        if (balance > 0) {
-            gov.safeTransfer(yieldEscrow, balance);
-        }
-        selfdestruct(payable(owner()));
-    }
-
-    /**
-     * @return Governance token contract address.
-     */
-    function governanceToken() public view returns (address) {
-        return YieldEscrow(yieldEscrow).governanceToken();
+    function initialize(address _owner) external {
+        require(yieldEscrow == address(0), "VoteDelegator::initialize: contract already initialized");
+        yieldEscrow = msg.sender;
+        address _governanceToken = YieldEscrow(yieldEscrow).governanceToken(); // gas optimisation
+        governanceToken = _governanceToken;
+        GovernanceToken(_governanceToken).delegate(_owner);
+        owner = _owner;
     }
 
     /**
@@ -49,8 +41,8 @@ contract VoteDelegator is Ownable {
      * @param amount Deposit amount.
      */
     function deposit(uint256 amount) external onlyOwner {
-        address account = owner();
-        ERC20(governanceToken()).safeTransferFrom(account, address(this), amount);
+        address account = owner;
+        IERC20(governanceToken).transferFrom(account, address(this), amount);
         YieldEscrow(yieldEscrow).depositFromDelegator(account, amount);
     }
 
@@ -59,8 +51,8 @@ contract VoteDelegator is Ownable {
      * @param amount Withdraw amount.
      */
     function withdraw(uint256 amount) external onlyOwner {
-        address account = owner();
+        address account = owner;
         YieldEscrow(yieldEscrow).withdrawFromDelegator(account, amount);
-        ERC20(governanceToken()).safeTransfer(account, amount);
+        IERC20(governanceToken).transfer(account, amount);
     }
 }

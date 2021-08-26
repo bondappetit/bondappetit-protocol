@@ -6,13 +6,11 @@ contract("UniV2BuybackDepositaryBalanceView.issuer", ({web3, artifacts}) => {
   const governor = development.accounts.Governor.address;
 
   it("changeIssuer: should change issuer address", async () => {
-    const instance = await artifacts.require(
-      "UniV2BuybackDepositaryBalanceView"
+    const [instance, issuer] = await artifacts.requireAll(
+      "UniV2BuybackDepositaryBalanceView",
+      "Issuer"
     );
-    const contract = development.contracts.Governance.address;
-
-    const startIssuer = await instance.methods.issuer().call();
-    assert.equal(startIssuer != contract, true, "Invalid start address");
+    const contract = issuer._address;
 
     await instance.methods.changeIssuer(contract).send({from: governor});
 

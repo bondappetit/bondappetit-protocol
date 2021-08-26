@@ -15,7 +15,7 @@ contract("ProfitDistributor.withdrawLock", function () {
     token = new web3.eth.Contract(tokenData.abi, tokenData.address);
 
     const distributorData = await deployments.deploy("ProfitDistributor.lock", {
-      contract: 'ProfitDistributor',
+      contract: "ProfitDistributor",
       args: [
         account,
         lockPeriod + unlockPeriod,

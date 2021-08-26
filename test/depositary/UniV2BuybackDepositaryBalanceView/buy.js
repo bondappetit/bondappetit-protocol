@@ -157,7 +157,7 @@ contract("UniV2BuybackDepositaryBalanceView.buy", ({web3, artifacts}) => {
       instance.methods.buy(`1${"0".repeat(6)}`).send({
         from: governor,
       }),
-      "UniV2BuybackDepositaryBalanceView::buy: invalid price"
+      "UniswapV2Router: INSUFFICIENT_OUTPUT_AMOUNT"
     );
   });
 

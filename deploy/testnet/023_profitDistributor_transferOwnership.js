@@ -39,9 +39,22 @@ module.exports = migration("ProfitDistributor", async (d) => {
       dayDuration * 7,
     ],
   });
+  const [
+    profitDistributor3,
+    profitDistributor6,
+    profitDistributor12,
+  ] = await d.deployed(
+    "ProfitDistributor3",
+    "ProfitDistributor6",
+    "ProfitDistributor12"
+  );
+  await d.send("YieldEscrow", "allowTransfer", [profitDistributor3.address]);
+  await d.send("YieldEscrow", "allowTransfer", [profitDistributor6.address]);
+  await d.send("YieldEscrow", "allowTransfer", [profitDistributor12.address]);
   if (!d.isDev) {
     await d.toTimelock("ProfitDistributor3");
     await d.toTimelock("ProfitDistributor6");
     await d.toTimelock("ProfitDistributor12");
+    await d.toTimelock("YieldEscrow");
   }
 });

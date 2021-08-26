@@ -7,6 +7,7 @@ import "@openzeppelin/contracts/token/ERC20/SafeERC20.sol";
 import "@openzeppelin/contracts/utils/ReentrancyGuard.sol";
 import "./utils/OwnablePausable.sol";
 
+// solhint-disable max-states-count
 contract ProfitDistributor is OwnablePausable, ReentrancyGuard {
     using SafeMath for uint256;
     using SafeERC20 for IERC20;
@@ -141,13 +142,15 @@ contract ProfitDistributor is OwnablePausable, ReentrancyGuard {
             uint256 stakeAt
         )
     {
-        if (lockPeriod > 0) {
-            mod = block.number.sub(_stakeAt[account]) % lockPeriod.add(unlockPeriod);
-            nextUnlock = block.number.sub(mod).add(lockPeriod);
-            nextLock = nextUnlock.add(unlockPeriod);
-            locked = mod < lockPeriod;
-        }
         stakeAt = _stakeAt[account];
+        uint256 _lockPeriod = lockPeriod; // gas optimisation
+        uint256 _unlockPeriod = unlockPeriod; // gas optimisation
+        if (_lockPeriod > 0) {
+            mod = block.number.sub(stakeAt) % _lockPeriod.add(_unlockPeriod);
+            nextUnlock = block.number.sub(mod).add(_lockPeriod);
+            nextLock = nextUnlock.add(_unlockPeriod);
+            locked = mod < _lockPeriod;
+        }
     }
 
     /**
@@ -194,7 +197,7 @@ contract ProfitDistributor is OwnablePausable, ReentrancyGuard {
      * @notice Stake token.
      * @param amount Amount staking token.
      */
-    function stake(uint256 amount) external nonReentrant updateReward(_msgSender()) {
+    function stake(uint256 amount) external whenNotPaused nonReentrant updateReward(_msgSender()) {
         require(amount > 0, "ProfitDistributor::stake: cannot stake 0");
         _totalSupply = _totalSupply.add(amount);
         _balances[_msgSender()] = _balances[_msgSender()].add(amount);
@@ -223,8 +226,9 @@ contract ProfitDistributor is OwnablePausable, ReentrancyGuard {
         uint256 reward = rewards[account];
         (bool locked, , , , ) = lockInfo(account);
         if (locked) {
-            _penaltyAmount[account] = _penaltyAmount[account].add(reward.div(2));
-            reward = reward.div(2);
+            uint256 rewardHalf = reward.div(2);
+            _penaltyAmount[account] = _penaltyAmount[account].add(rewardHalf);
+            reward = reward.sub(rewardHalf);
         } else {
             reward = reward.add(_penaltyAmount[account]);
             _penaltyAmount[account] = 0;
@@ -248,7 +252,7 @@ contract ProfitDistributor is OwnablePausable, ReentrancyGuard {
         uint256 penaltyAmount = _penaltyAmount[account];
         if (penaltyAmount > 0) {
             _penaltyAmount[account] = 0;
-            this.notifyRewardAmount(penaltyAmount);
+            _notifyRewardAmount(penaltyAmount, false);
         }
     }
 
@@ -262,41 +266,45 @@ contract ProfitDistributor is OwnablePausable, ReentrancyGuard {
     }
 
     /**
-     * @notice Transfer rewards token to recipient if distribution not start.
-     * @param recipient Recipient.
-     * @param amount Amount transfered rewards token.
+     * @notice Update distribution.
+     * @param reward Distributed rewards amount.
+     * @param isUpdatePeriodFinish Is update period finish.
      */
-    function transfer(address recipient, uint256 amount) external onlyOwner {
-        require(block.number >= periodFinish, "ProfitDistributor::transfer: distribution not ended");
+    function _notifyRewardAmount(uint256 reward, bool isUpdatePeriodFinish) private updateReward(address(0)) {
+        uint256 balance = rewardsToken.balanceOf(address(this));
+        uint256 _rewardsDuration = rewardsDuration; // gas optimisation
+        if (block.number >= periodFinish) {
+            rewardRate = reward.div(_rewardsDuration);
+            periodFinish = block.number.add(_rewardsDuration);
 
-        rewardsToken.safeTransfer(recipient, amount);
-        emit RewardsTransfered(recipient, amount);
+            require(rewardRate <= balance.div(_rewardsDuration), "ProfitDistributor::_notifyRewardAmount: provided reward too high");
+        } else {
+            uint256 remaining = periodFinish.sub(block.number);
+            uint256 leftover = remaining.mul(rewardRate);
+            uint256 period;
+            if (isUpdatePeriodFinish) {
+                period = _rewardsDuration;
+                periodFinish = block.number.add(_rewardsDuration);
+            } else {
+                period = remaining;
+            }
+            rewardRate = reward.add(leftover).div(period);
+
+            require(rewardRate <= balance.div(period), "ProfitDistributor::_notifyRewardAmount: provided reward too high");
+        }
+
+        lastUpdateBlock = block.number;
+        emit RewardAdded(reward);
     }
 
     /**
      * @notice Start distribution.
      * @param reward Distributed rewards amount.
      */
-    function notifyRewardAmount(uint256 reward) external updateReward(address(0)) {
+    function notifyRewardAmount(uint256 reward) external {
         address sender = _msgSender();
-        require(sender == rewardsDistribution || sender == owner() || sender == address(this), "ProfitDistributor::notifyRewardAmount: caller is not RewardsDistribution or Owner address");
+        require(sender == rewardsDistribution || sender == owner(), "ProfitDistributor::notifyRewardAmount: caller is not RewardsDistribution or Owner address");
 
-        if (block.number >= periodFinish) {
-            rewardRate = reward.div(rewardsDuration);
-        } else {
-            uint256 remaining = periodFinish.sub(block.number);
-            if (sender == address(this)) {
-                rewardsDuration = remaining;
-            }
-            uint256 leftover = remaining.mul(rewardRate);
-            rewardRate = reward.add(leftover).div(rewardsDuration);
-        }
-
-        uint256 balance = rewardsToken.balanceOf(address(this));
-        require(rewardRate <= balance.div(rewardsDuration), "ProfitDistributor::notifyRewardAmount: provided reward too high");
-
-        lastUpdateBlock = block.number;
-        periodFinish = block.number.add(rewardsDuration);
-        emit RewardAdded(reward);
+        _notifyRewardAmount(reward, true);
     }
 }

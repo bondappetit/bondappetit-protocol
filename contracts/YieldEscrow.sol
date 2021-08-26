@@ -11,14 +11,23 @@ contract YieldEscrow is Ownable, ERC20 {
     using SafeERC20 for ERC20;
 
     /// @notice Governance token contract.
-    address public governanceToken;
+    address public immutable governanceToken;
+
+    address public voteDelegatorPrototype;
 
     /// @dev Created vote delegators by account.
     mapping(address => address) internal _voteDelegators;
 
+    /// @dev Addresses that are allowed to transfer tokens.
+    mapping(address => bool) internal _allowedTransferAddresses;
+
     event VoteDelegatorCreated(address indexed account, address voteDelegator);
 
     event VoteDelegatorDestroyed(address indexed account);
+
+    event TransferAllowed(address indexed account);
+
+    event TransferDenied(address indexed account);
 
     event Deposit(address indexed account, uint256 amount);
 
@@ -27,8 +36,9 @@ contract YieldEscrow is Ownable, ERC20 {
     /**
      * @param _governanceToken Governance token contract address.
      */
-    constructor(address _governanceToken) public ERC20("BondAppetit Governance yield", "yBAG") {
+    constructor(address _governanceToken, address _voteDelegatorPrototype) public ERC20("BondAppetit Governance yield", "yBAG") {
         governanceToken = _governanceToken;
+        voteDelegatorPrototype = _voteDelegatorPrototype;
     }
 
     /**
@@ -45,29 +55,60 @@ contract YieldEscrow is Ownable, ERC20 {
      */
     function createVoteDelegator() external returns (address) {
         address account = _msgSender();
-        require(voteDelegatorOf(account) == address(0), "YieldEscrow::createVoteDelegator: votes delegator already created");
+        address accountVoteDelegator = voteDelegatorOf(account);
+        require(accountVoteDelegator == address(0), "YieldEscrow::createVoteDelegator: votes delegator already created");
 
-        _voteDelegators[account] = address(new VoteDelegator(account));
-        uint256 balance = balanceOf(account);
-        if (balance > 0) {
-            ERC20(governanceToken).safeTransfer(voteDelegatorOf(account), balance);
+        bytes20 targetBytes = bytes20(voteDelegatorPrototype);
+        assembly {
+            let clone := mload(0x40)
+            mstore(clone, 0x3d602d80600a3d3981f3363d3d373d3d3d363d73000000000000000000000000)
+            mstore(add(clone, 0x14), targetBytes)
+            mstore(add(clone, 0x28), 0x5af43d82803e903d91602b57fd5bf30000000000000000000000000000000000)
+            accountVoteDelegator := create(0, clone, 0x37)
         }
-        emit VoteDelegatorCreated(account, voteDelegatorOf(account));
+        _voteDelegators[account] = accountVoteDelegator;
+        VoteDelegator(accountVoteDelegator).initialize(account);
 
-        return voteDelegatorOf(account);
+        uint256 accountBalance = balanceOf(account);
+        if (accountBalance > 0) {
+            ERC20(governanceToken).safeTransfer(accountVoteDelegator, accountBalance);
+        }
+        emit VoteDelegatorCreated(account, accountVoteDelegator);
+
+        return accountVoteDelegator;
     }
 
     /**
-     * @notice Destroy vote delegator contract for sender account.
+     * @notice Allow transfer tokens for account.
+     * @param account Target account.
      */
-    function destroyVoteDelegator() external {
-        address account = _msgSender();
-        address voteDelegator = voteDelegatorOf(account);
-        require(voteDelegator != address(0), "VotinEscrow::destroyVoteDelegator: votes delegator already destroyed");
+    function allowTransfer(address account) external onlyOwner {
+        _allowedTransferAddresses[account] = true;
+        emit TransferAllowed(account);
+    }
 
-        _voteDelegators[account] = address(0);
-        VoteDelegator(voteDelegator).destroy();
-        emit VoteDelegatorDestroyed(account);
+    /**
+     * @notice Deny transfer tokens for account.
+     * @param account Target account.
+     */
+    function denyTransfer(address account) external onlyOwner {
+        _allowedTransferAddresses[account] = false;
+        emit TransferDenied(account);
+    }
+
+    function _beforeTokenTransfer(
+        address from,
+        address to,
+        // solhint-disable-next-line no-unused-vars
+        uint256 amount
+    ) internal override {
+        require(
+            _allowedTransferAddresses[from] ||
+                _allowedTransferAddresses[to] ||
+                from == address(0) || // mint
+                to == address(0), // burn
+            "YieldEscrow: transfer of tokens is prohibited"
+        );
     }
 
     /**
@@ -118,8 +159,7 @@ contract YieldEscrow is Ownable, ERC20 {
      */
     function withdrawFromDelegator(address account, uint256 amount) external {
         require(amount > 0, "YieldEscrow::withdrawFromDelegator: negative or zero amount");
-        address voteDelegator = voteDelegatorOf(account);
-        require(_msgSender() == voteDelegator, "YieldEscrow::withdrawFromDelegator: caller is not a vote delegator");
+        require(_msgSender() == voteDelegatorOf(account), "YieldEscrow::withdrawFromDelegator: caller is not a vote delegator");
 
         _burn(account, amount);
         emit Withdraw(account, amount);

@@ -19,7 +19,7 @@ contract UniV2BuybackDepositaryBalanceView is IDepositaryBalanceView, OwnablePau
     uint256 public constant override decimals = 18;
 
     /// @notice Address of buyback token.
-    ERC20 public token;
+    ERC20 public immutable token;
 
     /// @notice Address of issuer contract.
     Issuer public issuer;
@@ -61,6 +61,9 @@ contract UniV2BuybackDepositaryBalanceView is IDepositaryBalanceView, OwnablePau
     function changeIssuer(address _issuer) external onlyOwner {
         require(_issuer != address(0), "UniV2BuybackDepositaryBalanceView::changeIssuer: invalid address");
         issuer = Issuer(_issuer);
+
+        require(issuer.stableToken().decimals() >= ERC20(token).decimals(), "UniV2BuybackDepositaryBalanceView::changeIssuer: invalid stable token decimals");
+
         emit IssuerChanged(_issuer);
     }
 
@@ -107,20 +110,25 @@ contract UniV2BuybackDepositaryBalanceView is IDepositaryBalanceView, OwnablePau
 
         address stableToken = address(issuer.stableToken());
         uint256 stableTokenDecimals = ERC20(stableToken).decimals();
-        address[] memory path = new address[](2);
-        path[0] = address(token);
-        path[1] = stableToken;
-        uint256[] memory amountsOut = uniswapRouter.getAmountsOut(amount, path);
-        require(amountsOut[1] > amount.mul(10**(stableTokenDecimals.sub(token.decimals()))), "UniV2BuybackDepositaryBalanceView::buy: invalid price");
 
         uint256 allowance = token.allowance(address(this), address(uniswapRouter));
         if (allowance < amount) {
             if (allowance > 0) {
-                token.safeApprove(address(uniswapRouter), 0);
+                token.approve(address(uniswapRouter), 0);
             }
-            token.safeApprove(address(uniswapRouter), amount);
+            token.approve(address(uniswapRouter), amount);
         }
-        uint256[] memory amounts = uniswapRouter.swapExactTokensForTokens(amount, amountsOut[1], path, address(this), block.timestamp);
+
+        address[] memory path = new address[](2);
+        path[0] = address(token);
+        path[1] = stableToken;
+        uint256[] memory amounts = uniswapRouter.swapExactTokensForTokens(
+            amount,
+            amount.mul(10**(stableTokenDecimals.sub(token.decimals()))), // 1 to 1
+            path,
+            address(this),
+            block.timestamp + 10 minutes
+        );
 
         uint256 stableTotalSupply = ERC20(stableToken).totalSupply();
         uint256 collateralBalance = issuer.balance();
@@ -135,6 +143,10 @@ contract UniV2BuybackDepositaryBalanceView is IDepositaryBalanceView, OwnablePau
         emit Buyback(amount, amounts[1]);
     }
 
+    /**
+     * @notice Get balance of depositary.
+     * @return Balance of depositary.
+     */
     function balance() external view override returns (uint256) {
         uint256 tokenBalance = token.balanceOf(address(this));
 
