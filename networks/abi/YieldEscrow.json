@@ -6,6 +6,11 @@
                     "internalType": "address",
                     "name": "_governanceToken",
                     "type": "address"
+                },
+                {
+                    "internalType": "address",
+                    "name": "_voteDelegatorPrototype",
+                    "type": "address"
                 }
             ],
             "stateMutability": "nonpayable",
@@ -107,6 +112,32 @@
                     "internalType": "address",
                     "name": "account",
                     "type": "address"
+                }
+            ],
+            "name": "TransferAllowed",
+            "type": "event"
+        },
+        {
+            "anonymous": false,
+            "inputs": [
+                {
+                    "indexed": true,
+                    "internalType": "address",
+                    "name": "account",
+                    "type": "address"
+                }
+            ],
+            "name": "TransferDenied",
+            "type": "event"
+        },
+        {
+            "anonymous": false,
+            "inputs": [
+                {
+                    "indexed": true,
+                    "internalType": "address",
+                    "name": "account",
+                    "type": "address"
                 },
                 {
                     "indexed": false,
@@ -149,6 +180,19 @@
             ],
             "name": "Withdraw",
             "type": "event"
+        },
+        {
+            "inputs": [
+                {
+                    "internalType": "address",
+                    "name": "account",
+                    "type": "address"
+                }
+            ],
+            "name": "allowTransfer",
+            "outputs": [],
+            "stateMutability": "nonpayable",
+            "type": "function"
         },
         {
             "inputs": [
@@ -270,6 +314,19 @@
         {
             "inputs": [
                 {
+                    "internalType": "address",
+                    "name": "account",
+                    "type": "address"
+                }
+            ],
+            "name": "denyTransfer",
+            "outputs": [],
+            "stateMutability": "nonpayable",
+            "type": "function"
+        },
+        {
+            "inputs": [
+                {
                     "internalType": "uint256",
                     "name": "amount",
                     "type": "uint256"
@@ -294,13 +351,6 @@
                 }
             ],
             "name": "depositFromDelegator",
-            "outputs": [],
-            "stateMutability": "nonpayable",
-            "type": "function"
-        },
-        {
-            "inputs": [],
-            "name": "destroyVoteDelegator",
             "outputs": [],
             "stateMutability": "nonpayable",
             "type": "function"
@@ -476,6 +526,19 @@
                 }
             ],
             "name": "voteDelegatorOf",
+            "outputs": [
+                {
+                    "internalType": "address",
+                    "name": "",
+                    "type": "address"
+                }
+            ],
+            "stateMutability": "view",
+            "type": "function"
+        },
+        {
+            "inputs": [],
+            "name": "voteDelegatorPrototype",
             "outputs": [
                 {
                     "internalType": "address",

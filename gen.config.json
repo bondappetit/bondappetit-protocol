@@ -191,6 +191,11 @@
       "path": "deployments/%network%/ProfitDistributor12.json",
       "name": "ProfitDistributor12",
       "voting": true
+    },
+    {
+      "path": "deployments/%network%/UniV2BuybackDepositaryBalanceView.json",
+      "name": "UniV2BuybackDepositaryBalanceView",
+      "voting": true
     }
   ],
   "assets": [
@@ -278,6 +283,9 @@
     },
     {
       "path": "artifacts/contracts/ProfitDistributor.sol/ProfitDistributor.json"
+    },
+    {
+      "path": "artifacts/contracts/depositary/UniV2BuybackDepositaryBalanceView.sol/UniV2BuybackDepositaryBalanceView.json"
     }
   ]
 }
