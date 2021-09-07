@@ -3,7 +3,7 @@ const {migration} = require("../../utils/deploy");
 module.exports = migration("ProfitDistributor", async (d) => {
   const [ygov, stable] = await d.deployed("YieldEscrow", "StableToken");
   const governor = d.getGovernor().address;
-  const blocksPerMinute = 4;
+  const blocksPerMinute = 60 / d.getNetwork().averageBlockTime;
   const dayDuration = blocksPerMinute * 60 * 24;
 
   await d.deploy("ProfitDistributor3", {
