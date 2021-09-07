@@ -1,7 +1,10 @@
 const {migration} = require("../../utils/deploy");
 
 module.exports = migration("ProfitDistributor", async (d) => {
-  const [ygov, stable] = await d.deployed("YieldEscrow", "StableToken");
+  const {
+    assets: {USDC},
+  } = d.getNetwork();
+  const [ygov] = await d.deployed("YieldEscrow");
   const governor = d.getGovernor().address;
   const blocksPerMinute = 4;
   const dayDuration = blocksPerMinute * 60 * 24;
@@ -11,7 +14,7 @@ module.exports = migration("ProfitDistributor", async (d) => {
     args: [
       governor,
       dayDuration * 90,
-      stable.address,
+      USDC.address,
       ygov.address,
       dayDuration * 83,
       dayDuration * 7,
@@ -21,8 +24,8 @@ module.exports = migration("ProfitDistributor", async (d) => {
     contract: "ProfitDistributor",
     args: [
       governor,
-      dayDuration * 182,
-      stable.address,
+      dayDuration * 90,
+      USDC.address,
       ygov.address,
       dayDuration * 175,
       dayDuration * 7,
@@ -32,8 +35,8 @@ module.exports = migration("ProfitDistributor", async (d) => {
     contract: "ProfitDistributor",
     args: [
       governor,
-      dayDuration * 365,
-      stable.address,
+      dayDuration * 90,
+      USDC.address,
       ygov.address,
       dayDuration * 358,
       dayDuration * 7,
