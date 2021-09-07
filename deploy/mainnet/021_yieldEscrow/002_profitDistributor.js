@@ -1,4 +1,4 @@
-const {migration} = require("../../utils/deploy");
+const {migration} = require("../../../utils/deploy");
 
 module.exports = migration("ProfitDistributor", async (d) => {
   const {
