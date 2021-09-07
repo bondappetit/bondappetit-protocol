@@ -24,7 +24,7 @@ module.exports = migration("ProfitDistributor", async (d) => {
     contract: "ProfitDistributor",
     args: [
       governor,
-      dayDuration * 182,
+      dayDuration * 90,
       USDC.address,
       ygov.address,
       dayDuration * 175,
@@ -35,7 +35,7 @@ module.exports = migration("ProfitDistributor", async (d) => {
     contract: "ProfitDistributor",
     args: [
       governor,
-      dayDuration * 365,
+      dayDuration * 90,
       USDC.address,
       ygov.address,
       dayDuration * 358,
