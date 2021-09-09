@@ -25,7 +25,7 @@ contract EastGateway is Context {
         recipient = _recipient;
     }
 
-    function buy(ERC20 currency, uint256 amount) external returns (bool) {
+    function buy(ERC20 currency, uint256 amount, uint256 productMin) external returns (bool) {
         currency.safeTransferFrom(_msgSender(), address(this), amount);
 
         uint256 currencyBalance = currency.balanceOf(address(this));
@@ -33,7 +33,7 @@ contract EastGateway is Context {
             currency.safeApprove(address(market), 0);
         }
         currency.safeApprove(address(market), currencyBalance);
-        market.buy(address(currency), currencyBalance);
+        market.buy(address(currency), currencyBalance, productMin);
 
         ERC20 product = ERC20(market.productToken());
         uint256 productBalance = product.balanceOf(address(this));

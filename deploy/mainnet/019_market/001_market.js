@@ -3,7 +3,7 @@ const {migration} = require("../../../utils/deploy");
 module.exports = migration("Market", async (d) => {
   const {
     assets: {USDC},
-    contracts: {UniswapV2Router02, UsdcUsdPriceFeed},
+    contracts: {UniswapV2Router02},
   } = d.getNetwork();
   const [stable, gov] = await d.deployed("StableToken", "GovernanceToken");
 
@@ -13,7 +13,6 @@ module.exports = migration("Market", async (d) => {
       stable.address,
       gov.address,
       UniswapV2Router02.address,
-      [UsdcUsdPriceFeed.address],
     ],
   });
 });

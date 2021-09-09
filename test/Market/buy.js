@@ -1,206 +1,166 @@
-const assertions = require("truffle-assertions");
 const {contract, assert, bn} = require("../../utils/test");
+const {web3, deployments} = require("hardhat");
 const {development} = require("../../networks");
 
-contract("Market.buy", ({web3, artifacts}) => {
-  const governor = development.accounts.Governor.address;
-  const customer = "0x876A207aD9f6f0fA2C58A7902B2E7568a41c299f";
-  const {UniswapV2Router02} = development.contracts;
-  const uniswap = new web3.eth.Contract(
-    UniswapV2Router02.abi,
-    UniswapV2Router02.address
-  );
-  const {USDC, USDT} = development.assets;
+contract("Market.buy", function () {
+  const {USDC} = development.assets;
+  const productBalance = `1000${"0".repeat(18)}`;
+  const rewardBalance = `500${"0".repeat(18)}`;
+  let account;
+  let uniswapRouter,
+    currencyToken,
+    cumulativeToken,
+    productToken,
+    rewardToken,
+    market;
 
-  it("buy: should buy product token for cumulative token", async () => {
-    const [instance, gov, stable] = await artifacts.requireAll(
-      "Market",
-      "GovernanceToken",
-      "StableToken"
-    );
-    const usdc = new web3.eth.Contract(
-      development.contracts.Stable.abi,
-      USDC.address
-    );
-    const startStableToken = bn(10).pow(bn(18)).toString();
-    const amount = bn(1)
-      .mul(bn(10).pow(bn(6)))
-      .toString();
-    const rewardBalance = "100000";
+  before(async function () {
+    [account] = await web3.eth.getAccounts();
 
-    await gov.methods
-      .mint(instance._address, rewardBalance)
-      .send({from: governor});
-    await stable.methods
-      .mint(instance._address, startStableToken)
-      .send({from: governor});
-    const customerUSDCStartBalance = await usdc.methods
-      .balanceOf(customer)
-      .call();
-    const marketUSDCStartBalance = await usdc.methods
-      .balanceOf(instance._address)
-      .call();
-    const customerStableTokenStartBalance = await stable.methods
-      .balanceOf(customer)
-      .call();
-    const customerGovTokenStartBalance = await gov.methods
-      .balanceOf(customer)
-      .call();
-    const marketStableTokenStartBalance = await stable.methods
-      .balanceOf(instance._address)
-      .call();
-    assert.equal(
-      customerStableTokenStartBalance,
-      "0",
-      "Invalid stable token start balance for customer"
+    const UniswapRouter = development.contracts.UniswapV2Router02;
+    uniswapRouter = new web3.eth.Contract(
+      UniswapRouter.abi,
+      UniswapRouter.address
     );
 
-    const {product, reward} = await instance.methods
-      .price(USDC.address, amount)
-      .call();
-    await usdc.methods
-      .approve(instance._address, amount)
-      .send({from: customer});
-    await instance.methods
-      .buy(USDC.address, amount)
-      .send({from: customer, gas: 2000000});
+    const currencyTotalSupply = `1000${"0".repeat(18)}`;
+    const cumulativeTotalSupply = `5000${"0".repeat(6)}`;
+    const productTotalSupply = `100000${"0".repeat(18)}`;
+    const rewardTotalSupply = `100000${"0".repeat(18)}`;
+    const currencyData = await deployments.deploy("MockERC20", {
+      args: ["Currency", "C", currencyTotalSupply],
+      from: account,
+    });
+    currencyToken = new web3.eth.Contract(
+      currencyData.abi,
+      currencyData.address
+    );
+    cumulativeToken = new web3.eth.Contract(currencyData.abi, USDC.address);
+    const productData = await deployments.deploy("MockERC20", {
+      args: ["Product", "P", productTotalSupply],
+      from: account,
+    });
+    productToken = new web3.eth.Contract(productData.abi, productData.address);
+    const rewardData = await deployments.deploy("MockERC20", {
+      args: ["Reward", "R", rewardTotalSupply],
+      from: account,
+    });
+    rewardToken = new web3.eth.Contract(rewardData.abi, rewardData.address);
 
-    const customerUSDCEndBalance = await usdc.methods
-      .balanceOf(customer)
+    await currencyToken.methods
+      .approve(uniswapRouter._address, currencyTotalSupply)
+      .send({from: account});
+    await cumulativeToken.methods
+      .approve(uniswapRouter._address, cumulativeTotalSupply)
+      .send({from: account});
+    await uniswapRouter.methods
+      .addLiquidity(
+        currencyToken._address,
+        cumulativeToken._address,
+        currencyTotalSupply,
+        cumulativeTotalSupply,
+        0,
+        0,
+        account,
+        Date.now()
+      )
+      .send({from: account});
+
+    const marketData = await deployments.deploy("Market", {
+      args: [
+        cumulativeToken._address,
+        productToken._address,
+        rewardToken._address,
+        uniswapRouter._address,
+      ],
+      from: account,
+    });
+    market = new web3.eth.Contract(marketData.abi, marketData.address);
+
+    await productToken.methods
+      .transfer(market._address, productBalance)
+      .send({from: account});
+    await rewardToken.methods
+      .transfer(market._address, rewardBalance)
+      .send({from: account});
+  });
+
+  it("buy: should transfer product, reward tokens and swap currency token to cumulative", async () => {
+    const payment = `100${"0".repeat(18)}`;
+    await currencyToken.methods.mint(account, payment).send({from: account});
+    const startCurrencyBalance = await currencyToken.methods
+      .balanceOf(account)
       .call();
-    const marketUSDCEndBalance = await usdc.methods
-      .balanceOf(instance._address)
+    const startProductBalance = await productToken.methods
+      .balanceOf(account)
       .call();
-    const customerStableTokenEndBalance = await stable.methods
-      .balanceOf(customer)
+    const startRewardBalance = await rewardToken.methods
+      .balanceOf(account)
       .call();
-    const customerGovTokenEndBalance = await gov.methods
-      .balanceOf(customer)
+    const {product, reward} = await market.methods
+      .price(currencyToken._address, payment)
       .call();
-    const marketStableTokenEndBalance = await stable.methods
-      .balanceOf(instance._address)
-      .call();
+
+    await currencyToken.methods
+      .approve(market._address, payment)
+      .send({from: account});
+    await market.methods
+      .buy(currencyToken._address, payment, product)
+      .send({from: account});
+
     assert.equal(
-      customerUSDCEndBalance,
-      bn(customerUSDCStartBalance).sub(bn(amount)).toString(),
-      "Invalid token end balance for customer"
+      await currencyToken.methods.balanceOf(account).call(),
+      bn(startCurrencyBalance).sub(bn(payment)).toString(),
+      "Invalid currency"
     );
     assert.equal(
-      marketUSDCEndBalance,
-      bn(marketUSDCStartBalance).add(bn(amount)).toString(),
-      "Invalid token end balance for market"
+      await productToken.methods.balanceOf(account).call(),
+      bn(startProductBalance).add(bn(product)).toString(),
+      "Invalid product"
     );
     assert.equal(
-      customerStableTokenEndBalance,
-      bn(customerStableTokenStartBalance).add(bn(product)).toString(),
-      "Invalid stable token end balance for customer"
-    );
-    assert.equal(
-      customerGovTokenEndBalance,
-      bn(customerGovTokenStartBalance).add(bn(reward)).toString(),
-      "Invalid gov token end balance for customer"
-    );
-    assert.equal(
-      marketStableTokenEndBalance,
-      bn(marketStableTokenStartBalance).sub(bn(product)).toString(),
-      "Invalid stable token end balance for market"
+      await rewardToken.methods.balanceOf(account).call(),
+      bn(startRewardBalance).add(bn(reward)).toString(),
+      "Invalid reward"
     );
   });
 
-  it("buy: should buy stable token for other token", async () => {
-    const [instance, stable] = await artifacts.requireAll(
-      "Market",
-      "StableToken"
-    );
-    const wbtc = new web3.eth.Contract(
-      development.contracts.Stable.abi,
-      USDT.address
-    );
-    const usdc = new web3.eth.Contract(
-      development.contracts.Stable.abi,
-      USDC.address
-    );
-    const startStableToken = bn(1000)
-      .mul(bn(10).pow(bn(18)))
-      .toString();
-    const amount = bn(1)
-      .mul(bn(10).pow(bn(5)))
-      .toString();
-    const usdcSwapAmount = (
-      await uniswap.methods
-        .getAmountsOut(amount, [
-          USDT.address,
-          await uniswap.methods.WETH().call(),
-          USDC.address,
-        ])
-        .call()
-    )[2];
-
-    await stable.methods
-      .mint(instance._address, startStableToken)
-      .send({from: governor});
-    const customerWBTCStartBalance = await wbtc.methods
-      .balanceOf(customer)
+  it("buy: should transfer product, reward tokens without swap currency token to cumulative", async () => {
+    const payment = `100${"0".repeat(6)}`;
+    const startCurrencyBalance = await cumulativeToken.methods
+      .balanceOf(account)
       .call();
-    const marketUSDCStartBalance = await usdc.methods
-      .balanceOf(instance._address)
+    const startProductBalance = await productToken.methods
+      .balanceOf(account)
       .call();
-    const customerStableTokenStartBalance = await stable.methods
-      .balanceOf(customer)
+    const startRewardBalance = await rewardToken.methods
+      .balanceOf(account)
       .call();
-    const marketStableTokenStartBalance = await stable.methods
-      .balanceOf(instance._address)
+    const {product, reward} = await market.methods
+      .price(cumulativeToken._address, payment)
       .call();
 
-    const {product} = await instance.methods.price(USDT.address, amount).call();
-    await wbtc.methods
-      .approve(instance._address, amount)
-      .send({from: customer});
-    await instance.methods
-      .buy(USDT.address, amount)
-      .send({from: customer, gas: 2000000});
+    await cumulativeToken.methods
+      .approve(market._address, payment)
+      .send({from: account});
+    await market.methods
+      .buy(cumulativeToken._address, payment, product)
+      .send({from: account});
 
-    const customerWBTCEndBalance = await wbtc.methods
-      .balanceOf(customer)
-      .call();
-    const marketUSDCEndBalance = await usdc.methods
-      .balanceOf(instance._address)
-      .call();
-    const customerStableTokenEndBalance = await stable.methods
-      .balanceOf(customer)
-      .call();
-    const marketStableTokenEndBalance = await stable.methods
-      .balanceOf(instance._address)
-      .call();
     assert.equal(
-      customerWBTCEndBalance,
-      bn(customerWBTCStartBalance).sub(bn(amount)).toString(),
-      "Invalid token end balance for customer"
+      await cumulativeToken.methods.balanceOf(account).call(),
+      bn(startCurrencyBalance).sub(bn(payment)).toString(),
+      "Invalid currency"
     );
     assert.equal(
-      marketUSDCEndBalance,
-      bn(marketUSDCStartBalance).add(bn(usdcSwapAmount)).toString(),
-      "Invalid token end balance for market"
+      await productToken.methods.balanceOf(account).call(),
+      bn(startProductBalance).add(bn(product)).toString(),
+      "Invalid product"
     );
     assert.equal(
-      customerStableTokenEndBalance,
-      bn(customerStableTokenStartBalance).add(bn(product)).toString(),
-      "Invalid stable token end balance for customer"
-    );
-    assert.equal(
-      marketStableTokenEndBalance,
-      bn(marketStableTokenStartBalance).sub(bn(product)).toString(),
-      "Invalid stable token end balance for market"
-    );
-  });
-
-  it("buy: should revert tx if token is not allowed", async () => {
-    const instance = await artifacts.require("Market");
-    const [, notAllowedToken] = artifacts.accounts;
-
-    await assertions.reverts(
-      instance.methods.buy(notAllowedToken, 1).send({from: customer}),
-      "Market::price: currency not allowed"
+      await rewardToken.methods.balanceOf(account).call(),
+      bn(startRewardBalance).add(bn(reward)).toString(),
+      "Invalid reward"
     );
   });
 });

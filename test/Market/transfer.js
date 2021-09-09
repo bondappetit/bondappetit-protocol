@@ -1,20 +1,19 @@
 const assertions = require("truffle-assertions");
+const {contract, assert} = require("../../utils/test");
 const {web3, deployments} = require("hardhat");
-const {contract, assert, bn} = require("../../utils/test");
 const {development} = require("../../networks");
 
-contract("Market.changeCumulativeToken", () => {
-  let account, notOwner;
+contract("Market.transfer", () => {
+  let account, recipient, notOwner;
   let uniswapRouter,
     currencyToken,
     cumulativeToken,
     productToken,
     rewardToken,
     market;
-  const {USDT} = development.assets;
 
   before(async function () {
-    [account, notOwner] = await web3.eth.getAccounts();
+    [account, recipient, notOwner] = await web3.eth.getAccounts();
 
     const UniswapRouter = development.contracts.UniswapV2Router02;
     uniswapRouter = new web3.eth.Contract(
@@ -61,56 +60,32 @@ contract("Market.changeCumulativeToken", () => {
     market = new web3.eth.Contract(marketData.abi, marketData.address);
   });
 
-  it("changeCumulativeToken: should change cumulative token", async () => {
-    const newToken = USDT.address.toLowerCase();
+  it("transfer: should transfer token", async () => {
     const amount = "1000000";
 
-    await cumulativeToken.methods
+    assert.equal(
+      await productToken.methods.balanceOf(recipient).call(),
+      "0",
+      "Invalid start balance"
+    );
+
+    await productToken.methods
       .transfer(market._address, amount)
       .send({from: account});
-    const startGovernorUSDCBalance = await cumulativeToken.methods
-      .balanceOf(account)
-      .call();
-    const startCumulativeToken = (
-      await market.methods.cumulativeToken().call()
-    ).toLowerCase();
-    assert.equal(
-      startCumulativeToken !== newToken,
-      true,
-      "Invalid start cumulative token"
-    );
-
-    const startBalance = await cumulativeToken.methods
-      .balanceOf(market._address)
-      .call();
-    assert.equal(startBalance, amount, "Invalid market start balance");
-
     await market.methods
-      .changeCumulativeToken(newToken, account)
+      .transfer(productToken._address, recipient, amount)
       .send({from: account});
-    const endBalance = await cumulativeToken.methods
-      .balanceOf(market._address)
-      .call();
-    const endGovernorUSDCBalance = await cumulativeToken.methods
-      .balanceOf(account)
-      .call();
     assert.equal(
-      (await market.methods.cumulativeToken().call()).toLowerCase(),
-      newToken,
-      "Invalid cumulative token"
-    );
-    assert.equal(endBalance, "0", "Invalid market end balance");
-    assert.equal(
-      endGovernorUSDCBalance,
-      bn(startGovernorUSDCBalance).add(bn(amount)).toString(),
-      "Invalid governor end balance"
+      await productToken.methods.balanceOf(recipient).call(),
+      amount,
+      "Invalid end balance"
     );
   });
 
-  it("changeCumulativeToken: should revert tx if called is not the owner", async () => {
+  it("transfer: should revert tx if called is not the owner", async () => {
     await assertions.reverts(
       market.methods
-        .changeCumulativeToken(USDT.address, account)
+        .transfer(productToken._address, notOwner, "1000000")
         .send({from: notOwner}),
       "Ownable: caller is not the owner"
     );

@@ -61,7 +61,7 @@ contract("EastGateway.buy", ({web3, artifacts}) => {
       .approve(instance._address, amount)
       .send({from: customer});
     await instance.methods
-      .buy(USDC.address, amount)
+      .buy(USDC.address, amount, product)
       .send({from: customer, gas: 2000000});
     const customerUSDCEndBalance = await usdc.methods
       .balanceOf(customer)
