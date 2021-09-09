@@ -2,7 +2,7 @@ const networks = require("../../networks");
 const {Web3, web3, network} = require("hardhat");
 
 class Deployer {
-  static GAS_LIMIT = 4000000;
+  static GAS_LIMIT = 5000000;
 
   static instance;
 
