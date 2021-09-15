@@ -11812,7 +11812,7 @@ module.exports = {
         ]
     },
     "ProfitDistributor12": {
-        "address": "0x616fe2ffebde0f66cd65e723a1683999befca29d",
+        "address": "0x050E7CAee82d0C9A042B1026E1C66bcE7bdB55C8",
         "name": "ProfitDistributor12",
         "voting": true,
         "abi": [
