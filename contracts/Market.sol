@@ -94,6 +94,23 @@ contract Market is OwnablePausable {
     }
 
     /**
+     * @dev Calculate product and reward amount by cumulative token amount.
+     * @param amount Amount of cumulative token.
+     * @return product Amount of product token.
+     * @return reward Amount of reward token.
+     */
+    function _cumulativeToProduct(uint256 amount) internal view returns (uint256 product, uint256 reward) {
+        ERC20 _productToken = productToken; // gas optimization
+
+        product = amount.mul(10**uint256(_productToken.decimals()).sub(cumulativeToken.decimals()));
+
+        uint256 productTokenBalance = _productToken.balanceOf(address(this));
+        if (productTokenBalance > 0) {
+            reward = product.mul(rewardToken.balanceOf(address(this))).div(productTokenBalance);
+        }
+    }
+
+    /**
      * @notice Get token price.
      * @param currency Currency token.
      * @param payment Amount of payment.
@@ -101,25 +118,17 @@ contract Market is OwnablePausable {
      * @return reward Amount of reward token.
      */
     function price(address currency, uint256 payment) public view returns (uint256 product, uint256 reward) {
-        ERC20 _cumulativeToken = cumulativeToken; // gas optimization
-        ERC20 _productToken = productToken; // gas optimization
-
-        uint256 amountOut;
-        if (currency == address(_cumulativeToken)) {
-            amountOut = payment;
-        } else {
+        address _cumulativeToken = address(cumulativeToken);
+        uint256 amountOut = payment;
+        if (currency != _cumulativeToken) {
             address[] memory path = new address[](2);
             path[0] = currency;
-            path[1] = address(_cumulativeToken);
+            path[1] = _cumulativeToken;
             uint256[] memory amountsOut = uniswapRouter.getAmountsOut(payment, path);
             amountOut = amountsOut[1];
         }
-        product = amountOut.mul(10**uint256(_productToken.decimals()).sub(_cumulativeToken.decimals()));
 
-        uint256 productTokenBalance = _productToken.balanceOf(address(this));
-        if (productTokenBalance > 0) {
-            reward = product.mul(rewardToken.balanceOf(address(this))).div(productTokenBalance);
-        }
+        return _cumulativeToProduct(amountOut);
     }
 
     /**
@@ -139,16 +148,19 @@ contract Market is OwnablePausable {
         IUniswapV2Router02 _uniswapRouter = uniswapRouter; // gas optimization
         address sender = _msgSender();
 
-        (uint256 product, uint256 reward) = price(currency, payment);
-        require(product >= productMin, "Market::buy: invalid output product token");
+        uint256 amountOut = payment;
         ERC20(currency).safeTransferFrom(sender, address(this), payment);
         if (currency != address(_cumulativeToken)) {
             address[] memory path = new address[](2);
             path[0] = currency;
             path[1] = address(_cumulativeToken);
+            uint256 amountOutMin = productMin.div(10**uint256(_productToken.decimals()).sub(_cumulativeToken.decimals()));
+
             ERC20(currency).safeApprove(address(_uniswapRouter), payment);
-            _uniswapRouter.swapExactTokensForTokens(payment, productMin.div(10**uint256(_productToken.decimals()).sub(_cumulativeToken.decimals())), path, address(this), block.timestamp);
+            amountOut = _uniswapRouter.swapExactTokensForTokens(payment, amountOutMin, path, address(this), block.timestamp)[1];
         }
+
+        (uint256 product, uint256 reward) = _cumulativeToProduct(amountOut);
         _productToken.safeTransfer(sender, product);
         if (reward > 0) {
             rewardToken.safeTransfer(sender, reward);
