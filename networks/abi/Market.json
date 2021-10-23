@@ -4,7 +4,7 @@
             "inputs": [
                 {
                     "internalType": "address",
-                    "name": "_cumulative",
+                    "name": "_cumulativeToken",
                     "type": "address"
                 },
                 {
@@ -21,11 +21,6 @@
                     "internalType": "address",
                     "name": "_uniswapRouter",
                     "type": "address"
-                },
-                {
-                    "internalType": "address[]",
-                    "name": "_cumulativePriceFeed",
-                    "type": "address[]"
                 }
             ],
             "stateMutability": "nonpayable",
@@ -35,21 +30,21 @@
             "anonymous": false,
             "inputs": [
                 {
-                    "indexed": false,
+                    "indexed": true,
                     "internalType": "address",
                     "name": "customer",
                     "type": "address"
                 },
                 {
-                    "indexed": false,
+                    "indexed": true,
                     "internalType": "address",
-                    "name": "token",
+                    "name": "currency",
                     "type": "address"
                 },
                 {
                     "indexed": false,
                     "internalType": "uint256",
-                    "name": "amount",
+                    "name": "payment",
                     "type": "uint256"
                 },
                 {
@@ -72,16 +67,10 @@
             "anonymous": false,
             "inputs": [
                 {
-                    "indexed": false,
+                    "indexed": true,
                     "internalType": "address",
-                    "name": "newToken",
+                    "name": "newCumulativeToken",
                     "type": "address"
-                },
-                {
-                    "indexed": false,
-                    "internalType": "address[]",
-                    "name": "priceFeed",
-                    "type": "address[]"
                 }
             ],
             "name": "CumulativeChanged",
@@ -136,39 +125,7 @@
             "anonymous": false,
             "inputs": [
                 {
-                    "indexed": false,
-                    "internalType": "address",
-                    "name": "token",
-                    "type": "address"
-                },
-                {
-                    "indexed": false,
-                    "internalType": "address[]",
-                    "name": "priceFeed",
-                    "type": "address[]"
-                }
-            ],
-            "name": "TokenAllowed",
-            "type": "event"
-        },
-        {
-            "anonymous": false,
-            "inputs": [
-                {
-                    "indexed": false,
-                    "internalType": "address",
-                    "name": "token",
-                    "type": "address"
-                }
-            ],
-            "name": "TokenDenied",
-            "type": "event"
-        },
-        {
-            "anonymous": false,
-            "inputs": [
-                {
-                    "indexed": false,
+                    "indexed": true,
                     "internalType": "address",
                     "name": "newUniswapRouter",
                     "type": "address"
@@ -191,94 +148,6 @@
             "type": "event"
         },
         {
-            "anonymous": false,
-            "inputs": [
-                {
-                    "indexed": false,
-                    "internalType": "address",
-                    "name": "recipient",
-                    "type": "address"
-                },
-                {
-                    "indexed": false,
-                    "internalType": "address",
-                    "name": "token",
-                    "type": "address"
-                },
-                {
-                    "indexed": false,
-                    "internalType": "uint256",
-                    "name": "amount",
-                    "type": "uint256"
-                }
-            ],
-            "name": "Withdrawal",
-            "type": "event"
-        },
-        {
-            "inputs": [],
-            "name": "PRICE_DECIMALS",
-            "outputs": [
-                {
-                    "internalType": "uint8",
-                    "name": "",
-                    "type": "uint8"
-                }
-            ],
-            "stateMutability": "view",
-            "type": "function"
-        },
-        {
-            "inputs": [],
-            "name": "REWARD_DECIMALS",
-            "outputs": [
-                {
-                    "internalType": "uint256",
-                    "name": "",
-                    "type": "uint256"
-                }
-            ],
-            "stateMutability": "view",
-            "type": "function"
-        },
-        {
-            "inputs": [
-                {
-                    "internalType": "address",
-                    "name": "token",
-                    "type": "address"
-                }
-            ],
-            "name": "_priceUSD",
-            "outputs": [
-                {
-                    "internalType": "uint256",
-                    "name": "",
-                    "type": "uint256"
-                }
-            ],
-            "stateMutability": "view",
-            "type": "function"
-        },
-        {
-            "inputs": [
-                {
-                    "internalType": "address",
-                    "name": "token",
-                    "type": "address"
-                },
-                {
-                    "internalType": "address[]",
-                    "name": "priceFeed",
-                    "type": "address[]"
-                }
-            ],
-            "name": "allowToken",
-            "outputs": [],
-            "stateMutability": "nonpayable",
-            "type": "function"
-        },
-        {
             "inputs": [
                 {
                     "internalType": "address",
@@ -288,6 +157,11 @@
                 {
                     "internalType": "uint256",
                     "name": "payment",
+                    "type": "uint256"
+                },
+                {
+                    "internalType": "uint256",
+                    "name": "productMin",
                     "type": "uint256"
                 }
             ],
@@ -303,29 +177,11 @@
             "type": "function"
         },
         {
-            "inputs": [],
-            "name": "buyFromETH",
-            "outputs": [
-                {
-                    "internalType": "bool",
-                    "name": "",
-                    "type": "bool"
-                }
-            ],
-            "stateMutability": "payable",
-            "type": "function"
-        },
-        {
             "inputs": [
                 {
                     "internalType": "address",
-                    "name": "newToken",
+                    "name": "newCumulativeToken",
                     "type": "address"
-                },
-                {
-                    "internalType": "address[]",
-                    "name": "newCumulativePriceFeed",
-                    "type": "address[]"
                 },
                 {
                     "internalType": "address",
@@ -366,44 +222,12 @@
         },
         {
             "inputs": [],
-            "name": "cumulative",
+            "name": "cumulativeToken",
             "outputs": [
                 {
                     "internalType": "contract ERC20",
                     "name": "",
                     "type": "address"
-                }
-            ],
-            "stateMutability": "view",
-            "type": "function"
-        },
-        {
-            "inputs": [
-                {
-                    "internalType": "address",
-                    "name": "token",
-                    "type": "address"
-                }
-            ],
-            "name": "denyToken",
-            "outputs": [],
-            "stateMutability": "nonpayable",
-            "type": "function"
-        },
-        {
-            "inputs": [
-                {
-                    "internalType": "address",
-                    "name": "token",
-                    "type": "address"
-                }
-            ],
-            "name": "isAllowedToken",
-            "outputs": [
-                {
-                    "internalType": "bool",
-                    "name": "",
-                    "type": "bool"
                 }
             ],
             "stateMutability": "view",
@@ -521,47 +345,34 @@
             "inputs": [
                 {
                     "internalType": "address",
+                    "name": "from",
+                    "type": "address"
+                },
+                {
+                    "internalType": "address",
+                    "name": "recipient",
+                    "type": "address"
+                },
+                {
+                    "internalType": "uint256",
+                    "name": "amount",
+                    "type": "uint256"
+                }
+            ],
+            "name": "transfer",
+            "outputs": [],
+            "stateMutability": "nonpayable",
+            "type": "function"
+        },
+        {
+            "inputs": [
+                {
+                    "internalType": "address",
                     "name": "newOwner",
                     "type": "address"
                 }
             ],
             "name": "transferOwnership",
-            "outputs": [],
-            "stateMutability": "nonpayable",
-            "type": "function"
-        },
-        {
-            "inputs": [
-                {
-                    "internalType": "address",
-                    "name": "recipient",
-                    "type": "address"
-                },
-                {
-                    "internalType": "uint256",
-                    "name": "amount",
-                    "type": "uint256"
-                }
-            ],
-            "name": "transferProductToken",
-            "outputs": [],
-            "stateMutability": "nonpayable",
-            "type": "function"
-        },
-        {
-            "inputs": [
-                {
-                    "internalType": "address",
-                    "name": "recipient",
-                    "type": "address"
-                },
-                {
-                    "internalType": "uint256",
-                    "name": "amount",
-                    "type": "uint256"
-                }
-            ],
-            "name": "transferRewardToken",
             "outputs": [],
             "stateMutability": "nonpayable",
             "type": "function"
@@ -582,19 +393,6 @@
         {
             "inputs": [],
             "name": "unpause",
-            "outputs": [],
-            "stateMutability": "nonpayable",
-            "type": "function"
-        },
-        {
-            "inputs": [
-                {
-                    "internalType": "address",
-                    "name": "recipient",
-                    "type": "address"
-                }
-            ],
-            "name": "withdraw",
             "outputs": [],
             "stateMutability": "nonpayable",
             "type": "function"
