@@ -1939,4 +1939,10 @@ module.exports = {
       },
     ],
   },
+  UsdcStableUniswapV3Pool: {
+    address: "0x5f4ec3df9cbd43714fe2740f5e3616155c5b8419",
+    name: "UsdcStableUniswapV3Pool",
+    voting: false,
+    abi: [],
+  },
 };
