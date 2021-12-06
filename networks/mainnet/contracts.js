@@ -1940,7 +1940,7 @@ module.exports = {
     ],
   },
   UsdcStableUniswapV3Pool: {
-    address: "0x5f4ec3df9cbd43714fe2740f5e3616155c5b8419",
+    address: "0xf51df2c10678d13c50768f2d4c7f1bc12a53f08b",
     name: "UsdcStableUniswapV3Pool",
     voting: false,
     abi: [],
