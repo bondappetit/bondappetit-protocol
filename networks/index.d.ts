@@ -37,10 +37,8 @@ interface Network {
 
 declare const _exports: {
   development: Network;
-  ropsten: Network;
-  testnetBSC: Network;
+  goerli: Network;
   main: Network;
-  mainBSC: Network;
 };
 
 export = _exports;

@@ -1,7 +1,5 @@
 module.exports = {
   development: require("./development"),
-  ropsten: require("./ropsten"),
-  testnetBSC: require("./testnetBSC"),
+  goerli: require("./goerli"),
   main: require("./mainnet"),
-  mainBSC: require("./mainnetBSC"),
 };
