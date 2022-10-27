@@ -28,7 +28,7 @@ contract GovernorAlpha {
 
     /// @notice The duration of voting on a proposal, in blocks
     function votingPeriod() public pure returns (uint256) {
-        return 17280;
+        return 10;
     } // ~3 days in blocks (assuming 15s blocks)
 
     /// @notice The address of the Timelock contract
@@ -148,19 +148,19 @@ contract GovernorAlpha {
 
         proposalCount++;
         Proposal memory newProposal = Proposal({
-            id: proposalCount,
-            proposer: msg.sender,
-            eta: 0,
-            targets: targets,
-            values: values,
-            signatures: signatures,
-            calldatas: calldatas,
-            startBlock: startBlock,
-            endBlock: endBlock,
-            forVotes: 0,
-            againstVotes: 0,
-            canceled: false,
-            executed: false
+        id: proposalCount,
+        proposer: msg.sender,
+        eta: 0,
+        targets: targets,
+        values: values,
+        signatures: signatures,
+        calldatas: calldatas,
+        startBlock: startBlock,
+        endBlock: endBlock,
+        forVotes: 0,
+        againstVotes: 0,
+        canceled: false,
+        executed: false
         });
 
         proposals[newProposal.id] = newProposal;
@@ -218,14 +218,14 @@ contract GovernorAlpha {
     }
 
     function getActions(uint256 proposalId)
-        public
-        view
-        returns (
-            address[] memory targets,
-            uint256[] memory values,
-            string[] memory signatures,
-            bytes[] memory calldatas
-        )
+    public
+    view
+    returns (
+        address[] memory targets,
+        uint256[] memory values,
+        string[] memory signatures,
+        bytes[] memory calldatas
+    )
     {
         Proposal storage p = proposals[proposalId];
         return (p.targets, p.values, p.signatures, p.calldatas);
