@@ -1,6 +1,6 @@
 module.exports = {
     "Governance": {
-        "address": "0xFEFF7f0d15023B2561439dC34610D17284926fc9",
+        "address": "0x1fD7A73c57b0AA195933d95cDcD93d872f76edb4",
         "name": "GovernanceToken",
         "voting": true,
         "abi": [
@@ -675,7 +675,7 @@ module.exports = {
         ]
     },
     "Timelock": {
-        "address": "0xE0761D68109bB9EAd3150B765C0F61aE4554A4fE",
+        "address": "0x40ea6ff26552485e6fa9844b8491e0b5da5400f1",
         "name": "Timelock",
         "voting": true,
         "abi": [
@@ -1124,7 +1124,7 @@ module.exports = {
         ]
     },
     "GovernorAlpha": {
-        "address": "0xb4b10353d311ed0b4DE0Cb1406bCAeE89d98417e",
+        "address": "0xd5d00d79be1dB5bF4B13c13fC8bCF5CceA0C2481",
         "name": "GovernorAlpha",
         "voting": false,
         "abi": [
@@ -1796,7 +1796,7 @@ module.exports = {
         ]
     },
     "Investment": {
-        "address": "0xBc97B766333312E7e146d91966Aab8Ae73Bb3034",
+        "address": "0xD71Ca0F08C83057c8639E22F0E66484f4b572265",
         "name": "Investment",
         "voting": true,
         "abi": [
@@ -2303,7 +2303,7 @@ module.exports = {
         ]
     },
     "Vesting": {
-        "address": "0x100970B4a291EDDcAAE2999CEAdac920eDB4FF21",
+        "address": "0xa425b8B9f894fCf6e4f8ACcd0c849713bA0A9D39",
         "name": "Vesting",
         "voting": true,
         "abi": [
@@ -2691,7 +2691,7 @@ module.exports = {
         ]
     },
     "VestingSplitter": {
-        "address": "0xFe84c58B305447fec6E5c00B24b66bEc2Fe29732",
+        "address": "0xDCCBF9564be877F6c1e71e67E682704581101839",
         "name": "VestingSplitter",
         "voting": false,
         "abi": [
@@ -3008,7 +3008,7 @@ module.exports = {
         ]
     },
     "Stable": {
-        "address": "0xA22ad01E517E6AA32dEa90ffCcA8703166EC0dfa",
+        "address": "0x9577DB923744915FfEceD892064245badfaC9189",
         "name": "StableToken",
         "voting": true,
         "abi": [
@@ -3449,7 +3449,7 @@ module.exports = {
         ]
     },
     "Treasury": {
-        "address": "0x014e51fe501b42c1E40821135CFa2f998a9814F7",
+        "address": "0xa280a529A2F8208B0e48B5cF645751B420819342",
         "name": "Treasury",
         "voting": true,
         "abi": [
@@ -3659,7 +3659,7 @@ module.exports = {
         ]
     },
     "StableTokenDepositaryBalanceView": {
-        "address": "0x1c28Bcc158a628Ce55e15dc080306B5b76c6327f",
+        "address": "0xD672A954FB27A49de3490292E873c1a59273C147",
         "name": "StableTokenDepositaryBalanceView",
         "voting": true,
         "abi": [
@@ -3832,7 +3832,7 @@ module.exports = {
         ]
     },
     "RealAssetDepositaryBalanceView": {
-        "address": "0x20fA6fe458596fBc5062EB9feEe89D71fb123893",
+        "address": "0x7906278B8736da0310B572cd1D0A5cD6F447b05B",
         "name": "RealAssetDepositaryBalanceView",
         "voting": true,
         "abi": [
@@ -4207,7 +4207,7 @@ module.exports = {
         ]
     },
     "Issuer": {
-        "address": "0xF0d1913A790efae8b7A6F7325C0c422d70347db4",
+        "address": "0xeA74205457067DFf3320DB097A1CeCbc58DeF3cd",
         "name": "Issuer",
         "voting": true,
         "abi": [
@@ -4607,7 +4607,7 @@ module.exports = {
         ]
     },
     "CollateralMarket": {
-        "address": "0xB3D5554759A392132E6E8fE960dD5A535ce7d33b",
+        "address": "0x5A1d8bD42528eD2aD07E05556a5e4cCa97B277f9",
         "name": "CollateralMarket",
         "voting": true,
         "abi": [
@@ -5010,7 +5010,7 @@ module.exports = {
         ]
     },
     "Market": {
-        "address": "0x21F9d8B109f60b6Be4542153ec35B31E5451b4f2",
+        "address": "0xa0062aa4EEf1532E736C5651496705B3d9e40Fae",
         "name": "Market",
         "voting": true,
         "abi": [
@@ -5414,7 +5414,7 @@ module.exports = {
         ]
     },
     "GovStaking": {
-        "address": "0x5eb06b506bb7C480C9157243B24f2f8855886099",
+        "address": "0x0f2835958a85fbEc4439bE0DF632eA6de0b70C69",
         "name": "GovStaking",
         "voting": true,
         "abi": [
@@ -6097,7 +6097,7 @@ module.exports = {
         ]
     },
     "UsdcGovLPStaking": {
-        "address": "0x1d43A0f86451145EEF13E04dE2a30C51E46481Af",
+        "address": "0x9FCc398251Cbd5D61a0f1C881622FA2F5e66e737",
         "name": "UsdcGovLPStaking",
         "voting": true,
         "abi": [
@@ -6780,7 +6780,7 @@ module.exports = {
         ]
     },
     "UsdcStableLPLockStaking": {
-        "address": "0x3d7a65d7Bec3a80012729F99D8551Ac0875B8436",
+        "address": "0x38D4C70d7a1c5ecE5c1AEad1a0746018b046D18A",
         "name": "UsdcStableLPLockStaking",
         "voting": true,
         "abi": [
@@ -7463,7 +7463,7 @@ module.exports = {
         ]
     },
     "Budget": {
-        "address": "0xF3189FCC3eEeF0b707a8550a94dE2eCfAE89D5A7",
+        "address": "0xe9634A890b5B34B68AF59ecc31Ddd80b37462487",
         "name": "Budget",
         "voting": true,
         "abi": [
@@ -7823,7 +7823,7 @@ module.exports = {
         ]
     },
     "Buyback": {
-        "address": "0x66d1F739889D7f9CF384DB36F1bd539803C6cB45",
+        "address": "0x733A5951E7Ab485932FDC14CD0868CCE7012D909",
         "name": "Buyback",
         "voting": true,
         "abi": [
@@ -8204,7 +8204,7 @@ module.exports = {
         ]
     },
     "UniswapMarketMaker": {
-        "address": "0x81e2b57cb5d7fd2bb8107226e76f7ed4a7252a8c",
+        "address": "0x959e45631CE69BF7D7B24A1852252f7bd2aBa37C",
         "name": "UniswapMarketMaker",
         "voting": true,
         "abi": [
@@ -8621,7 +8621,7 @@ module.exports = {
         ]
     },
     "ProfitSplitter": {
-        "address": "0xe4255c9cf8ed322ed9a1f9248263cccf15f71e33",
+        "address": "0x17Db49a6c21a002148652c55daeeDFbf4Bc81460",
         "name": "ProfitSplitter",
         "voting": true,
         "abi": [
@@ -9147,7 +9147,7 @@ module.exports = {
         ]
     },
     "UsdcBuybackDepositaryBalanceView": {
-        "address": "0xB2a059Ea868f7f2Ab95ed0A3B16Ef6418A0C1b6c",
+        "address": "0xEf5EF29F8e54a1EfA94966c5cfA15A44c8dcF2AC",
         "name": "UsdcBuybackDepositaryBalanceView",
         "voting": true,
         "abi": [
@@ -9466,7 +9466,7 @@ module.exports = {
         ]
     },
     "DepositorCollateral": {
-        "address": "0x1AB636d7BCB25D42dF6881C827465e0945dbf959",
+        "address": "0xC71e1843B8Db56e9B958d723600F0385501C9F81",
         "name": "DepositorCollateral",
         "voting": true,
         "abi": [
@@ -9707,7 +9707,7 @@ module.exports = {
         ]
     },
     "YieldEscrow": {
-        "address": "0x978eb124Ea403fdC21142ee0C6eE7B3c164EE7Bc",
+        "address": "0xB92D6a52c00F338DD481aeD71E15ADb936ffdd69",
         "name": "YieldEscrow",
         "voting": true,
         "abi": [
@@ -10294,7 +10294,7 @@ module.exports = {
         ]
     },
     "ProfitDistributor3": {
-        "address": "0xb9949eCC746227E6870b4fa7fAa085808C6acB21",
+        "address": "0xDf467957B1434aAe3Ec640ACE2E808E7067B54F2",
         "name": "ProfitDistributor3",
         "voting": true,
         "abi": [
@@ -10952,7 +10952,7 @@ module.exports = {
         ]
     },
     "ProfitDistributor6": {
-        "address": "0x359d515C85105B9F63EEDA608E5a61ed44819d00",
+        "address": "0x8928E0a89b146C9566D1cabBc2717D0408688681",
         "name": "ProfitDistributor6",
         "voting": true,
         "abi": [
@@ -11610,7 +11610,7 @@ module.exports = {
         ]
     },
     "ProfitDistributor12": {
-        "address": "0x0E5Deca7A6893bdb1Ec3b8B0E6bCCAaFE024cfdB",
+        "address": "0xE7a4335519184FC3A4AC345dC3988E404bdcD121",
         "name": "ProfitDistributor12",
         "voting": true,
         "abi": [
@@ -12263,6 +12263,394 @@ module.exports = {
                     }
                 ],
                 "stateMutability": "view",
+                "type": "function"
+            }
+        ]
+    },
+    "UniV2BuybackDepositaryBalanceView": {
+        "address": "0x61B9B0DE4c7344c53CF5000be39303E337dADb27",
+        "name": "UniV2BuybackDepositaryBalanceView",
+        "voting": true,
+        "abi": [
+            {
+                "inputs": [
+                    {
+                        "internalType": "address",
+                        "name": "_token",
+                        "type": "address"
+                    },
+                    {
+                        "internalType": "address",
+                        "name": "_issuer",
+                        "type": "address"
+                    },
+                    {
+                        "internalType": "address",
+                        "name": "_uniswapRouter",
+                        "type": "address"
+                    },
+                    {
+                        "internalType": "address",
+                        "name": "_caller",
+                        "type": "address"
+                    }
+                ],
+                "stateMutability": "nonpayable",
+                "type": "constructor"
+            },
+            {
+                "anonymous": false,
+                "inputs": [
+                    {
+                        "indexed": false,
+                        "internalType": "uint256",
+                        "name": "amount",
+                        "type": "uint256"
+                    },
+                    {
+                        "indexed": false,
+                        "internalType": "uint256",
+                        "name": "buy",
+                        "type": "uint256"
+                    }
+                ],
+                "name": "Buyback",
+                "type": "event"
+            },
+            {
+                "anonymous": false,
+                "inputs": [
+                    {
+                        "indexed": false,
+                        "internalType": "address",
+                        "name": "newCaller",
+                        "type": "address"
+                    }
+                ],
+                "name": "CallerChanged",
+                "type": "event"
+            },
+            {
+                "anonymous": false,
+                "inputs": [
+                    {
+                        "indexed": false,
+                        "internalType": "address",
+                        "name": "newIssuer",
+                        "type": "address"
+                    }
+                ],
+                "name": "IssuerChanged",
+                "type": "event"
+            },
+            {
+                "anonymous": false,
+                "inputs": [
+                    {
+                        "indexed": true,
+                        "internalType": "address",
+                        "name": "previousOwner",
+                        "type": "address"
+                    },
+                    {
+                        "indexed": true,
+                        "internalType": "address",
+                        "name": "newOwner",
+                        "type": "address"
+                    }
+                ],
+                "name": "OwnershipTransferred",
+                "type": "event"
+            },
+            {
+                "anonymous": false,
+                "inputs": [
+                    {
+                        "indexed": false,
+                        "internalType": "address",
+                        "name": "account",
+                        "type": "address"
+                    }
+                ],
+                "name": "Paused",
+                "type": "event"
+            },
+            {
+                "anonymous": false,
+                "inputs": [
+                    {
+                        "indexed": false,
+                        "internalType": "address",
+                        "name": "newPauser",
+                        "type": "address"
+                    }
+                ],
+                "name": "PauserChanged",
+                "type": "event"
+            },
+            {
+                "anonymous": false,
+                "inputs": [
+                    {
+                        "indexed": false,
+                        "internalType": "address",
+                        "name": "newRouter",
+                        "type": "address"
+                    }
+                ],
+                "name": "UniswapRouterChanged",
+                "type": "event"
+            },
+            {
+                "anonymous": false,
+                "inputs": [
+                    {
+                        "indexed": false,
+                        "internalType": "address",
+                        "name": "account",
+                        "type": "address"
+                    }
+                ],
+                "name": "Unpaused",
+                "type": "event"
+            },
+            {
+                "inputs": [],
+                "name": "balance",
+                "outputs": [
+                    {
+                        "internalType": "uint256",
+                        "name": "",
+                        "type": "uint256"
+                    }
+                ],
+                "stateMutability": "view",
+                "type": "function"
+            },
+            {
+                "inputs": [
+                    {
+                        "internalType": "uint256",
+                        "name": "amount",
+                        "type": "uint256"
+                    }
+                ],
+                "name": "buy",
+                "outputs": [],
+                "stateMutability": "nonpayable",
+                "type": "function"
+            },
+            {
+                "inputs": [],
+                "name": "caller",
+                "outputs": [
+                    {
+                        "internalType": "address",
+                        "name": "",
+                        "type": "address"
+                    }
+                ],
+                "stateMutability": "view",
+                "type": "function"
+            },
+            {
+                "inputs": [
+                    {
+                        "internalType": "address",
+                        "name": "_caller",
+                        "type": "address"
+                    }
+                ],
+                "name": "changeCaller",
+                "outputs": [],
+                "stateMutability": "nonpayable",
+                "type": "function"
+            },
+            {
+                "inputs": [
+                    {
+                        "internalType": "address",
+                        "name": "_issuer",
+                        "type": "address"
+                    }
+                ],
+                "name": "changeIssuer",
+                "outputs": [],
+                "stateMutability": "nonpayable",
+                "type": "function"
+            },
+            {
+                "inputs": [
+                    {
+                        "internalType": "address",
+                        "name": "newPauser",
+                        "type": "address"
+                    }
+                ],
+                "name": "changePauser",
+                "outputs": [],
+                "stateMutability": "nonpayable",
+                "type": "function"
+            },
+            {
+                "inputs": [
+                    {
+                        "internalType": "address",
+                        "name": "_uniswapRouter",
+                        "type": "address"
+                    }
+                ],
+                "name": "changeUniswapRouter",
+                "outputs": [],
+                "stateMutability": "nonpayable",
+                "type": "function"
+            },
+            {
+                "inputs": [],
+                "name": "decimals",
+                "outputs": [
+                    {
+                        "internalType": "uint256",
+                        "name": "",
+                        "type": "uint256"
+                    }
+                ],
+                "stateMutability": "view",
+                "type": "function"
+            },
+            {
+                "inputs": [],
+                "name": "issuer",
+                "outputs": [
+                    {
+                        "internalType": "contract Issuer",
+                        "name": "",
+                        "type": "address"
+                    }
+                ],
+                "stateMutability": "view",
+                "type": "function"
+            },
+            {
+                "inputs": [],
+                "name": "owner",
+                "outputs": [
+                    {
+                        "internalType": "address",
+                        "name": "",
+                        "type": "address"
+                    }
+                ],
+                "stateMutability": "view",
+                "type": "function"
+            },
+            {
+                "inputs": [],
+                "name": "pause",
+                "outputs": [],
+                "stateMutability": "nonpayable",
+                "type": "function"
+            },
+            {
+                "inputs": [],
+                "name": "paused",
+                "outputs": [
+                    {
+                        "internalType": "bool",
+                        "name": "",
+                        "type": "bool"
+                    }
+                ],
+                "stateMutability": "view",
+                "type": "function"
+            },
+            {
+                "inputs": [],
+                "name": "pauser",
+                "outputs": [
+                    {
+                        "internalType": "address",
+                        "name": "",
+                        "type": "address"
+                    }
+                ],
+                "stateMutability": "view",
+                "type": "function"
+            },
+            {
+                "inputs": [],
+                "name": "renounceOwnership",
+                "outputs": [],
+                "stateMutability": "nonpayable",
+                "type": "function"
+            },
+            {
+                "inputs": [],
+                "name": "token",
+                "outputs": [
+                    {
+                        "internalType": "contract ERC20",
+                        "name": "",
+                        "type": "address"
+                    }
+                ],
+                "stateMutability": "view",
+                "type": "function"
+            },
+            {
+                "inputs": [
+                    {
+                        "internalType": "address",
+                        "name": "_token",
+                        "type": "address"
+                    },
+                    {
+                        "internalType": "address",
+                        "name": "recipient",
+                        "type": "address"
+                    },
+                    {
+                        "internalType": "uint256",
+                        "name": "amount",
+                        "type": "uint256"
+                    }
+                ],
+                "name": "transfer",
+                "outputs": [],
+                "stateMutability": "nonpayable",
+                "type": "function"
+            },
+            {
+                "inputs": [
+                    {
+                        "internalType": "address",
+                        "name": "newOwner",
+                        "type": "address"
+                    }
+                ],
+                "name": "transferOwnership",
+                "outputs": [],
+                "stateMutability": "nonpayable",
+                "type": "function"
+            },
+            {
+                "inputs": [],
+                "name": "uniswapRouter",
+                "outputs": [
+                    {
+                        "internalType": "contract IUniswapV2Router02",
+                        "name": "",
+                        "type": "address"
+                    }
+                ],
+                "stateMutability": "view",
+                "type": "function"
+            },
+            {
+                "inputs": [],
+                "name": "unpause",
+                "outputs": [],
+                "stateMutability": "nonpayable",
                 "type": "function"
             }
         ]
