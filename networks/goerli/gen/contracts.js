@@ -1,6 +1,6 @@
 module.exports = {
     "Governance": {
-        "address": "0x509D5D259d2481bDe18bbbf297bcdec8895a0292",
+        "address": "0xFEFF7f0d15023B2561439dC34610D17284926fc9",
         "name": "GovernanceToken",
         "voting": true,
         "abi": [
@@ -675,7 +675,7 @@ module.exports = {
         ]
     },
     "Timelock": {
-        "address": "0x98D0AB03aC6c719F346cF95efC87f154CA554b1e",
+        "address": "0xE0761D68109bB9EAd3150B765C0F61aE4554A4fE",
         "name": "Timelock",
         "voting": true,
         "abi": [
@@ -1124,7 +1124,7 @@ module.exports = {
         ]
     },
     "GovernorAlpha": {
-        "address": "0x09922C0038B3a6a54bcB7F3af334bc0E7B76Bb2a",
+        "address": "0xb4b10353d311ed0b4DE0Cb1406bCAeE89d98417e",
         "name": "GovernorAlpha",
         "voting": false,
         "abi": [
@@ -1796,7 +1796,7 @@ module.exports = {
         ]
     },
     "Investment": {
-        "address": "0x65F90dbC80D39986bCdc94e3f7343eC67F46Ef7F",
+        "address": "0xBc97B766333312E7e146d91966Aab8Ae73Bb3034",
         "name": "Investment",
         "voting": true,
         "abi": [
@@ -2303,7 +2303,7 @@ module.exports = {
         ]
     },
     "Vesting": {
-        "address": "0xf08baE21411b452C76f7Ea3DC92ca67967eB79C0",
+        "address": "0x100970B4a291EDDcAAE2999CEAdac920eDB4FF21",
         "name": "Vesting",
         "voting": true,
         "abi": [
@@ -2691,7 +2691,7 @@ module.exports = {
         ]
     },
     "VestingSplitter": {
-        "address": "0xDe9665b9278389E8c4EfeAccD795eC2209FB5529",
+        "address": "0xFe84c58B305447fec6E5c00B24b66bEc2Fe29732",
         "name": "VestingSplitter",
         "voting": false,
         "abi": [
@@ -3008,7 +3008,7 @@ module.exports = {
         ]
     },
     "Stable": {
-        "address": "0x377c3EC7cE3DD7a21aa244DE6Cd23c4a6E0983A6",
+        "address": "0xA22ad01E517E6AA32dEa90ffCcA8703166EC0dfa",
         "name": "StableToken",
         "voting": true,
         "abi": [
@@ -3449,7 +3449,7 @@ module.exports = {
         ]
     },
     "Treasury": {
-        "address": "0xbc9b07236384C5cC18CfC6743B5Fb40Cd220700C",
+        "address": "0x014e51fe501b42c1E40821135CFa2f998a9814F7",
         "name": "Treasury",
         "voting": true,
         "abi": [
@@ -3659,7 +3659,7 @@ module.exports = {
         ]
     },
     "StableTokenDepositaryBalanceView": {
-        "address": "0x3e7188AdEfa56810F4476f849464B4c4e7aa1983",
+        "address": "0x1c28Bcc158a628Ce55e15dc080306B5b76c6327f",
         "name": "StableTokenDepositaryBalanceView",
         "voting": true,
         "abi": [
@@ -3832,7 +3832,7 @@ module.exports = {
         ]
     },
     "RealAssetDepositaryBalanceView": {
-        "address": "0x2a1377699b49b7F9c64681dBE4136Cc947Dd0316",
+        "address": "0x20fA6fe458596fBc5062EB9feEe89D71fb123893",
         "name": "RealAssetDepositaryBalanceView",
         "voting": true,
         "abi": [
@@ -4207,7 +4207,7 @@ module.exports = {
         ]
     },
     "Issuer": {
-        "address": "0x3Db9505A562B039Df5ecf898c1Bc2F32305133Fb",
+        "address": "0xF0d1913A790efae8b7A6F7325C0c422d70347db4",
         "name": "Issuer",
         "voting": true,
         "abi": [
@@ -4607,7 +4607,7 @@ module.exports = {
         ]
     },
     "CollateralMarket": {
-        "address": "0xa49cC7a1d3FFf53309232595c35A0151dE9C6Bb7",
+        "address": "0xB3D5554759A392132E6E8fE960dD5A535ce7d33b",
         "name": "CollateralMarket",
         "voting": true,
         "abi": [
@@ -5010,7 +5010,7 @@ module.exports = {
         ]
     },
     "Market": {
-        "address": "0x3e36bF60C141eaf8eA5C8632eC0a15d2Fa1f2D5a",
+        "address": "0x21F9d8B109f60b6Be4542153ec35B31E5451b4f2",
         "name": "Market",
         "voting": true,
         "abi": [
@@ -5018,7 +5018,7 @@ module.exports = {
                 "inputs": [
                     {
                         "internalType": "address",
-                        "name": "_cumulative",
+                        "name": "_cumulativeToken",
                         "type": "address"
                     },
                     {
@@ -5035,11 +5035,6 @@ module.exports = {
                         "internalType": "address",
                         "name": "_uniswapRouter",
                         "type": "address"
-                    },
-                    {
-                        "internalType": "address[]",
-                        "name": "_cumulativePriceFeed",
-                        "type": "address[]"
                     }
                 ],
                 "stateMutability": "nonpayable",
@@ -5049,21 +5044,21 @@ module.exports = {
                 "anonymous": false,
                 "inputs": [
                     {
-                        "indexed": false,
+                        "indexed": true,
                         "internalType": "address",
                         "name": "customer",
                         "type": "address"
                     },
                     {
-                        "indexed": false,
+                        "indexed": true,
                         "internalType": "address",
-                        "name": "token",
+                        "name": "currency",
                         "type": "address"
                     },
                     {
                         "indexed": false,
                         "internalType": "uint256",
-                        "name": "amount",
+                        "name": "payment",
                         "type": "uint256"
                     },
                     {
@@ -5086,16 +5081,10 @@ module.exports = {
                 "anonymous": false,
                 "inputs": [
                     {
-                        "indexed": false,
+                        "indexed": true,
                         "internalType": "address",
-                        "name": "newToken",
+                        "name": "newCumulativeToken",
                         "type": "address"
-                    },
-                    {
-                        "indexed": false,
-                        "internalType": "address[]",
-                        "name": "priceFeed",
-                        "type": "address[]"
                     }
                 ],
                 "name": "CumulativeChanged",
@@ -5150,39 +5139,7 @@ module.exports = {
                 "anonymous": false,
                 "inputs": [
                     {
-                        "indexed": false,
-                        "internalType": "address",
-                        "name": "token",
-                        "type": "address"
-                    },
-                    {
-                        "indexed": false,
-                        "internalType": "address[]",
-                        "name": "priceFeed",
-                        "type": "address[]"
-                    }
-                ],
-                "name": "TokenAllowed",
-                "type": "event"
-            },
-            {
-                "anonymous": false,
-                "inputs": [
-                    {
-                        "indexed": false,
-                        "internalType": "address",
-                        "name": "token",
-                        "type": "address"
-                    }
-                ],
-                "name": "TokenDenied",
-                "type": "event"
-            },
-            {
-                "anonymous": false,
-                "inputs": [
-                    {
-                        "indexed": false,
+                        "indexed": true,
                         "internalType": "address",
                         "name": "newUniswapRouter",
                         "type": "address"
@@ -5205,94 +5162,6 @@ module.exports = {
                 "type": "event"
             },
             {
-                "anonymous": false,
-                "inputs": [
-                    {
-                        "indexed": false,
-                        "internalType": "address",
-                        "name": "recipient",
-                        "type": "address"
-                    },
-                    {
-                        "indexed": false,
-                        "internalType": "address",
-                        "name": "token",
-                        "type": "address"
-                    },
-                    {
-                        "indexed": false,
-                        "internalType": "uint256",
-                        "name": "amount",
-                        "type": "uint256"
-                    }
-                ],
-                "name": "Withdrawal",
-                "type": "event"
-            },
-            {
-                "inputs": [],
-                "name": "PRICE_DECIMALS",
-                "outputs": [
-                    {
-                        "internalType": "uint8",
-                        "name": "",
-                        "type": "uint8"
-                    }
-                ],
-                "stateMutability": "view",
-                "type": "function"
-            },
-            {
-                "inputs": [],
-                "name": "REWARD_DECIMALS",
-                "outputs": [
-                    {
-                        "internalType": "uint256",
-                        "name": "",
-                        "type": "uint256"
-                    }
-                ],
-                "stateMutability": "view",
-                "type": "function"
-            },
-            {
-                "inputs": [
-                    {
-                        "internalType": "address",
-                        "name": "token",
-                        "type": "address"
-                    }
-                ],
-                "name": "_priceUSD",
-                "outputs": [
-                    {
-                        "internalType": "uint256",
-                        "name": "",
-                        "type": "uint256"
-                    }
-                ],
-                "stateMutability": "view",
-                "type": "function"
-            },
-            {
-                "inputs": [
-                    {
-                        "internalType": "address",
-                        "name": "token",
-                        "type": "address"
-                    },
-                    {
-                        "internalType": "address[]",
-                        "name": "priceFeed",
-                        "type": "address[]"
-                    }
-                ],
-                "name": "allowToken",
-                "outputs": [],
-                "stateMutability": "nonpayable",
-                "type": "function"
-            },
-            {
                 "inputs": [
                     {
                         "internalType": "address",
@@ -5302,6 +5171,11 @@ module.exports = {
                     {
                         "internalType": "uint256",
                         "name": "payment",
+                        "type": "uint256"
+                    },
+                    {
+                        "internalType": "uint256",
+                        "name": "productMin",
                         "type": "uint256"
                     }
                 ],
@@ -5317,29 +5191,11 @@ module.exports = {
                 "type": "function"
             },
             {
-                "inputs": [],
-                "name": "buyFromETH",
-                "outputs": [
-                    {
-                        "internalType": "bool",
-                        "name": "",
-                        "type": "bool"
-                    }
-                ],
-                "stateMutability": "payable",
-                "type": "function"
-            },
-            {
                 "inputs": [
                     {
                         "internalType": "address",
-                        "name": "newToken",
+                        "name": "newCumulativeToken",
                         "type": "address"
-                    },
-                    {
-                        "internalType": "address[]",
-                        "name": "newCumulativePriceFeed",
-                        "type": "address[]"
                     },
                     {
                         "internalType": "address",
@@ -5380,44 +5236,12 @@ module.exports = {
             },
             {
                 "inputs": [],
-                "name": "cumulative",
+                "name": "cumulativeToken",
                 "outputs": [
                     {
                         "internalType": "contract ERC20",
                         "name": "",
                         "type": "address"
-                    }
-                ],
-                "stateMutability": "view",
-                "type": "function"
-            },
-            {
-                "inputs": [
-                    {
-                        "internalType": "address",
-                        "name": "token",
-                        "type": "address"
-                    }
-                ],
-                "name": "denyToken",
-                "outputs": [],
-                "stateMutability": "nonpayable",
-                "type": "function"
-            },
-            {
-                "inputs": [
-                    {
-                        "internalType": "address",
-                        "name": "token",
-                        "type": "address"
-                    }
-                ],
-                "name": "isAllowedToken",
-                "outputs": [
-                    {
-                        "internalType": "bool",
-                        "name": "",
-                        "type": "bool"
                     }
                 ],
                 "stateMutability": "view",
@@ -5535,47 +5359,34 @@ module.exports = {
                 "inputs": [
                     {
                         "internalType": "address",
+                        "name": "from",
+                        "type": "address"
+                    },
+                    {
+                        "internalType": "address",
+                        "name": "recipient",
+                        "type": "address"
+                    },
+                    {
+                        "internalType": "uint256",
+                        "name": "amount",
+                        "type": "uint256"
+                    }
+                ],
+                "name": "transfer",
+                "outputs": [],
+                "stateMutability": "nonpayable",
+                "type": "function"
+            },
+            {
+                "inputs": [
+                    {
+                        "internalType": "address",
                         "name": "newOwner",
                         "type": "address"
                     }
                 ],
                 "name": "transferOwnership",
-                "outputs": [],
-                "stateMutability": "nonpayable",
-                "type": "function"
-            },
-            {
-                "inputs": [
-                    {
-                        "internalType": "address",
-                        "name": "recipient",
-                        "type": "address"
-                    },
-                    {
-                        "internalType": "uint256",
-                        "name": "amount",
-                        "type": "uint256"
-                    }
-                ],
-                "name": "transferProductToken",
-                "outputs": [],
-                "stateMutability": "nonpayable",
-                "type": "function"
-            },
-            {
-                "inputs": [
-                    {
-                        "internalType": "address",
-                        "name": "recipient",
-                        "type": "address"
-                    },
-                    {
-                        "internalType": "uint256",
-                        "name": "amount",
-                        "type": "uint256"
-                    }
-                ],
-                "name": "transferRewardToken",
                 "outputs": [],
                 "stateMutability": "nonpayable",
                 "type": "function"
@@ -5599,24 +5410,11 @@ module.exports = {
                 "outputs": [],
                 "stateMutability": "nonpayable",
                 "type": "function"
-            },
-            {
-                "inputs": [
-                    {
-                        "internalType": "address",
-                        "name": "recipient",
-                        "type": "address"
-                    }
-                ],
-                "name": "withdraw",
-                "outputs": [],
-                "stateMutability": "nonpayable",
-                "type": "function"
             }
         ]
     },
     "GovStaking": {
-        "address": "0x699E05E982ad1e7A1C3c9d7E47447F103e55d196",
+        "address": "0x5eb06b506bb7C480C9157243B24f2f8855886099",
         "name": "GovStaking",
         "voting": true,
         "abi": [
@@ -6299,7 +6097,7 @@ module.exports = {
         ]
     },
     "UsdcGovLPStaking": {
-        "address": "0x0231195153ee179EafC81ec0fEd362E45F8b4101",
+        "address": "0x1d43A0f86451145EEF13E04dE2a30C51E46481Af",
         "name": "UsdcGovLPStaking",
         "voting": true,
         "abi": [
@@ -6982,7 +6780,7 @@ module.exports = {
         ]
     },
     "UsdcStableLPLockStaking": {
-        "address": "0x43B507f40eAF26De3EA3feD890F4C03AbBD08E43",
+        "address": "0x3d7a65d7Bec3a80012729F99D8551Ac0875B8436",
         "name": "UsdcStableLPLockStaking",
         "voting": true,
         "abi": [
@@ -7665,7 +7463,7 @@ module.exports = {
         ]
     },
     "Budget": {
-        "address": "0xc00daf41359F7eF4Dc0aDb905fc564C144a00696",
+        "address": "0xF3189FCC3eEeF0b707a8550a94dE2eCfAE89D5A7",
         "name": "Budget",
         "voting": true,
         "abi": [
@@ -8025,7 +7823,7 @@ module.exports = {
         ]
     },
     "Buyback": {
-        "address": "0xfCc4b4Dbe8cd5f9Ca0D30b4A98901fbE6F4D8621",
+        "address": "0x66d1F739889D7f9CF384DB36F1bd539803C6cB45",
         "name": "Buyback",
         "voting": true,
         "abi": [
@@ -8406,7 +8204,7 @@ module.exports = {
         ]
     },
     "UniswapMarketMaker": {
-        "address": "0x0010aCDdeBee3fF20F055A726e158248CC6Fcac8",
+        "address": "0x81e2b57cb5d7fd2bb8107226e76f7ed4a7252a8c",
         "name": "UniswapMarketMaker",
         "voting": true,
         "abi": [
@@ -8823,7 +8621,7 @@ module.exports = {
         ]
     },
     "ProfitSplitter": {
-        "address": "0x8E23aE5BED2F74979b793df6DD8B8670c3C7c33C",
+        "address": "0xe4255c9cf8ed322ed9a1f9248263cccf15f71e33",
         "name": "ProfitSplitter",
         "voting": true,
         "abi": [
@@ -9349,7 +9147,7 @@ module.exports = {
         ]
     },
     "UsdcBuybackDepositaryBalanceView": {
-        "address": "0x2aDF94141031B3b6dAD05554b2b40936Eb9901df",
+        "address": "0xB2a059Ea868f7f2Ab95ed0A3B16Ef6418A0C1b6c",
         "name": "UsdcBuybackDepositaryBalanceView",
         "voting": true,
         "abi": [
@@ -9668,7 +9466,7 @@ module.exports = {
         ]
     },
     "DepositorCollateral": {
-        "address": "0x34E62BAe68C99F15BF3e7e3c5cf9dDE9a80b0215",
+        "address": "0x1AB636d7BCB25D42dF6881C827465e0945dbf959",
         "name": "DepositorCollateral",
         "voting": true,
         "abi": [
@@ -9909,7 +9707,7 @@ module.exports = {
         ]
     },
     "YieldEscrow": {
-        "address": "0x69cBB6Bc44d36196D635Adc664B186B168560125",
+        "address": "0x978eb124Ea403fdC21142ee0C6eE7B3c164EE7Bc",
         "name": "YieldEscrow",
         "voting": true,
         "abi": [
@@ -10496,7 +10294,7 @@ module.exports = {
         ]
     },
     "ProfitDistributor3": {
-        "address": "0xa651e3cbFeA839dA988caC6779F1504AB81fd47C",
+        "address": "0xb9949eCC746227E6870b4fa7fAa085808C6acB21",
         "name": "ProfitDistributor3",
         "voting": true,
         "abi": [
@@ -11154,7 +10952,7 @@ module.exports = {
         ]
     },
     "ProfitDistributor6": {
-        "address": "0x67470A83036d7B63BAd26A5bb2E882f32c12fB8A",
+        "address": "0x359d515C85105B9F63EEDA608E5a61ed44819d00",
         "name": "ProfitDistributor6",
         "voting": true,
         "abi": [
@@ -11812,7 +11610,7 @@ module.exports = {
         ]
     },
     "ProfitDistributor12": {
-        "address": "0x050E7CAee82d0C9A042B1026E1C66bcE7bdB55C8",
+        "address": "0x0E5Deca7A6893bdb1Ec3b8B0E6bCCAaFE024cfdB",
         "name": "ProfitDistributor12",
         "voting": true,
         "abi": [
@@ -12465,394 +12263,6 @@ module.exports = {
                     }
                 ],
                 "stateMutability": "view",
-                "type": "function"
-            }
-        ]
-    },
-    "UniV2BuybackDepositaryBalanceView": {
-        "address": "0xE66c92739d86b5DEA6a2cA93C9F25b7A908029c0",
-        "name": "UniV2BuybackDepositaryBalanceView",
-        "voting": true,
-        "abi": [
-            {
-                "inputs": [
-                    {
-                        "internalType": "address",
-                        "name": "_token",
-                        "type": "address"
-                    },
-                    {
-                        "internalType": "address",
-                        "name": "_issuer",
-                        "type": "address"
-                    },
-                    {
-                        "internalType": "address",
-                        "name": "_uniswapRouter",
-                        "type": "address"
-                    },
-                    {
-                        "internalType": "address",
-                        "name": "_caller",
-                        "type": "address"
-                    }
-                ],
-                "stateMutability": "nonpayable",
-                "type": "constructor"
-            },
-            {
-                "anonymous": false,
-                "inputs": [
-                    {
-                        "indexed": false,
-                        "internalType": "uint256",
-                        "name": "amount",
-                        "type": "uint256"
-                    },
-                    {
-                        "indexed": false,
-                        "internalType": "uint256",
-                        "name": "buy",
-                        "type": "uint256"
-                    }
-                ],
-                "name": "Buyback",
-                "type": "event"
-            },
-            {
-                "anonymous": false,
-                "inputs": [
-                    {
-                        "indexed": false,
-                        "internalType": "address",
-                        "name": "newCaller",
-                        "type": "address"
-                    }
-                ],
-                "name": "CallerChanged",
-                "type": "event"
-            },
-            {
-                "anonymous": false,
-                "inputs": [
-                    {
-                        "indexed": false,
-                        "internalType": "address",
-                        "name": "newIssuer",
-                        "type": "address"
-                    }
-                ],
-                "name": "IssuerChanged",
-                "type": "event"
-            },
-            {
-                "anonymous": false,
-                "inputs": [
-                    {
-                        "indexed": true,
-                        "internalType": "address",
-                        "name": "previousOwner",
-                        "type": "address"
-                    },
-                    {
-                        "indexed": true,
-                        "internalType": "address",
-                        "name": "newOwner",
-                        "type": "address"
-                    }
-                ],
-                "name": "OwnershipTransferred",
-                "type": "event"
-            },
-            {
-                "anonymous": false,
-                "inputs": [
-                    {
-                        "indexed": false,
-                        "internalType": "address",
-                        "name": "account",
-                        "type": "address"
-                    }
-                ],
-                "name": "Paused",
-                "type": "event"
-            },
-            {
-                "anonymous": false,
-                "inputs": [
-                    {
-                        "indexed": false,
-                        "internalType": "address",
-                        "name": "newPauser",
-                        "type": "address"
-                    }
-                ],
-                "name": "PauserChanged",
-                "type": "event"
-            },
-            {
-                "anonymous": false,
-                "inputs": [
-                    {
-                        "indexed": false,
-                        "internalType": "address",
-                        "name": "newRouter",
-                        "type": "address"
-                    }
-                ],
-                "name": "UniswapRouterChanged",
-                "type": "event"
-            },
-            {
-                "anonymous": false,
-                "inputs": [
-                    {
-                        "indexed": false,
-                        "internalType": "address",
-                        "name": "account",
-                        "type": "address"
-                    }
-                ],
-                "name": "Unpaused",
-                "type": "event"
-            },
-            {
-                "inputs": [],
-                "name": "balance",
-                "outputs": [
-                    {
-                        "internalType": "uint256",
-                        "name": "",
-                        "type": "uint256"
-                    }
-                ],
-                "stateMutability": "view",
-                "type": "function"
-            },
-            {
-                "inputs": [
-                    {
-                        "internalType": "uint256",
-                        "name": "amount",
-                        "type": "uint256"
-                    }
-                ],
-                "name": "buy",
-                "outputs": [],
-                "stateMutability": "nonpayable",
-                "type": "function"
-            },
-            {
-                "inputs": [],
-                "name": "caller",
-                "outputs": [
-                    {
-                        "internalType": "address",
-                        "name": "",
-                        "type": "address"
-                    }
-                ],
-                "stateMutability": "view",
-                "type": "function"
-            },
-            {
-                "inputs": [
-                    {
-                        "internalType": "address",
-                        "name": "_caller",
-                        "type": "address"
-                    }
-                ],
-                "name": "changeCaller",
-                "outputs": [],
-                "stateMutability": "nonpayable",
-                "type": "function"
-            },
-            {
-                "inputs": [
-                    {
-                        "internalType": "address",
-                        "name": "_issuer",
-                        "type": "address"
-                    }
-                ],
-                "name": "changeIssuer",
-                "outputs": [],
-                "stateMutability": "nonpayable",
-                "type": "function"
-            },
-            {
-                "inputs": [
-                    {
-                        "internalType": "address",
-                        "name": "newPauser",
-                        "type": "address"
-                    }
-                ],
-                "name": "changePauser",
-                "outputs": [],
-                "stateMutability": "nonpayable",
-                "type": "function"
-            },
-            {
-                "inputs": [
-                    {
-                        "internalType": "address",
-                        "name": "_uniswapRouter",
-                        "type": "address"
-                    }
-                ],
-                "name": "changeUniswapRouter",
-                "outputs": [],
-                "stateMutability": "nonpayable",
-                "type": "function"
-            },
-            {
-                "inputs": [],
-                "name": "decimals",
-                "outputs": [
-                    {
-                        "internalType": "uint256",
-                        "name": "",
-                        "type": "uint256"
-                    }
-                ],
-                "stateMutability": "view",
-                "type": "function"
-            },
-            {
-                "inputs": [],
-                "name": "issuer",
-                "outputs": [
-                    {
-                        "internalType": "contract Issuer",
-                        "name": "",
-                        "type": "address"
-                    }
-                ],
-                "stateMutability": "view",
-                "type": "function"
-            },
-            {
-                "inputs": [],
-                "name": "owner",
-                "outputs": [
-                    {
-                        "internalType": "address",
-                        "name": "",
-                        "type": "address"
-                    }
-                ],
-                "stateMutability": "view",
-                "type": "function"
-            },
-            {
-                "inputs": [],
-                "name": "pause",
-                "outputs": [],
-                "stateMutability": "nonpayable",
-                "type": "function"
-            },
-            {
-                "inputs": [],
-                "name": "paused",
-                "outputs": [
-                    {
-                        "internalType": "bool",
-                        "name": "",
-                        "type": "bool"
-                    }
-                ],
-                "stateMutability": "view",
-                "type": "function"
-            },
-            {
-                "inputs": [],
-                "name": "pauser",
-                "outputs": [
-                    {
-                        "internalType": "address",
-                        "name": "",
-                        "type": "address"
-                    }
-                ],
-                "stateMutability": "view",
-                "type": "function"
-            },
-            {
-                "inputs": [],
-                "name": "renounceOwnership",
-                "outputs": [],
-                "stateMutability": "nonpayable",
-                "type": "function"
-            },
-            {
-                "inputs": [],
-                "name": "token",
-                "outputs": [
-                    {
-                        "internalType": "contract ERC20",
-                        "name": "",
-                        "type": "address"
-                    }
-                ],
-                "stateMutability": "view",
-                "type": "function"
-            },
-            {
-                "inputs": [
-                    {
-                        "internalType": "address",
-                        "name": "_token",
-                        "type": "address"
-                    },
-                    {
-                        "internalType": "address",
-                        "name": "recipient",
-                        "type": "address"
-                    },
-                    {
-                        "internalType": "uint256",
-                        "name": "amount",
-                        "type": "uint256"
-                    }
-                ],
-                "name": "transfer",
-                "outputs": [],
-                "stateMutability": "nonpayable",
-                "type": "function"
-            },
-            {
-                "inputs": [
-                    {
-                        "internalType": "address",
-                        "name": "newOwner",
-                        "type": "address"
-                    }
-                ],
-                "name": "transferOwnership",
-                "outputs": [],
-                "stateMutability": "nonpayable",
-                "type": "function"
-            },
-            {
-                "inputs": [],
-                "name": "uniswapRouter",
-                "outputs": [
-                    {
-                        "internalType": "contract IUniswapV2Router02",
-                        "name": "",
-                        "type": "address"
-                    }
-                ],
-                "stateMutability": "view",
-                "type": "function"
-            },
-            {
-                "inputs": [],
-                "name": "unpause",
-                "outputs": [],
-                "stateMutability": "nonpayable",
                 "type": "function"
             }
         ]

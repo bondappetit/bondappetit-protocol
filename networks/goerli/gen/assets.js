@@ -14,7 +14,7 @@ module.exports = {
         "investing": false
     },
     "yGovernance": {
-        "address": "0x69cBB6Bc44d36196D635Adc664B186B168560125",
+        "address": "0x978eb124Ea403fdC21142ee0C6eE7B3c164EE7Bc",
         "name": "BondAppetit Governance yield",
         "symbol": "yBAG",
         "decimals": 18,
